@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Tae Kim" />
+
+
+<title>AA vs EA</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">networkAnc</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">AA vs EA</h1>
+<h4 class="author">Tae Kim</h4>
+<h4 class="date">3/23/2019</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2019-04-01
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>networkAnc/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.2.0). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="report" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20190331code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20190331)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20190331code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20190331)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree71c33685bbe4da65b6153a0e986c0320c6f955fctargetblank71c3368a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/tk382/networkAnc/tree/71c33685bbe4da65b6153a0e986c0320c6f955fc" target="_blank">71c3368</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree71c33685bbe4da65b6153a0e986c0320c6f955fctargetblank71c3368a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    R/.DS_Store
+    Ignored:    R/.Rhistory
+    Ignored:    analysis/.DS_Store
+    Ignored:    analysis/.Rhistory
+
+Untracked files:
+    Untracked:  .Rbuildignore
+    Untracked:  .Rprofile
+    Untracked:  .gitignore
+    Untracked:  CorrConf/
+    Untracked:  DESCRIPTION
+    Untracked:  NAMESPACE
+    Untracked:  R/RcppExports.R
+    Untracked:  R/binary_test.R
+    Untracked:  R/continuous_mubeta.R
+    Untracked:  R/continuous_test.R
+    Untracked:  R/get_pathway_data.R
+    Untracked:  R/local_test.R
+    Untracked:  R/select_genes_from_gtex.R
+    Untracked:  R/simulate_data.R
+    Untracked:  R/sub_functions.R
+    Untracked:  _site.yml
+    Untracked:  _workflowr.yml
+    Untracked:  analysis/AA_skin_not_sun_exposed.Rmd
+    Untracked:  analysis/AA_skin_not_sun_exposed.pdf
+    Untracked:  analysis/HLA-DQA1.Rmd
+    Untracked:  analysis/HLA-DQA1.pdf
+    Untracked:  analysis/HLAgenes.Rmd
+    Untracked:  analysis/HLAgenes.pdf
+    Untracked:  analysis/HMP.Rmd
+    Untracked:  analysis/HMP.pdf
+    Untracked:  analysis/KgreaterthanN.Rmd
+    Untracked:  analysis/KgreaterthanN.pdf
+    Untracked:  analysis/TFs.Rmd
+    Untracked:  analysis/TFs.pdf
+    Untracked:  analysis/_site.yml
+    Untracked:  analysis/about.Rmd
+    Untracked:  analysis/activation_permutation_test_result.Rdata
+    Untracked:  analysis/autoimmune_pathway.Rmd
+    Untracked:  analysis/binding_permutation_test_result.Rdata
+    Untracked:  analysis/catalysis_permutation_test_result.Rdata
+    Untracked:  analysis/correction.R
+    Untracked:  analysis/degree_simulation.R
+    Untracked:  analysis/expression_permutation_test_result.Rdata
+    Untracked:  analysis/figure/
+    Untracked:  analysis/index.Rmd
+    Untracked:  analysis/inhibition_permutation_test_result.Rdata
+    Untracked:  analysis/largeK.Rmd
+    Untracked:  analysis/largeK.pdf
+    Untracked:  analysis/license.Rmd
+    Untracked:  analysis/normality_breaks.R
+    Untracked:  analysis/permutation_test.Rmd
+    Untracked:  analysis/permutation_test.pdf
+    Untracked:  analysis/ptmod_permutation_test_result.Rdata
+    Untracked:  analysis/reaction_permutation_test_result.Rdata
+    Untracked:  analysis/remove_covariates.Rmd
+    Untracked:  analysis/score_test_simulation.R
+    Untracked:  analysis/skin_AA.Rmd
+    Untracked:  analysis/skin_AA.pdf
+    Untracked:  analysis/skin_not__sun_exposed.pdf
+    Untracked:  analysis/skin_not__sun_exposed_files/
+    Untracked:  analysis/skin_not_sun_exposed.Rmd
+    Untracked:  analysis/skin_not_sun_exposed.pdf
+    Untracked:  analysis/smallk_known_sigma.Rmd
+    Untracked:  analysis/smallk_known_sigma.pdf
+    Untracked:  analysis/smallk_unknown_sigma.Rmd
+    Untracked:  analysis/smallk_unknown_sigma.pdf
+    Untracked:  code/
+    Untracked:  data/
+    Untracked:  doc/
+    Untracked:  docs/
+    Untracked:  man/bootstrap_c.Rd
+    Untracked:  man/get_degree_c.Rd
+    Untracked:  man/get_degree_w_c.Rd
+    Untracked:  man/get_score_c.Rd
+    Untracked:  man/get_score_w_c.Rd
+    Untracked:  man/mvrnormArma.Rd
+    Untracked:  man/simulate_c.Rd
+    Untracked:  man/small_sample_correction_c.Rd
+    Untracked:  old_analysis/
+    Untracked:  output/
+    Untracked:  src/RcppExports.cpp
+    Untracked:  src/RcppExports.o
+    Untracked:  src/networkAnc.so
+    Untracked:  src/utilities.o
+
+Unstaged changes:
+    Modified:   R/honda_correction.R
+    Modified:   analysis/AA_vs_EA_skin_not_sun_exposed.Rmd
+    Modified:   analysis/AA_vs_EA_skin_not_sun_exposed.pdf
+    Modified:   analysis/score_test.R
+    Modified:   src/utilities.cpp
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/71c33685bbe4da65b6153a0e986c0320c6f955fc/analysis/AA_EA.Rmd" target="_blank">71c3368</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+<td>
+wflow_publish(“analysis/AA_EA.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="data-pre-processing" class="section level1">
+<h1>1. Data pre-processing</h1>
+<p>We use the RNA-seq expression level data provided by GTEx, which has been already pre-processed. We choose to study not-sun-exposed suprapubic skin tissue as a pilot study because we expect to see some ancestry effect on the expression level on the skin tissue. Genes were selected based on expression threshold of <span class="math inline">\(&gt;0.1\)</span> RPKM in at least 10 individuals and <span class="math inline">\(\geq\)</span> reads in at least 10 individuals. Then the expression values were quantile normalized to the average empirical distribution observed across samples. That means, each gene has the same distribution across the individuals. Then they were inverse quantile normalized to fit standard normal distribution.</p>
+<div id="aload-and-clean-the-data" class="section level2">
+<h2>(a)load and clean the data</h2>
+<p>We read the expression level data and match the individuals with the ancestry information.</p>
+<pre><code>[1]   190 25192</code></pre>
+</div>
+<div id="b-scale-the-data-and-regress-out-the-mean" class="section level2">
+<h2>(b) scale the data and regress out the mean</h2>
+<p>We code African Americans as 0 and European Americans as 1 to compare group by group coexpression difference. We also consider correlation matrix, so we scale the gene expression level matrix to have variance 1. Then we regress out ancestry from the gene expression level to remove the mean effect.</p>
+<pre class="r"><code>orig_A = X$A
+X$A[X$A &gt; 0] = 1
+X$A = scale(X$A) * sqrt(length(X$A)) / sqrt(length(X$A)-1)
+Y = resid(lm(Y~X$A))
+# Y = scale(Y) * sqrt(length(X$A)) / sqrt(length(X$A)-1)</code></pre>
+</div>
+</div>
+<div id="gene-selection" class="section level1">
+<h1>2. Gene selection</h1>
+<p>In order to avoid extensive multiple testing, we use prior information in biology.</p>
+<div id="a-kegg-pathway" class="section level2">
+<h2>(a) KEGG pathway</h2>
+<p>We believe the disease pathways may reflect the gene-gene correlation structure or gene modules, so we choose three pathways that are related to either skin tissue or immunity - melonoma, asthma, and autoimmune disease.</p>
+<p>For each pathway, we take a group of <span class="math inline">\(K\)</span> genes and for each <span class="math inline">\(k\)</span> in <span class="math inline">\(1, \cdots, K\)</span>, we compute <span class="math inline">\(d_k\)</span> and compare it to the empirical distribution by permuting the ancestry. Then we show qqplot of the p values against the uniform distribution after transformation <span class="math inline">\(-log_{10}(p)\)</span>.</p>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-3-1.png" width="700" style="display: block; margin: auto;" /><img src="figure/AA_EA.Rmd/unnamed-chunk-3-2.png" width="700" style="display: block; margin: auto;" /><img src="figure/AA_EA.Rmd/unnamed-chunk-3-3.png" width="700" style="display: block; margin: auto;" /></p>
+
+</div>
+<div id="b-hla-genes" class="section level2">
+<h2>(b) HLA genes</h2>
+<p>We know that HLA genes are connected to many other genes and play critical role in regulating the gene transcription. We obtain the list of HLA genes and compute <span class="math inline">\(d_1\)</span> by adding up pair-wise test statistics across the entire genome.</p>
+<pre class="r"><code>hla_genes = c(&quot;HLA-A&quot;, &quot;HLA-B&quot;, &quot;HLA-C&quot;, &quot;HLA-E&quot;, 
+              &quot;HLA-F&quot;, &quot;HLA-G&quot;, &quot;HLA-H&quot;, &quot;HLA-J&quot;, 
+              &quot;HLA-K&quot;, &quot;HLA-L&quot;, &quot;HLA-N&quot;, &quot;HLA-P&quot;, 
+              &quot;HLA-S&quot;, &quot;HLA-T&quot;, &quot;HLA-U&quot;, &quot;HLA-V&quot;, 
+              &quot;HLA-W&quot;, &quot;HLA-X&quot;, &quot;HLA-Y&quot;, &quot;HLA-Z&quot;,
+              &quot;HLA-DRA&quot;, &quot;HLA-DRB2&quot;, &quot;HLA-DRB3&quot;,
+              &quot;HLA-DRB4&quot;, &quot;HLA-DRB5&quot;, &quot;HLA-DRB6&quot;,
+              &quot;HLA-DRB7&quot;, &quot;HLA-DRB8&quot;, &quot;HLA-DRB9&quot;,
+              &quot;HLA-DQA1&quot;, &quot;HLA-DQB1&quot;, &quot;HLA-DQA2&quot;,
+              &quot;HLA-DQB2&quot;, &quot;HLA-DQB3&quot;, &quot;HLA-DOA&quot;,
+              &quot;HLA-DMA&quot;, &quot;HLA-DMB&quot;, &quot;HLA-DPA1&quot;, &quot;HLA-DPB1&quot;,
+              &quot;HLA-DPA2&quot;, &quot;HLA-DPB2&quot;, &quot;HLA-DPA3&quot;,
+              &quot;HFE&quot;, &quot;TAP1&quot;, &quot;TAP2&quot;, &quot;PSMB9&quot;, &quot;PSMB8&quot;,
+              &quot;MICA&quot;, &quot;MICB&quot;, &quot;MICC&quot;, &quot;MICD&quot;, &quot;MICE&quot;)
+
+results = getBM(attributes = c(&#39;hgnc_symbol&#39;,&#39;ensembl_gene_id&#39;), 
+                filters = &quot;hgnc_symbol&quot;,
+                values = hla_genes,
+                mart = ensembl)
+
+genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
+results = results[match(genes, results$ensembl_gene_id), ]
+
+scores = newscores = matrix(0, length(genes), ncol(Y)-1)
+coef = cubic_coeff_c(X$A, qchisq(1-0.05/ncol(Y), 1), 2, 2)
+for (i in 1:length(genes)){
+  ind = which(colnames(Y) == results$ensembl_gene_id[i])
+  W = store_W_c(Y[,ind], Y[, -ind])
+  scores[i,] = get_score_W_c(X$A, W)
+  for (j in 1:ncol(scores)){
+    roots = polyroot(c(-scores[i,j], coef))
+    newscores[i,j] = Re(roots)[abs(Im(roots)) &lt; 1e-6]
+  }
+}</code></pre>
+<p>And the result is plotted below, where the red line is the expected mean. HLA-DQA1 stands out in its test statistic.</p>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-5-1.png" width="700" style="display: block; margin: auto;" /></p>
+</div>
+<div id="c-transcription-factors" class="section level2">
+<h2>(c) Transcription Factors</h2>
+<div id="read-tf-data" class="section level3">
+<h3>read TF data</h3>
+<p>Since transcription factors usually regulate the transcription of multiple genes, we thought they were appropriate targets to study their variance in activity across different ancestry.</p>
+<pre class="r"><code>TF = fread(&quot;data/TFcheckpoint.txt&quot;, header=TRUE)
+TF = setDF(TF)
+TF = TF[,1]
+results = getBM(attributes = c(&#39;hgnc_symbol&#39;,&#39;ensembl_gene_id&#39;), 
+                filters = &quot;hgnc_symbol&quot;,
+                values = TF,
+                mart = ensembl)
+
+genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
+results = results[match(genes, results$ensembl_gene_id), ]</code></pre>
+</div>
+<div id="test-all-the-tfs" class="section level3">
+<h3>test all the TFs</h3>
+<pre class="r"><code>par(mfrow = c(1,2))
+scores = matrix(0, length(genes), ncol(Y)-1)
+for (i in 1:length(genes)){
+  ind = which(colnames(Y) == results$ensembl_gene_id[i])
+  W = store_W_c(Y[,ind], Y[, -ind])
+  scores[i,] = get_score_W_c(X$A, W)
+}
+
+d = rowSums(scores)
+df = data.frame(d = d, genes = results$hgnc_symbol, xaxis = 1:length(d))
+plot(d, 
+     ylab = &#39;d&#39;, 
+     main = &#39;Transcription Factors&#39;)
+abline(h=25190, col=&#39;red&#39;)
+ind = which(d &gt; ncol(Y) + 200 * sqrt(2*ncol(Y)))
+df = df[ind, ]
+with(df, text(d ~ xaxis, labels = genes, pos = 4))
+
+ref_chisq = qchisq(seq(0,1, length=ncol(Y)-1), 1)
+for (i in 1:length(genes)){
+    if(results$hgnc_symbol[i] %in% c(&quot;FOXM1&quot;)){
+      qqplot(ref_chisq, scores[i, ], 
+            main = paste(results$hgnc_symbol[i], &#39;unadjusted&#39;),
+            cex = 0.5)
+      abline(0,1,col = &#39;red&#39;)
+  }
+}</code></pre>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-7-1.png" width="700" style="display: block; margin: auto;" /></p>
+
+</div>
+</div>
+</div>
+<div id="investigating-the-top-signals" class="section level1">
+<h1>Investigating the top signals</h1>
+<div id="hla-dqa1" class="section level2">
+<h2>HLA-DQA1</h2>
+<div id="hla-dqa1-score-test" class="section level3">
+<h3>HLA-DQA1 Score test</h3>
+<p>We re-cap what we have observed in HLA-DQA1 for the score tests.</p>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-8-1.png" width="700" style="display: block; margin: auto;" /></p>
+</div>
+<div id="hla-dqa1-permutation-test" class="section level3">
+<h3>HLA-DQA1, permutation test</h3>
+<p>In order to verify if HLA-DQA truly has a signal, we perform permutation test. The p-value is indeed very small.</p>
+<pre class="r"><code>W = store_W_c(Y[,dqa_ind], Y[, -dqa_ind])
+dqa_scores = get_score_W_c(X$A, W)
+dqa_d = get_degree_c(X$A, Y[,dqa_ind], Y[,-dqa_ind])
+# shuffled_A = shuffle_x_c(X$A, B)
+storeW = store_W_c(Y[,dqa_ind], Y[,-dqa_ind])
+out = bootstrap_c(X$A, B, storeW)
+bootstrapped_d = rowSums(out)
+dqa_p = sum(bootstrapped_d &gt; dqa_d) / B
+hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), dqa_d))+20)
+abline(v=dqa_d, col = &#39;red&#39;)</code></pre>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-9-1.png" width="700" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>print(dqa_p)</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code># par(mfrow = c(2,3))
+# for (i in 1:12){
+#   qqplot(ref_chisq, out[i, ], cex = 0.5, type = &#39;l&#39;, ylab = &#39;permuted score&#39;)
+#   abline(0,1,col = &#39;red&#39;)
+# }</code></pre>
+</div>
+<div id="genes-with-the-highest-scores-for-hla-dqa1" class="section level3">
+<h3>Genes with the highest scores for HLA-DQA1</h3>
+<p>We make some diagnosis plot to observe what is driving the signal.</p>
+<pre class="r"><code>max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
+results = getBM(attributes = c(&#39;hgnc_symbol&#39;,&#39;ensembl_gene_id&#39;),
+                filters = &quot;ensembl_gene_id&quot;,
+                values = colnames(Y[,-dqa_ind])[max_scores$ix[1:10]],
+                mart = ensembl)
+results = results[match(results$ensembl_gene_id, colnames(Y[,-dqa_ind])[max_scores$ix[1:10]]), ]
+top_genes = data.frame(gene_name = results$hgnc_symbol, score = max_scores$x[1:10],
+                ensembl = results$ensembl_gene_id)
+# print(top_genes)
+AA_ind = which(orig_A &gt; 0)
+EA_ind = which(orig_A == 0)
+diff_cor = data.frame(genes = top_genes$gene_name,
+                      AA = as.numeric(cor(orig[AA_ind,dqa_ind], 
+                                          (orig[AA_ind,-dqa_ind])[, max_scores$ix[1:10]])),
+                      EA = as.numeric(cor(orig[EA_ind,dqa_ind], 
+                                          (orig[EA_ind,-dqa_ind])[, max_scores$ix[1:10]])))
+print(cbind(top_genes, diff_cor[,2:3]))</code></pre>
+<pre><code>    gene_name    score         ensembl        AA          EA
+1        LRBA 28.85008 ENSG00000198589 0.3478526 -0.14944539
+2     PLA2G4E 26.21730 ENSG00000188089 0.4189482 -0.10035988
+3      OSBPL6 24.63537 ENSG00000079156 0.4538671 -0.12932814
+4        PKP4 23.65608 ENSG00000144283 0.4588957 -0.15284831
+5       EIF4B 23.51561 ENSG00000063046 0.3425440 -0.08661835
+6       PRSS3 23.46787 ENSG00000010438 0.4111445 -0.09436705
+7             23.06378 ENSG00000272008 0.2536646 -0.01610219
+8  SUCLA2-AS1 23.05285 ENSG00000227848 0.2267855 -0.14215591
+9       UPK1B 22.55323 ENSG00000114638 0.4782435  0.04157245
+10      SUDS3 21.76107 ENSG00000111707 0.1836475 -0.22015849</code></pre>
+</div>
+<div id="the-expression-level-of-hla-dqa1s-top-signal-lrba" class="section level3">
+<h3>The expression level of HLA-DQA1’s top signal LRBA</h3>
+<pre class="r"><code>AA_ind = which(orig_A &gt; 0)
+EA_ind = which(orig_A == 0)
+diff_cor = data.frame(genes = top_genes$gene_name,
+                      AA = as.numeric(cor(orig[AA_ind,dqa_ind], 
+                                          (orig[AA_ind,-dqa_ind])[, max_scores$ix[1:10]])),
+                      EA = as.numeric(cor(orig[EA_ind,dqa_ind], 
+                                          (orig[EA_ind,-dqa_ind])[, max_scores$ix[1:10]])))
+print(diff_cor)</code></pre>
+<pre><code>        genes        AA          EA
+1        LRBA 0.3478526 -0.14944539
+2     PLA2G4E 0.4189482 -0.10035988
+3      OSBPL6 0.4538671 -0.12932814
+4        PKP4 0.4588957 -0.15284831
+5       EIF4B 0.3425440 -0.08661835
+6       PRSS3 0.4111445 -0.09436705
+7             0.2536646 -0.01610219
+8  SUCLA2-AS1 0.2267855 -0.14215591
+9       UPK1B 0.4782435  0.04157245
+10      SUDS3 0.1836475 -0.22015849</code></pre>
+<pre class="r"><code>par(mfrow = c(1,2))
+plot(orig[AA_ind, dqa_ind] ~ orig[AA_ind,-dqa_ind][, max_scores$ix[1]],
+     main = &#39;African Americans&#39;,
+     xlab = &#39;LRBA&#39;,
+     ylab = &#39;HLA-DQA1&#39;)
+plot(orig[EA_ind, dqa_ind] ~ orig[EA_ind,-dqa_ind][, max_scores$ix[1]],
+     main = &#39;European Americans&#39;,
+     xlab = &#39;LRBA&#39;,
+     ylab = &#39;HLA-DQA1&#39;)</code></pre>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-11-1.png" width="700" style="display: block; margin: auto;" /></p>
+</div>
+<div id="hla-dqa1-box-plot" class="section level3">
+<h3>HLA-DQA1, box plot</h3>
+<pre class="r"><code>AA_ind = which(orig_A &gt; 0)
+EA_ind = which(orig_A == 0)
+dqa_exp = as.matrix(orig[,dqa_ind])
+dqa_exp_aa = dqa_exp[AA_ind]
+dqa_exp_ea = dqa_exp[EA_ind]
+
+df = data.frame(exp = dqa_exp, label = c(rep(&quot;African_Amsericans&quot;, length(AA_ind)),rep(&quot;European_Americans&quot;, length(EA_ind))))
+
+boxplot(exp ~ label, data = df, lwd = 2, main = &quot;distribution of expression of HLA-DQA1&quot;)
+stripchart(exp ~ label, vertical = TRUE, data = df, 
+    method = &quot;jitter&quot;, add = TRUE, pch = 4, col = &#39;blue&#39;, cex=0.5)</code></pre>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-12-1.png" width="700" style="display: block; margin: auto;" /></p>
+
+</div>
+</div>
+<div id="foxm1" class="section level2">
+<h2>FOXM1</h2>
+<div id="foxm1-score-test" class="section level3">
+<h3>FOXM1 Score test</h3>
+<pre class="r"><code>gene = &quot;FOXM1&quot;
+results = getBM(attributes = c(&#39;hgnc_symbol&#39;,&#39;ensembl_gene_id&#39;),
+                filters = &quot;hgnc_symbol&quot;,
+                values = gene,
+                mart = ensembl)
+
+fox_ind = which(colnames(Y) %in% c(results$ensembl_gene_id))
+smallY = Y[,-fox_ind]
+s = news = rep(0, ncol(Y)-1)
+for (i in 1:(ncol(Y)-1)){
+  s[i] = get_score_c(X$A, Y[,fox_ind], smallY[,i])
+}
+plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1), type = &#39;l&#39;); abline(0,1,col = &#39;red&#39;, main = &#39;adjusted&#39;)</code></pre>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-13-1.png" width="700" style="display: block; margin: auto;" /></p>
+</div>
+<div id="foxm1-permutation-test" class="section level3">
+<h3>FOXM1, permutation test</h3>
+<p>We conduct the permutation test to see if the signal is real.</p>
+<pre class="r"><code>fox_ind = which(colnames(Y) %in% results[results$hgnc_symbol==&quot;FOXM1&quot;, 2])
+W = store_W_c(Y[,fox_ind], Y[, -fox_ind])
+fox_scores = get_score_W_c(X$A, W)
+fox_d = get_degree_c(X$A, Y[,fox_ind], Y[,-fox_ind])
+shuffled_A = shuffle_x_c(X$A, B)
+storeW = store_W_c(Y[,fox_ind], Y[,-fox_ind])
+out = bootstrap_c(X$A, B, storeW)
+bootstrapped_d = rowSums(out)
+fox_p = sum(bootstrapped_d &gt; fox_d) / B
+par(mfrow = c(1,1))
+hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), fox_d))+100)
+abline(v=fox_d, col = &#39;red&#39;)</code></pre>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-14-1.png" width="700" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>print(fox_p)</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code># par(mfrow = c(2,3))
+# for (i in 1:12){
+#   qqplot(ref_chisq, out[i, ], cex = 0.5, type = &#39;l&#39;, ylab = &#39;permuted score&#39;)
+#   abline(0,1,col = &#39;red&#39;)
+# }</code></pre>
+</div>
+</div>
+<div id="foxm1-box-plot" class="section level2">
+<h2>FOXM1, box plot</h2>
+<p>We inspect the raw data to see any patterns between Afircan Americans and European Americans.</p>
+<pre class="r"><code>AA_ind = which(orig_A &gt; 0)
+EA_ind = which(orig_A == 0)
+fox_exp = as.matrix(orig[,fox_ind])
+fox_exp_aa = fox_exp[AA_ind]
+fox_exp_ea = fox_exp[EA_ind]
+
+df = data.frame(exp = fox_exp, label = c(rep(&quot;African Americans&quot;, length(AA_ind)),rep(&quot;European Americans&quot;, length(EA_ind))))
+
+boxplot(exp ~ label, data = df, lwd = 2, main = &quot;distribution of expression of FOXM1&quot;)
+stripchart(exp ~ label, vertical = TRUE, data = df, 
+    method = &quot;jitter&quot;, add = TRUE, pch = 4, col = &#39;blue&#39;, cex=0.5)</code></pre>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-15-1.png" width="700" style="display: block; margin: auto;" /></p>
+</div>
+<div id="correlation-of-hla-dqa1-and-foxm1-against-all-other-genes" class="section level2">
+<h2>Correlation of HLA-DQA1 and FOXM1 against all other genes</h2>
+<pre class="r"><code>diff_cor_fox = data.frame(genes = colnames(orig)[-fox_ind],
+                      AA = as.numeric(cor(orig[AA_ind,fox_ind], 
+                                          (orig[AA_ind,-fox_ind]))),
+                      EA = as.numeric(cor(orig[EA_ind,fox_ind], 
+                                          (orig[EA_ind,-fox_ind]))))
+diff_cor_dqa = data.frame(genes = colnames(orig)[-dqa_ind],
+                      AA = as.numeric(cor(orig[AA_ind,dqa_ind], 
+                                          (orig[AA_ind,-dqa_ind]))),
+                      EA = as.numeric(cor(orig[EA_ind,dqa_ind], 
+                                          (orig[EA_ind,-dqa_ind]))))
+par(mfrow = c(1,2))
+plot(diff_cor_dqa$AA ~ diff_cor_dqa$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main=&#39;HLA-DQA1&#39;,
+     ylab = &#39;African Americans&#39;,
+     xlab = &#39;European Americans&#39;); abline(0,1,col = &#39;red&#39;)
+
+plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main=&#39;FOXM1&#39;,
+     ylab = &#39;African Americans&#39;,
+     xlab = &#39;European Americans&#39;); abline(0,1,col = &#39;red&#39;)</code></pre>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-16-1.png" width="700" style="display: block; margin: auto;" /></p>
+</div>
+<div id="what-happens-when-i-reduce-the-sample-size-of-european-americans" class="section level2">
+<h2>What happens when I reduce the sample size of European Americans?</h2>
+<pre class="r"><code>EA_subset = sample(EA_ind, size=31)
+
+diff_cor_fox = data.frame(genes = colnames(orig)[-fox_ind],
+                      AA = as.numeric(cor(orig[AA_ind,fox_ind], 
+                                          (orig[AA_ind,-fox_ind]))),
+                      EA = as.numeric(cor(orig[EA_subset,fox_ind], 
+                                          (orig[EA_subset,-fox_ind]))))
+diff_cor_dqa = data.frame(genes = colnames(orig)[-dqa_ind],
+                      AA = as.numeric(cor(orig[AA_ind,dqa_ind], 
+                                          (orig[AA_ind,-dqa_ind]))),
+                      EA = as.numeric(cor(orig[EA_subset,dqa_ind], 
+                                          (orig[EA_subset,-dqa_ind]))))
+par(mfrow = c(1,2))
+plot(diff_cor_dqa$AA ~ diff_cor_dqa$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main=&#39;HLA-DQA1&#39;,
+     ylab = &#39;African Americans&#39;,
+     xlab = &#39;European Americans&#39;); abline(0,1,col = &#39;red&#39;)
+
+plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main=&#39;FOXM1&#39;,
+     ylab = &#39;African Americans&#39;,
+     xlab = &#39;European Americans&#39;); abline(0,1,col = &#39;red&#39;)</code></pre>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-17-1.png" width="700" style="display: block; margin: auto;" /></p>
+</div>
+<div id="repeat-hla-dqa1-with-sampled-euopreans" class="section level2">
+<h2>Repeat HLA-DQA1 with sampled Euopreans</h2>
+<pre class="r"><code>W = store_W_c(Y[c(AA_ind, EA_subset),dqa_ind], Y[c(AA_ind, EA_subset), -dqa_ind])
+dqa_scores = get_score_W_c(X$A[c(AA_ind, EA_subset)], W)
+dqa_d = get_degree_c(X$A[c(AA_ind, EA_subset)], Y[c(AA_ind, EA_subset),dqa_ind], Y[c(AA_ind, EA_subset),-dqa_ind])
+storeW = store_W_c(Y[c(AA_ind, EA_subset),dqa_ind], Y[c(AA_ind, EA_subset),-dqa_ind])
+out = bootstrap_c(X$A[c(AA_ind, EA_subset)], B, storeW)
+bootstrapped_d = rowSums(out)
+dqa_p = sum(bootstrapped_d &gt; dqa_d) / B
+hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), dqa_d))+20)
+abline(v=dqa_d, col = &#39;red&#39;)</code></pre>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-18-1.png" width="700" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>print(dqa_p)</code></pre>
+<pre><code>[1] 0</code></pre>
+</div>
+<div id="repeat-fox-m1-with-sampled-euopreans" class="section level2">
+<h2>Repeat FOX-M1 with sampled Euopreans</h2>
+<pre class="r"><code>W = store_W_c(Y[c(AA_ind, EA_subset),fox_ind], Y[c(AA_ind, EA_subset), -fox_ind])
+fox_scores = get_score_W_c(X$A[c(AA_ind, EA_subset)], W)
+fox_d = get_degree_c(X$A[c(AA_ind, EA_subset)], Y[c(AA_ind, EA_subset),fox_ind], Y[c(AA_ind, EA_subset),-fox_ind])
+storeW = store_W_c(Y[c(AA_ind, EA_subset),fox_ind], Y[c(AA_ind, EA_subset),-fox_ind])
+out = bootstrap_c(X$A[c(AA_ind, EA_subset)], B, storeW)
+bootstrapped_d = rowSums(out)
+fox_p = sum(bootstrapped_d &gt; fox_d) / B
+hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), fox_d))+20)
+abline(v=fox_d, col = &#39;red&#39;)</code></pre>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-19-1.png" width="700" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>print(fox_p)</code></pre>
+<pre><code>[1] 0.03</code></pre>
+<br> <br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.5.3 (2019-03-11)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Sierra 10.12.6
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] biomaRt_2.36.1    KEGGREST_1.22.0   ggplot2_3.1.0     nleqslv_3.3.2    
+[5] data.table_1.12.0 mvtnorm_1.0-10    MASS_7.3-51.3    
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.1                prettyunits_1.0.2        
+ [3] png_0.1-7                 Biostrings_2.50.2        
+ [5] assertthat_0.2.1          rprojroot_1.3-2          
+ [7] digest_0.6.18             R6_2.4.0                 
+ [9] plyr_1.8.4                backports_1.1.3          
+[11] stats4_3.5.3              RSQLite_2.1.1            
+[13] evaluate_0.13             httr_1.4.0               
+[15] pillar_1.3.1              zlibbioc_1.26.0          
+[17] rlang_0.3.3               progress_1.2.0           
+[19] curl_3.3                  lazyeval_0.2.2           
+[21] whisker_0.3-2             blob_1.1.1               
+[23] R.oo_1.22.0               S4Vectors_0.20.1         
+[25] R.utils_2.8.0             rmarkdown_1.12           
+[27] stringr_1.4.0             RCurl_1.95-4.12          
+[29] bit_1.1-14                munsell_0.5.0            
+[31] compiler_3.5.3            xfun_0.5                 
+[33] pkgconfig_2.0.2           BiocGenerics_0.26.0      
+[35] htmltools_0.3.6           tidyselect_0.2.5         
+[37] tibble_2.1.1              workflowr_1.2.0          
+[39] IRanges_2.16.0            XML_3.98-1.19            
+[41] crayon_1.3.4              dplyr_0.8.0.1            
+[43] withr_2.1.2               bitops_1.0-6             
+[45] R.methodsS3_1.7.1         grid_3.5.3               
+[47] gtable_0.3.0              DBI_1.0.0                
+[49] git2r_0.25.2              magrittr_1.5             
+[51] scales_1.0.0              stringi_1.4.3            
+[53] XVector_0.20.0            RcppArmadillo_0.8.600.0.0
+[55] fs_1.2.7                  tools_3.5.3              
+[57] bit64_0.9-7               Biobase_2.40.0           
+[59] glue_1.3.1                purrr_0.3.2              
+[61] hms_0.4.2                 parallel_3.5.3           
+[63] yaml_2.2.0                AnnotationDbi_1.42.1     
+[65] colorspace_1.4-1          memoise_1.1.0            
+[67] knitr_1.22               </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
