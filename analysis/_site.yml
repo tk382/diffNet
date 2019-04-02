@@ -1,7 +1,7 @@
-name: "networkAnc"
+name: "diffNet"
 output_dir: ../docs
 navbar:
-  title: "networkAnc"
+  title: "diffNet"
   left:
     - text: "Home"
       href: index.html
