@@ -11,8 +11,6 @@ navbar:
       href: AA_EA.html
     - text: "Continuous Example"
       href: AA.html
-    - text: "License"
-      href: license.html
 right:
     - icon: fa-github
       href: https://github.com/tk382/diffNet
