@@ -1,6 +1,6 @@
-Package: networkAnc
+Package: diffNet
 Type: Package
-Title: networkAnc
+Title: diffNet
 Version: 0.1.0
 Author: Tae Kim
 Maintainer: Tae Kim <tk382@uchicago.edu>
