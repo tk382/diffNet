@@ -444,7 +444,7 @@ div.section {
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
-<strong>Knit directory:</strong> <code>networkAnc/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+<strong>Knit directory:</strong> <code>diffNet/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
 </p>
 <p>
 This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
@@ -517,10 +517,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree058b38f74cb2d6e2e8ba245d117be04a2d7bf035targetblank058b38fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/tk382/networkAnc/tree/058b38f74cb2d6e2e8ba245d117be04a2d7bf035" target="_blank">058b38f</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree1f68ec1044ebda6ff8908b6ca6554093dc1a17d0targetblank1f68ec1a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/tk382/networkAnc/tree/1f68ec1044ebda6ff8908b6ca6554093dc1a17d0" target="_blank">1f68ec1</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree058b38f74cb2d6e2e8ba245d117be04a2d7bf035targetblank058b38fa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree1f68ec1044ebda6ff8908b6ca6554093dc1a17d0targetblank1f68ec1a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -542,19 +542,6 @@ Untracked files:
     Untracked:  .Rprofile
     Untracked:  .gitignore
     Untracked:  CorrConf/
-    Untracked:  DESCRIPTION
-    Untracked:  NAMESPACE
-    Untracked:  R/RcppExports.R
-    Untracked:  R/binary_test.R
-    Untracked:  R/continuous_mubeta.R
-    Untracked:  R/continuous_test.R
-    Untracked:  R/get_pathway_data.R
-    Untracked:  R/local_test.R
-    Untracked:  R/select_genes_from_gtex.R
-    Untracked:  R/simulate_data.R
-    Untracked:  R/sub_functions.R
-    Untracked:  _site.yml
-    Untracked:  _workflowr.yml
     Untracked:  analysis/AA_skin_not_sun_exposed.Rmd
     Untracked:  analysis/AA_skin_not_sun_exposed.pdf
     Untracked:  analysis/HLA-DQA1.Rmd
@@ -567,7 +554,6 @@ Untracked files:
     Untracked:  analysis/KgreaterthanN.pdf
     Untracked:  analysis/TFs.Rmd
     Untracked:  analysis/TFs.pdf
-    Untracked:  analysis/_site.yml
     Untracked:  analysis/activation_permutation_test_result.Rdata
     Untracked:  analysis/autoimmune_pathway.Rmd
     Untracked:  analysis/binding_permutation_test_result.Rdata
@@ -597,27 +583,13 @@ Untracked files:
     Untracked:  analysis/smallk_unknown_sigma.pdf
     Untracked:  code/
     Untracked:  data/
-    Untracked:  man/bootstrap_c.Rd
-    Untracked:  man/get_degree_c.Rd
-    Untracked:  man/get_degree_w_c.Rd
-    Untracked:  man/get_score_c.Rd
-    Untracked:  man/get_score_w_c.Rd
-    Untracked:  man/mvrnormArma.Rd
-    Untracked:  man/simulate_c.Rd
-    Untracked:  man/small_sample_correction_c.Rd
     Untracked:  old_analysis/
     Untracked:  output/
     Untracked:  src/RcppExports.cpp
     Untracked:  src/RcppExports.o
+    Untracked:  src/diffNet.so
     Untracked:  src/networkAnc.so
     Untracked:  src/utilities.o
-
-Unstaged changes:
-    Modified:   R/honda_correction.R
-    Modified:   analysis/AA_vs_EA_skin_not_sun_exposed.Rmd
-    Modified:   analysis/AA_vs_EA_skin_not_sun_exposed.pdf
-    Modified:   analysis/score_test.R
-    Modified:   src/utilities.cpp
 
 </code></pre>
 <p>
@@ -661,6 +633,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/tk382/networkAnc/blob/1f68ec1044ebda6ff8908b6ca6554093dc1a17d0/analysis/AA.Rmd" target="_blank">1f68ec1</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+<td>
+wflow_publish(“analysis/AA.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/tk382/networkAnc/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/AA.html" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/tk382/networkAnc/blob/058b38f74cb2d6e2e8ba245d117be04a2d7bf035/analysis/AA.Rmd" target="_blank">058b38f</a>
 </td>
 <td>
@@ -684,7 +690,31 @@ wflow_publish(c(“analysis/index.Rmd”, “analysis/license.Rmd”, “analysi
 <h1>1. Data pre-processing</h1>
 <p>We use the RNA-seq expression level data provided by GTEx, which has been already pre-processed. We choose to study not-sun-exposed suprapubic skin tissue as a pilot study because we expect to see some ancestry effect on the expression level on the skin tissue. Genes were selected based on expression threshold of <span class="math inline">\(&gt;0.1\)</span> RPKM in at least 10 individuals and <span class="math inline">\(\geq\)</span> reads in at least 10 individuals. Then the expression values were quantile normalized to the average empirical distribution observed across samples. That means, each gene has the same distribution across the individuals. Then they were inverse quantile normalized to fit standard normal distribution.</p>
 <div id="a-load-and-clean-the-data" class="section level2">
-<h2>(a) load and clean the data</h2>
+<h2>(a) Load and clean the data</h2>
+<pre class="r"><code>load(&quot;data/skin_not_sun_exposed_suprapubic.Rdata&quot;)
+exp = skin; rm(skin)
+colnames(exp) = gsub(&quot;[.]&quot;, &quot;-&quot;, colnames(exp))
+ind = which(colSums(!is.na(exp)) == 0)
+exp = exp[,-ind]
+ind= which(rowSums(!is.na(exp)) == 0)
+exp = exp[-ind, ]
+invisible(gc())
+finalA = read.table(&quot;data/finalA.txt&quot;, header=TRUE)
+AAs = intersect(colnames(exp), finalA$subject)
+EAs = colnames(exp)[! colnames(exp) %in% finalA$subject]
+newA= data.frame(subject = AAs, A = finalA[match(AAs, finalA$subject), 2])
+Y = exp[, c(AAs, EAs)]
+rm(exp); invisible(gc())
+EA_A = data.frame(subject = EAs, A = 0)
+X = rbind(newA, EA_A)
+rm(newA, EA_A, AAs, EAs, ind, finalA)
+rownames(Y) = sapply(strsplit(rownames(Y), &#39;[.]&#39;), function(x) x[1])
+Y = t(Y)
+
+ind = which(X$A &gt; 0)
+Y = Y[ind,]
+X = X[ind, ]
+orig = Y</code></pre>
 </div>
 <div id="b-scale-the-data-and-regress-out-the-mean" class="section level2">
 <h2>(b) scale the data and regress out the mean</h2>
@@ -693,6 +723,8 @@ wflow_publish(c(“analysis/index.Rmd”, “analysis/license.Rmd”, “analysi
 X$A = scale(X$A) * sqrt(length(X$A)) / sqrt(length(X$A)-1)
 Y = resid(lm(Y~X$A))
 Y = scale(Y) * sqrt(length(X$A)) / sqrt(length(X$A)-1)</code></pre>
+<pre class="r"><code>ref_chisq = qchisq(seq(0,1, length=ncol(Y)-1), 1)</code></pre>
+<pre class="r"><code>B = 5000</code></pre>
 </div>
 </div>
 <div id="gene-selection" class="section level1">
@@ -702,7 +734,202 @@ Y = scale(Y) * sqrt(length(X$A)) / sqrt(length(X$A)-1)</code></pre>
 <h2>(a) KEGG pathway</h2>
 <p>We believe the disease pathways may reflect the gene-gene correlation structure or gene modules, so we choose three pathways that are related to either skin tissue or immunity - melonoma, asthma, and autoimmune disease.</p>
 <p>For each pathway, we take a group of <span class="math inline">\(K\)</span> genes and for each <span class="math inline">\(k\)</span> in <span class="math inline">\(1, \cdots, K\)</span>, we compute <span class="math inline">\(d_k\)</span> and compare it to the empirical distribution by permuting the ancestry. Then we show qqplot of the p values against the uniform distribution after transformation <span class="math inline">\(-log_{10}(p)\)</span>.</p>
-<p><img src="figure/AA.Rmd/unnamed-chunk-3-1.png" width="700" style="display: block; margin: auto;" /><img src="figure/AA.Rmd/unnamed-chunk-3-2.png" width="700" style="display: block; margin: auto;" /><img src="figure/AA.Rmd/unnamed-chunk-3-3.png" width="700" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>get_result_kegg = function(hsacode, B){
+  out = keggGet(hsacode)
+  out = out[[1]]
+  genes = sapply(strsplit(out$GENE, &quot;;&quot;), function(x) x[1])
+  genes = genes[seq(2,144,by=2)]
+  results = getBM(attributes = c(&#39;hgnc_symbol&#39;,&#39;ensembl_gene_id&#39;),
+                filters = &quot;hgnc_symbol&quot;,
+                values = genes,
+                mart = ensembl)
+  genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
+  results = results[match(genes, results$ensembl_gene_id), ]
+  R = Y[,genes]
+  d = rep(0, ncol(R))
+  p = rep(0, ncol(R))
+  for (i in 1:ncol(R)){
+    d[i] = get_degree_c(X$A, R[,i], R[,-i])
+    storeW = store_W_c(R[,i], R[,-i])
+    out = rowSums(bootstrap_c(X$A, B, storeW))
+    p[i] = sum(out &gt; d[i]) / B
+  }
+  return(list(p = p, d = d, genes = results))
+}
+
+out = get_result_kegg(&quot;hsa05218&quot;, B) #melanoma disease
+par(mfrow = c(1,2))
+qqplot(-log(seq(0,1,length.out = length(out$p))), -log(out$p),
+     xlab = &#39;-log uniform&#39;,
+     ylab = &#39;-log p&#39;,
+     main = &quot;melanoma&quot;)
+abline(0,1,col = &#39;red&#39;)
+
+df = data.frame(p = -log(out$p), genes = out$genes$hgnc_symbol, ind = 1:length(out$p))
+plot(-log(out$p), 
+     ylab = &#39;-log p&#39;, 
+     main = &#39;-log(p) values&#39;,
+     xlim = c(0, length(out$p)+10))</code></pre>
+<p><img src="figure/AA.Rmd/unnamed-chunk-3-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-3-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ind = which(df$p &gt; 3)
+if(length(ind)&gt;0){
+  df = df[ind, ]
+  with(df, text(p ~ ind, labels = genes, pos = 4))
+}
+
+
+
+out = get_result_kegg(&quot;hsa05310&quot;, B) #asthma
+par(mfrow = c(1,2))
+qqplot(-log(seq(0,1,length.out = length(out$p))), -log(out$p),
+     xlab = &#39;-log uniform&#39;,
+     ylab = &#39;-log p&#39;,
+     main = &quot;asthma&quot;)
+abline(0,1,col = &#39;red&#39;)
+
+df = data.frame(p = -log(out$p), genes = out$genes$hgnc_symbol, ind = 1:length(out$p))
+plot(-log(out$p), 
+     ylab = &#39;-log p&#39;, 
+     main = &#39;-log(p) values&#39;,
+     xlim = c(0, length(out$p)+10))</code></pre>
+<p><img src="figure/AA.Rmd/unnamed-chunk-3-2.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-2">
+Past versions of unnamed-chunk-3-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-3-2.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ind = which(df$p &gt; 3)
+if(length(ind)&gt;0){
+  df = df[ind, ]
+  with(df, text(p ~ ind, labels = genes, pos = 4))
+}
+
+
+out = get_result_kegg(&quot;hsa05320&quot;, B) #autoimmune
+par(mfrow = c(1,2))
+qqplot(-log(seq(0,1,length.out = length(out$p))), -log(out$p),
+     xlab = &#39;-log uniform&#39;,
+     ylab = &#39;-log p&#39;,
+     main = &quot;auto immune&quot;)
+abline(0,1,col = &#39;red&#39;)
+
+df = data.frame(p = -log(out$p), genes = out$genes$hgnc_symbol, ind = 1:length(out$p))
+plot(-log(out$p), 
+     ylab = &#39;-log p&#39;, 
+     main = &#39;-log(p) values&#39;,
+     xlim = c(0, length(out$p)+10))</code></pre>
+<p><img src="figure/AA.Rmd/unnamed-chunk-3-3.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-3">
+Past versions of unnamed-chunk-3-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-3-3.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ind = which(df$p &gt; 3)
+if(length(ind)&gt;0){
+  df = df[ind, ]
+  with(df, text(p ~ ind, labels = genes, pos = 4))
+}</code></pre>
 
 </div>
 <div id="b-hla-genes" class="section level2">
@@ -743,12 +970,65 @@ for (i in 1:length(genes)){
   }
 }</code></pre>
 <p>And the result is plotted below, where the red line is the expected mean. HLA-DQA1 stands out in its test statistic.</p>
+<pre class="r"><code>par(mfrow = c(1,2))
+d = rowSums(newscores)
+df = data.frame(d = d, genes = results$hgnc_symbol, xaxis = 1:length(d))
+plot(d, 
+     ylab = &#39;d&#39;, 
+     main = &#39;HLA-genes&#39;,
+     xlim = c(0,45),
+     ylim = c(0, max(d) + 100))
+abline(h=25190, col=&#39;red&#39;)
+ind = which(d &gt; 2*ncol(Y))
+df = df[ind, ]
+with(df, text(d ~ xaxis, labels = genes, pos = 4))
+
+ref_chisq = qchisq(seq(0,1,length=length(newscores[1,])), 1)
+ind = which(results$hgnc_symbol == &quot;PSMB8&quot;)
+qqplot(ref_chisq, newscores[ind,],  main = &#39;PSMB8 scores&#39;, ylab=&#39;scores&#39;); abline(0,1,col = &#39;red&#39;)</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-5-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-5-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="c-transcription-factors" class="section level2">
 <h2>(c) Transcription Factors</h2>
-<div id="read-tf-data" class="section level3">
-<h3>read TF data</h3>
+<div id="i-read-tf-data" class="section level3">
+<h3>(i) Read TF data</h3>
 <p>Since transcription factors usually regulate the transcription of multiple genes, we thought they were appropriate targets to study their variance in activity across different ancestry.</p>
 <pre class="r"><code>TF = fread(&quot;data/TFcheckpoint.txt&quot;, header=TRUE)
 TF = setDF(TF)
@@ -760,8 +1040,8 @@ TF_results = getBM(attributes = c(&#39;hgnc_symbol&#39;,&#39;ensembl_gene_id&#39
 genes = colnames(Y)[which(colnames(Y) %in% TF_results$ensembl_gene_id)]
 TF_results = TF_results[match(genes, TF_results$ensembl_gene_id), ]</code></pre>
 </div>
-<div id="test-all-the-tfs" class="section level3">
-<h3>test all the TFs</h3>
+<div id="ii-test-all-the-tfs" class="section level3">
+<h3>(ii) test all the TFs</h3>
 <pre class="r"><code>scores = matrix(0, length(genes), ncol(Y)-1)
 for (i in 1:length(genes)){
   ind = which(colnames(Y) == TF_results$ensembl_gene_id[i])
@@ -792,6 +1072,43 @@ for (i in 1:length(genes)){
   }
 }</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-7-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-7-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 
 </div>
 </div>
@@ -800,13 +1117,50 @@ for (i in 1:length(genes)){
 <h1>3. Investigating the top signals</h1>
 <div id="a-psmb8" class="section level2">
 <h2>(a) PSMB8</h2>
-<div id="score-test" class="section level3">
-<h3>Score test</h3>
+<div id="i-score-test" class="section level3">
+<h3>(i) Score test</h3>
 <p>We re-cap what we have observed in HLA-DQA1 for the score tests.</p>
 <p><img src="figure/AA.Rmd/unnamed-chunk-8-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-8-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="permutation-test" class="section level3">
-<h3>Permutation test</h3>
+</div>
+</div>
+<div id="ii-permutation-test" class="section level3">
+<h3>(ii) Permutation test</h3>
 <p>In order to verify if PSMB8 truly has a signal, we perform permutation test. The p-value is indeed very small.</p>
 <pre class="r"><code>W = store_W_c(Y[,psmb_ind], Y[, -psmb_ind])
 psmb_scores = get_score_W_c(X$A, W)
@@ -818,14 +1172,51 @@ psmb_p = sum(bootstrapped_d &gt; psmb_d) / B
 hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), psmb_d))+20)
 abline(v=psmb_d, col = &#39;red&#39;)</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-9-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-9-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>print(psmb_p)</code></pre>
 <pre><code>[1] 0.0722</code></pre>
 </div>
 </div>
 <div id="bptch1" class="section level2">
 <h2>(b)PTCH1</h2>
-<div id="score-test-1" class="section level3">
-<h3>Score test</h3>
+<div id="i-score-test-1" class="section level3">
+<h3>(i) Score test</h3>
 <pre class="r"><code>gene = &quot;PTCH1&quot;
 results = getBM(attributes = c(&#39;hgnc_symbol&#39;,&#39;ensembl_gene_id&#39;),
                 filters = &quot;hgnc_symbol&quot;,
@@ -840,9 +1231,46 @@ for (i in 1:(ncol(Y)-1)){
 }
 plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1), type = &#39;l&#39;); abline(0,1,col = &#39;red&#39;, main = &#39;adjusted&#39;)</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-10-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-10-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="permutation-test-1" class="section level3">
-<h3>Permutation test</h3>
+</div>
+</div>
+<div id="ii-permutation-test-1" class="section level3">
+<h3>(ii) Permutation test</h3>
 <p>We conduct the permutation test to see if the signal is real.</p>
 <pre class="r"><code>ptch_ind = which(colnames(Y) %in% results[results$hgnc_symbol==&quot;PTCH1&quot;, 2])
 W = store_W_c(Y[,ptch_ind], Y[, -ptch_ind])
@@ -856,6 +1284,43 @@ par(mfrow = c(1,1))
 hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), ptch_d))+100)
 abline(v=ptch_d, col = &#39;red&#39;)</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-11-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-11-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>print(ptch_p)</code></pre>
 <pre><code>[1] 0.0014</code></pre>
 <pre class="r"><code># par(mfrow = c(2,3))
@@ -864,13 +1329,13 @@ abline(v=ptch_d, col = &#39;red&#39;)</code></pre>
 #   abline(0,1,col = &#39;red&#39;)
 # }</code></pre>
 </div>
-<div id="original-expression" class="section level3">
-<h3>original expression</h3>
+<div id="iii-original-expression" class="section level3">
+<h3>(iii) Original expression</h3>
 <p>We inspect the raw data to see any patterns between Afircan Americans and European Americans.</p>
 <pre class="r"><code>ptch_exp = as.matrix(orig[,ptch_ind])</code></pre>
 </div>
-<div id="genes-with-the-highest-scores-for-ptch1" class="section level3">
-<h3>genes with the highest scores for PTCH1</h3>
+<div id="iv-genes-with-the-highest-scores-for-ptch1" class="section level3">
+<h3>(iv) Genes with the highest scores for PTCH1</h3>
 <p>We make some diagnosis plot to observe what is driving the signal.</p>
 <pre class="r"><code>max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
 results = getBM(attributes = c(&#39;hgnc_symbol&#39;,&#39;ensembl_gene_id&#39;),
@@ -900,6 +1365,43 @@ plot(orig[, ptch_ind] + orig[,-ptch_ind][, max_scores$ix[2]] ~
      xlab = &#39;Ancestry&#39;,
      ylab = &#39;PTCH1 + C1QTNF9B&#39;)</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-14-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-14-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -909,9 +1411,47 @@ plot(orig[, ptch_ind] + orig[,-ptch_ind][, max_scores$ix[2]] ~
 ind = which(orig_A &lt;= 0.6)
 points(ind, orig_A[ind], col = &#39;red&#39;)</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-15-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
+Past versions of unnamed-chunk-15-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-15-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-15-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>remove = which(orig_A &lt;= 0.6)
 newY = orig[-remove,]
 newX = X[-remove,]
+newX$A = scale(newX$A) * sqrt(length(newX$A)) / sqrt(length(newX$A)-1)
 newY = resid(lm(newY~newX$A))
 newY = scale(newY) * sqrt(length(newX$A)) / sqrt(length(newX$A)-1)</code></pre>
 <div id="a-re-run-the-transcription-factors" class="section level2">
@@ -946,11 +1486,48 @@ qqplot(ref_chisq, scores[ind,],
        cex = 0.5)
 abline(0,1,col = &#39;red&#39;)</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-16-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-16-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="b-tead3" class="section level2">
 <h2>(b) TEAD3</h2>
-<div id="score-test-2" class="section level3">
-<h3>Score test</h3>
+<div id="i-score-test-2" class="section level3">
+<h3>(i) Score test</h3>
 <pre class="r"><code>gene = &quot;TEAD3&quot;
 results = getBM(attributes = c(&#39;hgnc_symbol&#39;,&#39;ensembl_gene_id&#39;),
                 filters = &quot;hgnc_symbol&quot;,
@@ -966,9 +1543,46 @@ for (i in 1:(ncol(Y)-1)){
 plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1), type = &#39;l&#39;, main = &#39;TEAD3&#39;)
 abline(0,1,col = &#39;red&#39;)</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-17-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-17-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="permutation-test-2" class="section level3">
-<h3>Permutation test</h3>
+</div>
+</div>
+<div id="ii-permutation-test-2" class="section level3">
+<h3>(ii) Permutation test</h3>
 <p>We conduct the permutation test to see if the signal is real.</p>
 <pre class="r"><code>tead_ind = which(colnames(newY) %in% TF_results[TF_results$hgnc_symbol==&quot;TEAD3&quot;, 2])
 W = store_W_c(newY[,tead_ind], newY[, -tead_ind])
@@ -982,11 +1596,48 @@ par(mfrow = c(1,1))
 hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), tead_d))+100)
 abline(v=tead_d, col = &#39;red&#39;)</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-18-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-18-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>print(tead_p)</code></pre>
 <pre><code>[1] 0.0102</code></pre>
 </div>
-<div id="genes-with-the-highest-scores-for-tead3" class="section level3">
-<h3>genes with the highest scores for TEAD3</h3>
+<div id="iii-genes-with-the-highest-scores-for-tead3" class="section level3">
+<h3>(iii) Genes with the highest scores for TEAD3</h3>
 <p>We make some diagnosis plot to observe what is driving the signal.</p>
 <pre class="r"><code>max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
 results = getBM(attributes = c(&#39;hgnc_symbol&#39;,&#39;ensembl_gene_id&#39;),
@@ -1004,8 +1655,8 @@ print(top_genes)</code></pre>
 4  LINC01412 27.04721 ENSG00000232606
 5  LINC02031 26.73128 ENSG00000238837</code></pre>
 </div>
-<div id="top-genes" class="section level3">
-<h3>top genes</h3>
+<div id="iv-top-genes" class="section level3">
+<h3>(iv) Top genes</h3>
 <pre class="r"><code>par(mfrow = c(1,2))
 max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
 plot(orig[-remove, tead_ind] + orig[-remove,-tead_ind][, max_scores$ix[1]] ~
@@ -1017,21 +1668,170 @@ plot(orig[-remove, tead_ind] + orig[-remove,-tead_ind][, max_scores$ix[2]] ~
      xlab = &#39;Ancestry&#39;,
      ylab = &quot;TEAD3 + DNAJC12&quot;)</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-20-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-1">
+Past versions of unnamed-chunk-20-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-20-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>par(mfrow = c(1,2))
 max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
 plot(orig[-remove, tead_ind] ~ orig_A[-remove], ylab = &quot;TEAD3&quot;, xlab = &quot;ancestry&quot;)
 plot(orig[-remove, -tead_ind][, max_scores$ix[1]] ~ orig_A[-remove],
      ylab = &quot;STK32A-AS1&quot;, xlab = &quot;ancestry&quot;)</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-21-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
+Past versions of unnamed-chunk-21-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-21-1.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(orig[-remove, tead_ind] ~ orig_A[-remove], ylab = &quot;TEAD3&quot;, xlab = &quot;ancestry&quot;)
 plot(orig[-remove, -tead_ind][, max_scores$ix[2]] ~ orig_A[-remove],
      ylab = &quot;DNAJC12&quot;, xlab = &quot;ancestry&quot;)</code></pre>
 <p><img src="figure/AA.Rmd/unnamed-chunk-21-2.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-2">
+Past versions of unnamed-chunk-21-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-21-2.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(orig[-remove, tead_ind] * orig[-remove, -tead_ind][, max_scores$ix[1]] ~ orig_A[-remove],
      ylab = &quot;TEAD3 * STK32A-AS1&quot;, xlab=&#39;ancestry&#39;)
 plot(orig[-remove, tead_ind] * orig[-remove, -tead_ind][, max_scores$ix[2]] ~ orig_A[-remove],
      ylab = &quot;TEAD3 * DNAJC12&quot;, xlab=&#39;ancestry&#39;)</code></pre>
-<img src="figure/AA.Rmd/unnamed-chunk-21-3.png" width="700" style="display: block; margin: auto;" /> <br> <br>
+<p><img src="figure/AA.Rmd/unnamed-chunk-21-3.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-3">
+Past versions of unnamed-chunk-21-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-21-3.png" target="_blank">b8ce5bb</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
