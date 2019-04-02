@@ -3,12 +3,19 @@ output_dir: ../docs
 navbar:
   title: "networkAnc"
   left:
-  - text: Home
-    href: index.html
-  - text: About
-    href: about.html
-  - text: License
-    href: license.html
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+    - text: "Discrete Example"
+      href: AA_EA.html
+    - text: "Continuous Example"
+      href: AA.html
+    - text: "License"
+      href: license.html
+right:
+    - icon: fa-github
+      href: https://github.com/tk382/diffNet
 output:
   workflowr::wflow_html:
     toc: yes
