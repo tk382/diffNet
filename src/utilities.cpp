@@ -8,14 +8,6 @@ using namespace std;
 // [[Rcpp::depends("RcppArmadillo")]]
 
 
-
-
-
-
-
-
-
-
 //' mvrnormArma
 //'
 //' This function returns n samples of multivariate normal distribution with mean mu and variance Sigma.

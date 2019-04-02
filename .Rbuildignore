@@ -1,4 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^analysis/.+$
-^data/.+$
+^data/not_build/.+$
+^CorrConf$
