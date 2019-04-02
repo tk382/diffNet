@@ -2,4 +2,5 @@
 ^\.Rproj\.user$
 ^analysis/.+$
 ^data/not_build/.+$
-^CorrConf$
+^docs$
+^_workflowr.yml$
