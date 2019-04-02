@@ -8,7 +8,9 @@ output: pdf_document
 ```{r setup, include=FALSE}
 set.seed(20190309)
 knitr::opts_chunk$set(echo = TRUE,
-                      dpi = 100)
+                      dpi = 100,
+                      fig.height = 3,
+                      fig.width = 5)
 library(MASS)
 library(mvtnorm)
 library(data.table)
@@ -73,7 +75,7 @@ ref_chisq = qchisq(seq(0,1, length=ncol(Y)-1), 1)
 ```
 
 ```{r, echo = FALSE}
-B = 100
+B = 2000
 ```
 
 
@@ -105,9 +107,8 @@ get_result_kegg = function(hsacode, B){
   p = rep(0, ncol(R))
   for (i in 1:ncol(R)){
     d[i] = get_degree_c(X$A, R[,i], R[,-i])
-    shuffled_A = shuffle_x_c(X$A, B)
     storeW = store_W_c(R[,i], R[,-i])
-    out = rowSums(bootstrap_c(shuffled_A, storeW))
+    out = rowSums(bootstrap_c(X$A, B, storeW))
     p[i] = sum(out > d[i]) / B
   }
   return(list(p = p, d = d, genes = results))
@@ -323,9 +324,9 @@ In order to verify if HLA-DQA truly has a signal, we perform permutation test. T
 W = store_W_c(Y[,dqa_ind], Y[, -dqa_ind])
 dqa_scores = get_score_W_c(X$A, W)
 dqa_d = get_degree_c(X$A, Y[,dqa_ind], Y[,-dqa_ind])
-shuffled_A = shuffle_x_c(X$A, B)
+# shuffled_A = shuffle_x_c(X$A, B)
 storeW = store_W_c(Y[,dqa_ind], Y[,-dqa_ind])
-out = bootstrap_c(shuffled_A, storeW)
+out = bootstrap_c(X$A, B, storeW)
 bootstrapped_d = rowSums(out)
 dqa_p = sum(bootstrapped_d > dqa_d) / B
 hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), dqa_d))+20)
@@ -436,7 +437,7 @@ fox_scores = get_score_W_c(X$A, W)
 fox_d = get_degree_c(X$A, Y[,fox_ind], Y[,-fox_ind])
 shuffled_A = shuffle_x_c(X$A, B)
 storeW = store_W_c(Y[,fox_ind], Y[,-fox_ind])
-out = bootstrap_c(shuffled_A, storeW)
+out = bootstrap_c(X$A, B, storeW)
 bootstrapped_d = rowSums(out)
 fox_p = sum(bootstrapped_d > fox_d) / B
 par(mfrow = c(1,1))
@@ -525,9 +526,8 @@ plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1),
 W = store_W_c(Y[c(AA_ind, EA_subset),dqa_ind], Y[c(AA_ind, EA_subset), -dqa_ind])
 dqa_scores = get_score_W_c(X$A[c(AA_ind, EA_subset)], W)
 dqa_d = get_degree_c(X$A[c(AA_ind, EA_subset)], Y[c(AA_ind, EA_subset),dqa_ind], Y[c(AA_ind, EA_subset),-dqa_ind])
-shuffled_A = shuffle_x_c(X$A[c(AA_ind, EA_subset)], B)
 storeW = store_W_c(Y[c(AA_ind, EA_subset),dqa_ind], Y[c(AA_ind, EA_subset),-dqa_ind])
-out = bootstrap_c(shuffled_A, storeW)
+out = bootstrap_c(X$A[c(AA_ind, EA_subset)], B, storeW)
 bootstrapped_d = rowSums(out)
 dqa_p = sum(bootstrapped_d > dqa_d) / B
 hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), dqa_d))+20)
@@ -541,9 +541,8 @@ print(dqa_p)
 W = store_W_c(Y[c(AA_ind, EA_subset),fox_ind], Y[c(AA_ind, EA_subset), -fox_ind])
 fox_scores = get_score_W_c(X$A[c(AA_ind, EA_subset)], W)
 fox_d = get_degree_c(X$A[c(AA_ind, EA_subset)], Y[c(AA_ind, EA_subset),fox_ind], Y[c(AA_ind, EA_subset),-fox_ind])
-shuffled_A = shuffle_x_c(X$A[c(AA_ind, EA_subset)], B)
 storeW = store_W_c(Y[c(AA_ind, EA_subset),fox_ind], Y[c(AA_ind, EA_subset),-fox_ind])
-out = bootstrap_c(shuffled_A, storeW)
+out = bootstrap_c(X$A[c(AA_ind, EA_subset)], B, storeW)
 bootstrapped_d = rowSums(out)
 fox_p = sum(bootstrapped_d > fox_d) / B
 hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), fox_d))+20)

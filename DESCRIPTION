@@ -1,0 +1,22 @@
+Package: networkAnc
+Type: Package
+Title: networkAnc
+Version: 0.1.0
+Author: Tae Kim
+Maintainer: Tae Kim <tk382@uchicago.edu>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+    I don't know what it does yet.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+LinkingTo: Rcpp, RcppArmadillo
+Depends: R (>= 3.4.0)
+Imports:
+    Rcpp,
+    RcppArmadillo,
+    ggplot2,
+    dplyr,
+    reshape
+RoxygenNote: 6.1.0
+

@@ -6,6 +6,24 @@ using namespace std;
 //const double log2pi = std::log(2.0 * M_PI);
 
 // [[Rcpp::depends("RcppArmadillo")]]
+
+
+
+
+
+
+
+
+
+
+//' mvrnormArma
+//'
+//' This function returns n samples of multivariate normal distribution with mean mu and variance Sigma.
+//'
+//' @param n Sample size
+//' @param mu Mean vector
+//' @param Sigma Variance-covariance matrix
+//' @export
 // [[Rcpp::export]]
 arma::mat mvrnormArma(const int n,
                       const arma::vec mu,
@@ -20,8 +38,6 @@ arma::mat mvrnormArma(const int n,
 }
 
 
-
-// [[Rcpp::depends("RcppArmadillo")]]
 // [[Rcpp::export]]
 arma::mat solve_tmp_c(const arma::vec x){
   arma::mat xx = arma::zeros<arma::mat>(2,2);
@@ -32,7 +48,15 @@ arma::mat solve_tmp_c(const arma::vec x){
   return inv(xx);
 }
 
-// [[Rcpp::depends("RcppArmadillo")]]
+//' get_score_c
+//'
+//' This function returns the score statistic between y1 and y2 against one-dimensional covariate x
+//' The returned score statistic is not adjusted for sample size
+//'
+//' @param x Covariate vector
+//' @param y1 variable 1
+//' @param y2 variable 2
+//' @export
 // [[Rcpp::export]]
 double get_score_c(const arma::vec x,
                   const arma::vec y1,
@@ -54,7 +78,72 @@ double get_score_c(const arma::vec x,
   return S(0,0);
 }
 
-// [[Rcpp::depends("RcppArmadillo")]]
+
+
+
+//' get_score_w_c
+//'
+//' This function takes the sum of two variables, w, and one dimensional covariate x
+//' and returns the score test statistic
+//'
+//' @param x Covariate vector
+//' @param w sum of variable1 and variable2
+//' @export
+// [[Rcpp::export]]
+double get_score_w_c(const arma::vec x,
+                   const arma::vec w) {
+  //returns score statistics between vectors y1 and y2 wrt x
+  int n = x.size();
+  arma::mat xx = solve_tmp_c(x);
+  arma::vec intercepts = arma::ones<arma::vec>(n);
+  arma::mat xt = join_cols(intercepts, x);
+  double hatsigma = sum(w%w)/(n-1);
+  arma::mat lhs = arma::zeros<arma::mat>(1,2);
+  lhs(0,0) = sum(w%w/hatsigma - 1);
+  lhs(0,1) = sum((w%w/hatsigma - 1) % x);
+  arma::mat S = lhs * xx * lhs.t()/2;
+  return S(0,0);
+}
+
+//' get_score_W_c
+//'
+//' This function returns a vector of score statistics from one dimensional covariate x and coexpression matrix W
+//' W should be in the form of (y1+y2, y1+y3, ... y1+yK)
+//' The function returns K-1 scores for each pair
+//'
+//' @param x Covariate vector
+//' @param W Sums for each pairs of variables
+//' @export
+// [[Rcpp::export]]
+arma::vec get_score_W_c(const arma::vec x,
+                     const arma::mat W) {
+  //returns score statistics between vectors y1 and y2 wrt x
+  int n = x.size();
+  int K = W.n_cols;
+  arma::mat xx = solve_tmp_c(x);
+  arma::vec intercepts = arma::ones<arma::vec>(n);
+  arma::mat xt = join_cols(intercepts, x);
+  arma::vec out = arma::zeros<arma::vec>(K);
+  for (int i=0; i < K; ++i){
+    arma::vec w = W.col(i);
+    double hatsigma = sum(w%w)/(n-1);
+    arma::mat lhs = arma::zeros<arma::mat>(1,2);
+    lhs(0,0) = sum(w%w/hatsigma - 1);
+    lhs(0,1) = sum((w%w/hatsigma - 1) % x);
+    arma::mat S = lhs * xx * lhs.t()/2;
+    out(i) = S(0,0);
+  }
+  return out;
+}
+
+//' get_degree_c
+//'
+//' This function returns a sum statistic d for vector y tested with all other variables in matrix Y against covariate x
+//'
+//' @param x Covariate vector
+//' @param y Variable of interest
+//' @param Y All other variables to test with y
+//' @export
 // [[Rcpp::export]]
 double get_degree_c(const arma::vec x,
                     const arma::vec y,
@@ -68,7 +157,26 @@ double get_degree_c(const arma::vec x,
   return d;
 }
 
-// [[Rcpp::depends("RcppArmadillo")]]
+//' get_degree_c
+//'
+//' This function returns a sum statistic d for vector y tested with all other variables in matrix Y against covariate x
+//'
+//' @param x Covariate vector
+//' @param W Matrix of [y1+y2, y1+y3, .., y1+yK] to get degree of y1
+//' @export
+// [[Rcpp::export]]
+double get_degree_w_c(const arma::vec x,
+                      const arma::mat W){
+  //degree statistic for i'th gene based on matrix Y
+  int K = W.n_cols;
+  double d = 0;
+  for (int i=0; i < K; ++i){
+    d = d + get_score_w_c(x, W.col(i));
+  }
+  return d;
+}
+
+//' @export
 // [[Rcpp::export]]
 double get_eta_c(const double rho12,
                  const double rho23,
@@ -82,7 +190,7 @@ double get_eta_c(const double rho12,
   return eta;
 }
 
-// [[Rcpp::depends("RcppArmadillo")]]
+//' @export
 // [[Rcpp::export]]
 double dgenrayleigh_c(const double t,
                       const double alpha,
@@ -99,7 +207,7 @@ double dgenrayleigh_c(const double t,
   }
 }
 
-// [[Rcpp::depends("RcppArmadillo")]]
+//' @export
 // [[Rcpp::export]]
 double cgenrayleigh_c(const double t,
                       const double alpha,
@@ -112,7 +220,9 @@ double cgenrayleigh_c(const double t,
     return exp(out);
   }
 }
-// [[Rcpp::depends("RcppArmadillo")]]
+
+
+//' @export
 // [[Rcpp::export]]
 arma::mat get_H_c(const arma::mat Sigma){
   int K = Sigma.n_rows;
@@ -130,7 +240,7 @@ arma::mat get_H_c(const arma::mat Sigma){
 }
 
 
-// [[Rcpp::depends("RcppArmadillo")]]
+//' @export
 // [[Rcpp::export]]
 double get_A1_c(int k,
                 int p,
@@ -151,7 +261,8 @@ double get_A1_c(int k,
   return first + second + third;
 }
 
-// [[Rcpp::depends("RcppArmadillo")]]
+
+//' @export
 // [[Rcpp::export]]
 double get_A2_c(int k,
                 int p,
@@ -176,7 +287,7 @@ double get_A2_c(int k,
 }
 
 
-// [[Rcpp::depends("RcppArmadillo")]]
+//' @export
 // [[Rcpp::export]]
 double get_A3_c(int k,
                 int p,
@@ -194,7 +305,8 @@ double get_A3_c(int k,
   return first + second;
 }
 
-// [[Rcpp::depends("RcppArmadillo")]]
+
+//' @export
 // [[Rcpp::export]]
 Rcpp::List get_TT_RR_c(arma::vec A){
   int n = A.size();
@@ -218,16 +330,26 @@ Rcpp::List get_TT_RR_c(arma::vec A){
                             Rcpp::Named("RR") = RR);
 }
 
-// [[Rcpp::depends("RcppArmadillo")]]
+
+
+//' small_sample_correction_c
+//'
+//' This function returns a sum statistic d for vector y tested with all other variables in matrix Y against covariate x
+//'
+//' @param x Covariate vector
+//' @param C chi-squared threshold for desired FDR rate
+//' @param k number of covariates + 1
+//' @param p number of covariates + 1
+//' @export
 // [[Rcpp::export]]
-double final_correction_c(arma::vec A,
+double small_sample_correction_c(arma::vec x,
                         double C,
                         int k,
-                        int p){
-  Rcpp::List TTRR = get_TT_RR_c(A);
+                        int p=2){
+  Rcpp::List TTRR = get_TT_RR_c(x);
   arma::mat TT = as<arma::mat>(TTRR["TT"]);
   arma::mat RR = as<arma::mat>(TTRR["RR"]);
-  int n = A.size();
+  int n = x.size();
   double A1 = get_A1_c(k,p,TT,RR,n);
   double A2 = get_A2_c(k,p,TT,RR,n);
   double A3 = get_A3_c(k,p,TT,RR,n);
@@ -238,26 +360,29 @@ double final_correction_c(arma::vec A,
   return ((first + second + third) / 12 / n);
 }
 
-// [[Rcpp::depends("RcppArmadillo")]]
+
+
+//' @export
 // [[Rcpp::export]]
-double cubic_correction_c(arma::vec A,
+double cubic_correction_c(arma::vec x,
                           double C,
                           int k,
                           int p){
-  Rcpp::List TTRR = get_TT_RR_c(A);
+  Rcpp::List TTRR = get_TT_RR_c(x);
   arma::mat TT = as<arma::mat>(TTRR["TT"]);
   arma::mat RR = as<arma::mat>(TTRR["RR"]);
-  int n = A.size();
+  int n = x.size();
   double A1 = get_A1_c(k,p,TT,RR,n);
   double A2 = get_A2_c(k,p,TT,RR,n);
   double A3 = get_A3_c(k,p,TT,RR,n);
   double coef1 = A3/(12*n*(p-1)*(p+1)*(p+3));
   double coef2 = (A2-2*A3)/(12*n*(p-1)*(p+1));
   double coef3 = (A3-A2+A1) / (12*n*(p-1))  + 1;
-  return coef1*C*C*C + coef2*C*C + coef3 * C;
+  return coef1*C*C*C + coef2*C*C + coef3*C;
 }
 
-// [[Rcpp::depends("RcppArmadillo")]]
+
+//' @export
 // [[Rcpp::export]]
 arma::vec cubic_coeff_c(arma::vec A,
                           double C,
@@ -277,13 +402,21 @@ arma::vec cubic_coeff_c(arma::vec A,
   return coef;
 }
 
-// [[Rcpp::depends("RcppArmadillo")]]
+//' simulate_c
+//'
+//' Given fixed covariate and covariance matrix, this function simulates multivariate normal Y
+//' and returns the score vector for each variable
+//'
+//' @param x Covariate vector
+//' @param Sigma true covariance matrix of matrix Y
+//' @param use_Hhat Boolean argument whether to use true Sigma or estimate Sigma
+//' @export
 // [[Rcpp::export]]
-Rcpp::List simulate_c(arma::vec A,
+Rcpp::List simulate_c(arma::vec x,
                       arma::mat Sigma,
                       bool use_Hhat = true) {
   const int K = Sigma.n_rows;
-  const int n = A.size();
+  const int n = x.size();
   arma::mat Y = mvrnormArma(n, arma::zeros<arma::vec>(K), Sigma);
   arma::mat H;
   if (use_Hhat){
@@ -293,19 +426,11 @@ Rcpp::List simulate_c(arma::vec A,
     H = get_H_c(Sigma);
   }
   arma::mat X = arma::ones<arma::mat>(n,2);
-  X.col(1) = A;
+  X.col(1) = x;
   arma::vec scores(K-1);
   for (int k = 1; k < K; ++k){
-    //arma::vec tmpw = Y.col(0) + Y.col(k);
-    double score = get_score_c(A, Y.col(0), Y.col(k));
+    double score = get_score_c(x, Y.col(0), Y.col(k));
     scores(k-1) = score;
-    // arma::vec coef = arma::solve(X, tmpw);
-    // arma::vec w = tmpw - X*coef;
-    // double sigmahat = sum(w%w) / n;
-    // arma::vec tmp1 = w%w / sigmahat - 1;
-    // arma::vec tmp2 = A % tmp1;
-    // double tmp3 = sum(tmp2);
-    // scores(k-1) = tmp3*tmp3 / (2*n);
   }
   return Rcpp::List::create(Rcpp::Named("Y") = Y,
                             Rcpp::Named("scores") = scores,
@@ -314,17 +439,53 @@ Rcpp::List simulate_c(arma::vec A,
 
 
 
+//' @export
+// [[Rcpp::export]]
+arma::mat shuffle_x_c(arma::vec x, int B){
+  arma::mat X(x.size(), B);
+  for (int b=0; b < B; ++b){
+    X.col(b) = shuffle(x);
+  }
+  return X;
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::mat store_W_c(const arma::vec y,
+                    const arma::mat smallY){
+  int n = smallY.n_rows;
+  int K = smallY.n_cols;
+  arma::mat W(n, K);
+  for (int k = 0; k < K; ++k){
+    W.col(k) = y + smallY.col(k);
+  }
+  return W;
+}
 
 
-
-
-
-
-
-
-
-
-
+//' bootstrap_c
+//'
+//' This function performs permutation test for given covariate x B times
+//' Also takes as input W instead of Y matrix
+//'
+//' @param x Covariate vector
+//' @param B number of permutations
+//' @param W transformed variable matrix
+//' @export
+// [[Rcpp::export]]
+arma::mat bootstrap_c(const arma::vec x,
+                      const int B,
+                      const arma::mat W){
+  arma::mat Xb = shuffle_x_c(x, B);
+  const int K = W.n_cols+1;
+  arma::mat out(B, K-1);
+  for (int b = 0; b < B; ++b){
+    for (int k = 0; k < (K-1); ++k){
+      out(b, k) = get_score_w_c(Xb.col(b), W.col(k));
+    }
+  }
+  return out;
+}
 
 
 

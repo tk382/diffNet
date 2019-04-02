@@ -1,0 +1,28 @@
+name: "DiffNet"
+output_dir: "../docs"
+include: [".nojekyll"]
+exclude: ["include"]
+navbar:
+  title: "Differential Coexpression Network"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+    - text: "Discrete Example"
+      href: AA_EA.html
+    - text: "Continuous Example"
+      href: AA.html
+    - text: "License"
+      href: license.html
+  right:
+    - icon: fa-github
+      href: https://github.com/tk382/networkAnc
+output:
+  workflowr::wflow_html:
+    theme: yeti
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: true

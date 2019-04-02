@@ -1,4 +1,4 @@
-#### honda correction ####
+
 get_A1 = function(k,p,TT,RR, n){
   first = 24 * (k-1) * (p-1)
   second = -24 * n * sum(diag(TT) * diag(RR))
