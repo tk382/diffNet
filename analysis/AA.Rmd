@@ -246,7 +246,7 @@ qqplot(ref_chisq, newscores[ind,],  main = 'PSMB8 scores', ylab='scores'); ablin
 Since transcription factors usually regulate the transcription of multiple genes, we thought they were appropriate targets to study their variance in activity across different ancestry. 
 
 ```{r}
-TF = fread("data/TFcheckpoint.txt", header=TRUE)
+TF = fread("data/not_build/TFcheckpoint.txt", header=TRUE)
 TF = setDF(TF)
 TF = TF[,1]
 TF_results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'), 
