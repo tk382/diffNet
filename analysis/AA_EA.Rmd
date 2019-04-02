@@ -31,7 +31,7 @@ We use the RNA-seq expression level data provided by GTEx, which has been alread
 
 We read the expression level data and match the individuals with the ancestry information.
 
-```{r dataclean, echo = FALSE}
+```{r dataclean}
 load("data/skin_not_sun_exposed_suprapubic.Rdata")
 exp = skin; rm(skin)
 colnames(exp) = gsub("[.]", "-", colnames(exp))
@@ -68,11 +68,11 @@ Y = resid(lm(Y~X$A))
 ```
 
 
-```{r, echo=FALSE}
+```{r}
 ref_chisq = qchisq(seq(0,1, length=ncol(Y)-1), 1)
 ```
 
-```{r, echo = FALSE}
+```{r}
 B = 5000
 ```
 
@@ -88,7 +88,7 @@ We believe the disease pathways may reflect the gene-gene correlation structure 
 
 For each pathway, we take a group of $K$ genes and for each $k$ in $1, \cdots, K$, we compute $d_k$ and compare it to the empirical distribution by permuting the ancestry. Then we show qqplot of the p values against the uniform distribution after transformation $-log_{10}(p)$.
 
-```{r, echo=FALSE}
+```{r}
 get_result_kegg = function(hsacode, B){
   out = keggGet(hsacode)
   out = out[[1]]
@@ -210,7 +210,7 @@ for (i in 1:length(genes)){
 
 And the result is plotted below, where the red line is the expected mean. HLA-DQA1 stands out in its test statistic.
 
-```{r, echo = FALSE}
+```{r}
 par(mfrow = c(1,2))
 d = rowSums(newscores)
 df = data.frame(d = d, genes = results$hgnc_symbol, xaxis = 1:length(d))
@@ -231,7 +231,7 @@ qqplot(ref_chisq, newscores[ind,],  main = 'HLA-DQA1 scores', ylab='scores'); ab
 
 ## (c) Transcription Factors
 
-### read TF data
+### (i) read TF data
 
 Since transcription factors usually regulate the transcription of multiple genes, we thought they were appropriate targets to study their variance in activity across different ancestry. 
 
@@ -249,7 +249,7 @@ results = results[match(genes, results$ensembl_gene_id), ]
 ```
 
 
-### test all the TFs
+### (ii) test all the TFs
 
 ```{r}
 par(mfrow = c(1,2))
@@ -289,11 +289,11 @@ for (i in 1:length(genes)){
 
 ## (a) HLA-DQA1
 
-### Score test
+### (i) Score test
 
 We re-cap what we have observed in HLA-DQA1 for the score tests.
 
-```{r, echo = FALSE}
+```{r}
 hla_genes = "HLA-DQA1"
 results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'),
                 filters = "hgnc_symbol",
@@ -314,7 +314,7 @@ plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1),
 abline(0,1,col = 'red')
 ```
 
-### Permutation test
+### (ii) Permutation test
 
 In order to verify if HLA-DQA truly has a signal, we perform permutation test. The p-value is indeed very small.
 
@@ -338,7 +338,7 @@ print(dqa_p)
 ```
 
 
-### Genes with the highest scores
+### (iii) Genes with the highest scores
 
 We make some diagnosis plot to observe what is driving the signal. 
 
@@ -362,7 +362,7 @@ diff_cor = data.frame(genes = top_genes$gene_name,
 print(cbind(top_genes, diff_cor[,2:3]))
 ```
 
-### The expression level of HLA-DQA1's top signal LRBA
+### (iv) The expression level of HLA-DQA1's top signal LRBA
 
 ```{r}
 AA_ind = which(orig_A > 0)
@@ -385,7 +385,7 @@ plot(orig[EA_ind, dqa_ind] ~ orig[EA_ind,-dqa_ind][, max_scores$ix[1]],
      ylab = 'HLA-DQA1')
 ```
 
-### Box Plot
+### (v) Box Plot
 
 ```{r}
 AA_ind = which(orig_A > 0)
@@ -406,7 +406,7 @@ stripchart(exp ~ label, vertical = TRUE, data = df,
 
 ## (b) FOXM1
 
-### Score test
+### (i) Score test
 
 ```{r}
 gene = "FOXM1"
@@ -424,7 +424,7 @@ for (i in 1:(ncol(Y)-1)){
 plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1), type = 'l'); abline(0,1,col = 'red', main = 'adjusted')
 ```
 
-### Permutation test
+### (ii) Permutation test
 
 We conduct the permutation test to see if the signal is real.
 
@@ -449,7 +449,7 @@ print(fox_p)
 # }
 ```
 
-### Box plot
+### (iii) Box plot
 
 We inspect the raw data to see any patterns between Afircan Americans and European Americans.
 
