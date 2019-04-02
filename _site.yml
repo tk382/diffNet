@@ -1,4 +1,4 @@
-name: "DiffNet"
+name: "diffNet"
 output_dir: "../docs"
 include: [".nojekyll"]
 exclude: ["include"]
@@ -17,7 +17,7 @@ navbar:
       href: license.html
   right:
     - icon: fa-github
-      href: https://github.com/tk382/networkAnc
+      href: https://github.com/tk382/diffNet
 output:
   workflowr::wflow_html:
     theme: yeti
