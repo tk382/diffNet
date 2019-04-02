@@ -8,8 +8,7 @@ output: pdf_document
 ```{r setup, include=FALSE}
 set.seed(20190309)
 knitr::opts_chunk$set(echo = TRUE,
-                      dpi = 100,
-                      fig.height = 3)
+                      dpi = 100)
 library(MASS)
 library(mvtnorm)
 library(data.table)
@@ -28,9 +27,9 @@ ensembl = useMart("ENSEMBL_MART_ENSEMBL",
 
 We use the RNA-seq expression level data provided by GTEx, which has been already pre-processed. We choose to study not-sun-exposed suprapubic skin tissue as a pilot study because we expect to see some ancestry effect on the expression level on the skin tissue. Genes were selected based on expression threshold of $>0.1$ RPKM in at least 10 individuals and $\geq$ reads in at least 10 individuals. Then the expression values were quantile normalized to the average empirical distribution observed across samples. That means, each gene has the same distribution across the individuals. Then they were inverse quantile normalized to fit standard normal distribution.
 
-## (a) load and clean the data
+## (a) Load and clean the data
 
-```{r dataclean, echo = FALSE}
+```{r dataclean}
 load("data/skin_not_sun_exposed_suprapubic.Rdata")
 exp = skin; rm(skin)
 colnames(exp) = gsub("[.]", "-", colnames(exp))
@@ -68,11 +67,11 @@ Y = resid(lm(Y~X$A))
 Y = scale(Y) * sqrt(length(X$A)) / sqrt(length(X$A)-1)
 ```
 
-```{r, echo=FALSE}
+```{r}
 ref_chisq = qchisq(seq(0,1, length=ncol(Y)-1), 1)
 ```
 
-```{r, echo = FALSE}
+```{r}
 B = 5000
 ```
 
@@ -88,7 +87,7 @@ We believe the disease pathways may reflect the gene-gene correlation structure 
 
 For each pathway, we take a group of $K$ genes and for each $k$ in $1, \cdots, K$, we compute $d_k$ and compare it to the empirical distribution by permuting the ancestry. Then we show qqplot of the p values against the uniform distribution after transformation $-log_{10}(p)$.
 
-```{r, echo=FALSE}
+```{r}
 get_result_kegg = function(hsacode, B){
   out = keggGet(hsacode)
   out = out[[1]]
@@ -219,7 +218,7 @@ for (i in 1:length(genes)){
 
 And the result is plotted below, where the red line is the expected mean. HLA-DQA1 stands out in its test statistic.
 
-```{r, echo = FALSE}
+```{r}
 par(mfrow = c(1,2))
 d = rowSums(newscores)
 df = data.frame(d = d, genes = results$hgnc_symbol, xaxis = 1:length(d))
@@ -242,7 +241,7 @@ qqplot(ref_chisq, newscores[ind,],  main = 'PSMB8 scores', ylab='scores'); ablin
 
 ## (c) Transcription Factors
 
-### read TF data
+### (i) Read TF data
 
 Since transcription factors usually regulate the transcription of multiple genes, we thought they were appropriate targets to study their variance in activity across different ancestry. 
 
@@ -259,7 +258,7 @@ TF_results = TF_results[match(genes, TF_results$ensembl_gene_id), ]
 ```
 
 
-### test all the TFs
+### (ii) test all the TFs
 
 ```{r}
 scores = matrix(0, length(genes), ncol(Y)-1)
@@ -299,7 +298,7 @@ for (i in 1:length(genes)){
 
 ## (a) PSMB8
 
-### Score test
+### (i) Score test
 
 We re-cap what we have observed in HLA-DQA1 for the score tests.
 
@@ -324,7 +323,7 @@ plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1),
 abline(0,1,col = 'red')
 ```
 
-### Permutation test
+### (ii) Permutation test
 
 In order to verify if PSMB8 truly has a signal, we perform permutation test. The p-value is indeed very small.
 
@@ -344,7 +343,7 @@ print(psmb_p)
 
 ## (b)PTCH1
 
-### Score test
+### (i) Score test
 
 ```{r}
 gene = "PTCH1"
@@ -362,7 +361,7 @@ for (i in 1:(ncol(Y)-1)){
 plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1), type = 'l'); abline(0,1,col = 'red', main = 'adjusted')
 ```
 
-### Permutation test
+### (ii) Permutation test
 
 We conduct the permutation test to see if the signal is real.
 
@@ -386,7 +385,7 @@ print(ptch_p)
 # }
 ```
 
-### original expression
+### (iii) Original expression
 
 We inspect the raw data to see any patterns between Afircan Americans and European Americans.
 
@@ -395,7 +394,7 @@ ptch_exp = as.matrix(orig[,ptch_ind])
 ```
 
 
-### genes with the highest scores for PTCH1
+### (iv) Genes with the highest scores for PTCH1
 
 We make some diagnosis plot to observe what is driving the signal. 
 
@@ -436,6 +435,7 @@ points(ind, orig_A[ind], col = 'red')
 remove = which(orig_A <= 0.6)
 newY = orig[-remove,]
 newX = X[-remove,]
+newX$A = scale(newX$A) * sqrt(length(newX$A)) / sqrt(length(newX$A)-1)
 newY = resid(lm(newY~newX$A))
 newY = scale(newY) * sqrt(length(newX$A)) / sqrt(length(newX$A)-1)
 ```
@@ -477,7 +477,7 @@ abline(0,1,col = 'red')
 
 ## (b) TEAD3
 
-### Score test
+### (i) Score test
 
 ```{r}
 gene = "TEAD3"
@@ -496,7 +496,7 @@ plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1), type = 'l', main = 'TEAD3')
 abline(0,1,col = 'red')
 ```
 
-### Permutation test
+### (ii) Permutation test
 
 We conduct the permutation test to see if the signal is real.
 
@@ -515,7 +515,7 @@ abline(v=tead_d, col = 'red')
 print(tead_p)
 ```
 
-### genes with the highest scores for TEAD3
+### (iii) Genes with the highest scores for TEAD3
 
 We make some diagnosis plot to observe what is driving the signal. 
 
@@ -531,7 +531,7 @@ top_genes = data.frame(gene_name = results$hgnc_symbol, score = max_scores$x[1:5
 print(top_genes)
 ```
 
-### top genes
+### (iv) Top genes
 
 ```{r}
 par(mfrow = c(1,2))
