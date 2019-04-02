@@ -6,7 +6,6 @@ output:
     toc: false
 ---
 
-
 Welcome to diffNet tutorial page. 
 
-The tutorial walks the users step by step to use the SLSL package for single cell clustering. You should have your gene expression level matrix, or a smaller version of it for faster learning. We recommend that you start from the count matrix with each cell in each column and gene in each column, with row names specified as the gene names. However, this is not required if you do not intend to use the reference panel or to add prior information.
+The tutorial gives two uses of the diffNet package. One is when the there are two networks for two groups of samples. This discrete example is taken on the gene expression levels of African Americans and European Americans on (not sun exposed) skin tissue. Another case is when a network continuously varies against the covariate. As an example, we only take African Americans and use their global ancestry to inspect if their coexpression network changes continuously with respect to the proportion of African ancestry in their genome. 
