@@ -1,7 +1,9 @@
 name: "diffNet"
-output_dir: ../docs
+output_dir: "../docs"
+include: [".nojekyll"]
+exclude: ["include"]
 navbar:
-  title: "diffNet"
+  title: "Differential Coexpression Network"
   left:
     - text: "Home"
       href: index.html
@@ -11,12 +13,16 @@ navbar:
       href: AA_EA.html
     - text: "Continuous Example"
       href: AA.html
-right:
+    - text: "License"
+      href: license.html
+  right:
     - icon: fa-github
       href: https://github.com/tk382/diffNet
 output:
   workflowr::wflow_html:
-    toc: yes
-    toc_float: yes
-    theme: cosmo
-    highlight: textmate
+    theme: yeti
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
