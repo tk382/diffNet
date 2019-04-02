@@ -5,4 +5,6 @@ output:
     toc: false
 ---
 
-Describe your project.
+Differential network analysis. 
+
+Takes in a multivariate data set $Y \in \mathbb{R}^{n \times p}$ with $p$ nodes and $n$ observations and a length $n$ covariate vector $X$. It can either return a pair of nodes whose function of co-expression linearly varies with respect to the covariate or return a node whose total connection to all other nodes varies with respect to the covariate. 
