@@ -9,3 +9,9 @@ output:
 Welcome to diffNet tutorial page. 
 
 The tutorial gives two uses of the diffNet package. One is when the there are two networks for two groups of samples. This discrete example is taken on the gene expression levels of African Americans and European Americans on (not sun exposed) skin tissue. Another case is when a network continuously varies against the covariate. As an example, we only take African Americans and use their global ancestry to inspect if their coexpression network changes continuously with respect to the proportion of African ancestry in their genome. 
+
+
+* [Continuous](AA.html)
+
+* [Discrete](AA_EA.html)
+
