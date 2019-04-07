@@ -18,8 +18,8 @@ library(KEGGREST)
 library(biomaRt)
 R.utils::sourceDirectory("R/", modifiedOnly=FALSE)
 Rcpp::sourceCpp("src/utilities.cpp")
-ensembl = useMart("ENSEMBL_MART_ENSEMBL",
-                dataset = "hsapiens_gene_ensembl")
+hgnc = setDF(fread("data/hgnc_ensembl.txt"))
+hgnc = hgnc[hgnc$`Ensembl gene ID` != "", ]
 ```
 
 
@@ -75,7 +75,16 @@ ref_chisq = qchisq(seq(0,1, length=ncol(Y)-1), 1)
 B = 5000
 ```
 
+## (c) match ENSEMBL ID and hgnc symbols
 
+https://www.genenames.org/download/custom/
+
+```{r}
+hgnc_names = hgnc[match(colnames(Y), hgnc$`Ensembl gene ID`), "Approved symbol"]
+ref = data.frame(ensembl_gene_id = colnames(Y), hgnc_symbol = hgnc_names)
+ref$ensembl_gene_id = as.character(ref$ensembl_gene_id)
+ref$hgnc_symbol = as.character(ref$hgnc_symbol)
+```
 
 # 2. Gene selection
 
@@ -92,11 +101,8 @@ get_result_kegg = function(hsacode, B){
   out = keggGet(hsacode)
   out = out[[1]]
   genes = sapply(strsplit(out$GENE, ";"), function(x) x[1])
-  genes = genes[seq(2,144,by=2)]
-  results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'),
-                filters = "hgnc_symbol",
-                values = genes,
-                mart = ensembl)
+  genes = genes[seq(2,length(genes),by=2)]
+  results = ref[match(genes, ref$hgnc_symbol), ]
   genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
   results = results[match(genes, results$ensembl_gene_id), ]
   R = Y[,genes]
@@ -195,10 +201,7 @@ hla_genes = c("HLA-A", "HLA-B", "HLA-C", "HLA-E",
               "HFE", "TAP1", "TAP2", "PSMB9", "PSMB8",
               "MICA", "MICB", "MICC", "MICD", "MICE")
 
-results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'), 
-                filters = "hgnc_symbol",
-                values = hla_genes,
-                mart = ensembl)
+results = ref[match(hla_genes, ref$hgnc_symbol), ]
 
 genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
 results = results[match(genes, results$ensembl_gene_id), ]
@@ -248,11 +251,9 @@ Since transcription factors usually regulate the transcription of multiple genes
 ```{r}
 TF = fread("data/not_build/TFcheckpoint.txt", header=TRUE)
 TF = setDF(TF)
+TF = TF[TF$TFClass_human == "TFclass", ]
 TF = TF[,1]
-TF_results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'), 
-                filters = "hgnc_symbol",
-                values = TF,
-                mart = ensembl)
+TF_results = ref[match(TF, ref$hgnc), ]
 genes = colnames(Y)[which(colnames(Y) %in% TF_results$ensembl_gene_id)]
 TF_results = TF_results[match(genes, TF_results$ensembl_gene_id), ]
 ```
@@ -304,12 +305,9 @@ We re-cap what we have observed in HLA-DQA1 for the score tests.
 
 ```{r, echo = FALSE}
 psmb_genes = "PSMB8"
-results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'),
-                filters = "hgnc_symbol",
-                values = psmb_genes,
-                mart = ensembl)
+results = ref[match(psmb_genes, ref$hgnc), ]
 
-psmb_ind = which(colnames(Y) %in% c(results$ensembl_gene_id))
+psmb_ind = which(colnames(Y) %in% results$ensembl_gene_id)
 smallY = Y[,-psmb_ind]
 s = news = rep(0, ncol(Y)-1)
 for (i in 1:(ncol(Y)-1)){
@@ -346,13 +344,10 @@ print(psmb_p)
 ### (i) Score test
 
 ```{r}
-gene = "PTCH1"
-results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'),
-                filters = "hgnc_symbol",
-                values = gene,
-                mart = ensembl)
+ptch_gene = "PTCH1"
+results = ref[match(ptch_gene, ref$hgnc), ]
 
-ptch_ind = which(colnames(Y) %in% c(results$ensembl_gene_id))
+ptch_ind = which(colnames(Y) %in% results$ensembl_gene_id)
 smallY = Y[,-ptch_ind]
 s = news = rep(0, ncol(Y)-1)
 for (i in 1:(ncol(Y)-1)){
@@ -366,7 +361,7 @@ plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1), type = 'l'); abline(0,1,col
 We conduct the permutation test to see if the signal is real.
 
 ```{r}
-ptch_ind = which(colnames(Y) %in% results[results$hgnc_symbol=="PTCH1", 2])
+ptch_ind = which(colnames(Y) %in% ref[ref$hgnc_symbol=="PTCH1", 1])
 W = store_W_c(Y[,ptch_ind], Y[, -ptch_ind])
 ptch_scores = get_score_W_c(X$A, W)
 ptch_d = get_degree_c(X$A, Y[,ptch_ind], Y[,-ptch_ind])
@@ -400,10 +395,7 @@ We make some diagnosis plot to observe what is driving the signal.
 
 ```{r}
 max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
-results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'),
-                filters = "ensembl_gene_id",
-                values = colnames(Y[,-ptch_ind])[max_scores$ix[1:5]],
-                mart = ensembl)
+results = ref[match(colnames(Y[,-ptch_ind])[max_scores$ix[1:5]], ref$ensembl_gene_id), ]
 results = results[match(results$ensembl_gene_id, colnames(Y[,-ptch_ind])[max_scores$ix[1:5]]), ]
 top_genes = data.frame(gene_name = results$hgnc_symbol, score = max_scores$x[1:5],
                 ensembl = results$ensembl_gene_id)
@@ -481,10 +473,7 @@ abline(0,1,col = 'red')
 
 ```{r}
 gene = "TEAD3"
-results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'),
-                filters = "hgnc_symbol",
-                values = gene,
-                mart = ensembl)
+results = ref[match(gene, ref$hgnc_symbol), ]
 
 tead_ind = which(colnames(newY) %in% c(results$ensembl_gene_id))
 newsmallY = newY[,-tead_ind]
@@ -501,7 +490,7 @@ abline(0,1,col = 'red')
 We conduct the permutation test to see if the signal is real.
 
 ```{r}
-tead_ind = which(colnames(newY) %in% TF_results[TF_results$hgnc_symbol=="TEAD3", 2])
+tead_ind = which(colnames(newY) %in% TF_results[TF_results$hgnc_symbol=="TEAD3", 1])
 W = store_W_c(newY[,tead_ind], newY[, -tead_ind])
 tead_scores = get_score_W_c(newX$A, W)
 tead_d = get_degree_c(newX$A, newY[,tead_ind], newY[,-tead_ind])
@@ -521,10 +510,7 @@ We make some diagnosis plot to observe what is driving the signal.
 
 ```{r}
 max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
-results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'),
-                filters = "ensembl_gene_id",
-                values = colnames(Y[,-tead_ind])[max_scores$ix[1:5]],
-                mart = ensembl)
+results = ref[match(colnames(Y[,-tead_ind])[max_scores$ix[1:5]], ref$ensembl_gene_id), ]
 results = results[match(results$ensembl_gene_id, colnames(Y[,-tead_ind])[max_scores$ix[1:5]]), ]
 top_genes = data.frame(gene_name = results$hgnc_symbol, score = max_scores$x[1:5],
                 ensembl = results$ensembl_gene_id)

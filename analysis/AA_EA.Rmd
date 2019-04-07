@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-set.seed(20190309)
+set.seed(20190406)
 knitr::opts_chunk$set(echo = TRUE,
                       dpi = 100)
 library(MASS)
@@ -18,8 +18,8 @@ library(KEGGREST)
 library(biomaRt)
 R.utils::sourceDirectory("R/", modifiedOnly=FALSE)
 Rcpp::sourceCpp("src/utilities.cpp")
-ensembl = useMart("ENSEMBL_MART_ENSEMBL",
-                dataset = "hsapiens_gene_ensembl")
+hgnc = setDF(fread("data/hgnc_ensembl.txt"))
+hgnc = hgnc[hgnc$`Ensembl gene ID` != "", ]
 ```
 
 
@@ -27,7 +27,7 @@ ensembl = useMart("ENSEMBL_MART_ENSEMBL",
 
 We use the RNA-seq expression level data provided by GTEx, which has been already pre-processed. We choose to study not-sun-exposed suprapubic skin tissue as a pilot study because we expect to see some ancestry effect on the expression level on the skin tissue. Genes were selected based on expression threshold of $>0.1$ RPKM in at least 10 individuals and $\geq$ reads in at least 10 individuals. Then the expression values were quantile normalized to the average empirical distribution observed across samples. That means, each gene has the same distribution across the individuals. Then they were inverse quantile normalized to fit standard normal distribution.
 
-## (a)load and clean the data
+## (a) load and clean the data
 
 We read the expression level data and match the individuals with the ancestry information.
 
@@ -64,7 +64,7 @@ orig_A = X$A
 X$A[X$A > 0] = 1
 X$A = scale(X$A) * sqrt(length(X$A)) / sqrt(length(X$A)-1)
 Y = resid(lm(Y~X$A))
-# Y = scale(Y) * sqrt(length(X$A)) / sqrt(length(X$A)-1)
+Y = scale(Y) * sqrt(length(X$A)) / sqrt(length(X$A)-1)
 ```
 
 
@@ -76,6 +76,16 @@ ref_chisq = qchisq(seq(0,1, length=ncol(Y)-1), 1)
 B = 5000
 ```
 
+## (c) match ENSEMBL ID and hgnc symbols
+
+https://www.genenames.org/download/custom/
+
+```{r}
+hgnc_names = hgnc[match(colnames(Y), hgnc$`Ensembl gene ID`), "Approved symbol"]
+ref = data.frame(ensembl_gene_id = colnames(Y), hgnc_symbol = hgnc_names)
+ref$ensembl_gene_id = as.character(ref$ensembl_gene_id)
+ref$hgnc_symbol = as.character(ref$hgnc_symbol)
+```
 
 
 # 2. Gene selection
@@ -94,10 +104,7 @@ get_result_kegg = function(hsacode, B){
   out = out[[1]]
   genes = sapply(strsplit(out$GENE, ";"), function(x) x[1])
   genes = genes[seq(2,144,by=2)]
-  results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'),
-                filters = "hgnc_symbol",
-                values = genes,
-                mart = ensembl)
+  results = ref[match(genes, ref$hgnc_symbol), ]
   genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
   results = results[match(genes, results$ensembl_gene_id), ]
   R = Y[,genes]
@@ -187,10 +194,7 @@ hla_genes = c("HLA-A", "HLA-B", "HLA-C", "HLA-E",
               "HFE", "TAP1", "TAP2", "PSMB9", "PSMB8",
               "MICA", "MICB", "MICC", "MICD", "MICE")
 
-results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'), 
-                filters = "hgnc_symbol",
-                values = hla_genes,
-                mart = ensembl)
+results = ref[match(hla_genes, ref$hgnc_symbol), ]
 
 genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
 results = results[match(genes, results$ensembl_gene_id), ]
@@ -238,11 +242,9 @@ Since transcription factors usually regulate the transcription of multiple genes
 ```{r}
 TF = fread("data/not_build/TFcheckpoint.txt", header=TRUE)
 TF = setDF(TF)
+TF = TF[TF$TFClass_human == "TFclass", ] #newly added!
 TF = TF[,1]
-results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'), 
-                filters = "hgnc_symbol",
-                values = TF,
-                mart = ensembl)
+results = ref[match(TF, ref$hgnc_symbol), ]
 
 genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
 results = results[match(genes, results$ensembl_gene_id), ]
@@ -295,10 +297,7 @@ We re-cap what we have observed in HLA-DQA1 for the score tests.
 
 ```{r}
 hla_genes = "HLA-DQA1"
-results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'),
-                filters = "hgnc_symbol",
-                values = hla_genes,
-                mart = ensembl)
+results = ref[match(hla_genes, ref$hgnc_symbol), ]
 
 dqa_ind = which(colnames(Y) %in% c(results$ensembl_gene_id))
 smallY = Y[,-dqa_ind]
@@ -344,10 +343,7 @@ We make some diagnosis plot to observe what is driving the signal.
 
 ```{r}
 max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
-results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'),
-                filters = "ensembl_gene_id",
-                values = colnames(Y[,-dqa_ind])[max_scores$ix[1:10]],
-                mart = ensembl)
+results = ref[match(colnames(Y[,-dqa_ind])[max_scores$ix[1:10]], ref$ensembl_gene_id), ]
 results = results[match(results$ensembl_gene_id, colnames(Y[,-dqa_ind])[max_scores$ix[1:10]]), ]
 top_genes = data.frame(gene_name = results$hgnc_symbol, score = max_scores$x[1:10],
                 ensembl = results$ensembl_gene_id)
@@ -410,10 +406,7 @@ stripchart(exp ~ label, vertical = TRUE, data = df,
 
 ```{r}
 gene = "FOXM1"
-results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'),
-                filters = "hgnc_symbol",
-                values = gene,
-                mart = ensembl)
+results = ref[match(gene, ref$hgnc_symbol), ]
 
 fox_ind = which(colnames(Y) %in% c(results$ensembl_gene_id))
 smallY = Y[,-fox_ind]
@@ -429,7 +422,7 @@ plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1), type = 'l'); abline(0,1,col
 We conduct the permutation test to see if the signal is real.
 
 ```{r}
-fox_ind = which(colnames(Y) %in% results[results$hgnc_symbol=="FOXM1", 2])
+fox_ind = which(colnames(Y) %in% results[results$hgnc_symbol=="FOXM1", 1])
 W = store_W_c(Y[,fox_ind], Y[, -fox_ind])
 fox_scores = get_score_W_c(X$A, W)
 fox_d = get_degree_c(X$A, Y[,fox_ind], Y[,-fox_ind])
@@ -455,7 +448,7 @@ We inspect the raw data to see any patterns between Afircan Americans and Europe
 
 ```{r}
 AA_ind = which(orig_A > 0)
-EA_ind = which(orig_A == 0)
+EA_ind = which(orig_A <= 0)
 fox_exp = as.matrix(orig[,fox_ind])
 fox_exp_aa = fox_exp[AA_ind]
 fox_exp_ea = fox_exp[EA_ind]
@@ -546,6 +539,127 @@ fox_p = sum(bootstrapped_d > fox_d) / B
 hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), fox_d))+20)
 abline(v=fox_d, col = 'red')
 print(fox_p)
+```
+
+
+
+# Constricted analysis of transcription factors
+
+We found the external data base of TF2DNA that shows the target genes for each transcription factor. Since it offers a list of transcription factors as well as their target genes for 1306 transcription factors, we focus only on those transcription factors. For target genes, we use only those with the top binding scores.  
+
+```{r}
+library(data.table)
+TFs = list.files("/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/")
+TFs = sapply(strsplit(TFs, ".pscan"), function(x) x[[1]])
+```
+
+```{r}
+results = ref[match(TFs, ref$hgnc_symbol), ]
+results = results[!is.na(results$hgnc_symbol), ]
+out = data.frame(TF = results$hgnc_symbol, 
+                 numTargets = rep(NA, nrow(results)),
+                 degree = rep(NA, nrow(results)))
+```
+
+For each transcription factor, we need to read in the target data, which can take very long due to a high number of file IO. 
+
+```{r cache=TRUE}
+for (i in 1:length(results$hgnc_symbol)){
+  targets = fread(paste0("/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
+  targets = targets[which(targets$p_value == min(targets$p_value)), c(1,2,6,7)]
+  target_genenames = ref[match(targets$target_name, ref$hgnc_symbol), ]
+  main_ind = which(colnames(Y) == results$ensembl_gene_id[i])
+  target_ind = match(target_genenames$ensembl_gene_id, colnames(Y))
+  target_ind = target_ind[!is.na(target_ind)]
+  W = store_W_c(Y[,main_ind], Y[, target_ind])
+  scores = get_score_W_c(X$A, W)
+  out$numTargets[i] = ncol(W)
+  out$degree[i] = sum(scores)
+}
+head(out)
+```
+
+```{r}
+d = out$degree / out$numTargets
+df = data.frame(d = d, 
+                genes = results$hgnc_symbol, 
+                xaxis = 1:length(d))
+plot(d,
+     main = 'Targeted TF',
+     ylab = 'averaged scores',
+     ylim = c(0, max(d) + 1))
+abline(h=3, col = 'red')
+ind = which(d > 3)
+df = df[ind,]
+with(df, text(d~xaxis, labels=genes, pos=3))
+```
+
+## Another look at FOXM1
+
+```{r}
+i = which(results$hgnc_symbol=="FOXM1")
+targets = fread(paste0("/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
+targets = targets[which(targets$p_value == min(targets$p_value)), c(1,2,6,7)]
+target_genenames = ref[match(targets$target_name, ref$hgnc_symbol), ]
+main_ind = which(colnames(Y) == results$ensembl_gene_id[i])
+target_ind = match(target_genenames$ensembl_gene_id, colnames(Y))
+target_ind = target_ind[!is.na(target_ind)]
+W = store_W_c(Y[,main_ind], Y[, target_ind])
+scores = get_score_W_c(X$A, W)
+diff_cor_fox = data.frame(genes = colnames(orig)[target_ind],
+                      AA = as.numeric(cor(orig[AA_ind,fox_ind], 
+                                          (orig[AA_ind,target_ind]))),
+                      EA = as.numeric(cor(orig[-AA_ind,fox_ind], 
+                                          (orig[-AA_ind,target_ind]))))
+
+plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='FOXM1',
+     ylab = 'African Americans',
+     xlab = 'European Americans'); abline(0,1,col = 'red')
+```
+
+## new permutation test for FOXM1
+
+```{r}
+d = get_degree_c(X$A, Y[,fox_ind], Y[,target_ind])
+out = rowSums(bootstrap_c(X$A, B, W))
+p = sum(out>d)/B
+print(p)
+hist(out, 50, xlim = c(0, max(d+10, max(out))), main = "FOXM1 permutation test")
+abline(v=d, col = 'red')
+```
+
+and at new gene ZSCAN1
+
+```{r}
+i = which(results$hgnc_symbol=="ZSCAN1")
+targets = fread(paste0("/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
+targets = targets[which(targets$p_value == min(targets$p_value)), c(1,2,6,7)]
+target_genenames = ref[match(targets$target_name, ref$hgnc_symbol), ]
+main_ind = which(colnames(Y) == results$ensembl_gene_id[i])
+target_ind = match(target_genenames$ensembl_gene_id, colnames(Y))
+target_ind = target_ind[!is.na(target_ind)]
+W = store_W_c(Y[,main_ind], Y[, target_ind])
+scores = get_score_W_c(X$A, W)
+diff_cor_fox = data.frame(genes = colnames(orig)[target_ind],
+                      AA = as.numeric(cor(orig[AA_ind,fox_ind], 
+                                          (orig[AA_ind,target_ind]))),
+                      EA = as.numeric(cor(orig[-AA_ind,fox_ind], 
+                                          (orig[-AA_ind,target_ind]))))
+
+plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='ZSCAN1',
+     ylab = 'African Americans',
+     xlab = 'European Americans'); abline(0,1,col = 'red')
+```
+
+
+```{r}
+zscan_ind = which(colnames(Y) %in% results[results$hgnc_symbol=="ZSCAN1", 1])
+d = get_degree_c(X$A, Y[,fox_ind], Y[,target_ind])
+out = rowSums(bootstrap_c(X$A, B, W))
+sum(out > d)
+hist(out, 50, xlim = c(0, max(d+10, max(out))), main = "ZSCAN1 permutation test")
+abline(v=d, col = 'red')
+abline(v=d, col = 'red')
 ```
 
 
