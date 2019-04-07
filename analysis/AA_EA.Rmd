@@ -543,7 +543,10 @@ print(fox_p)
 
 
 
-# Constricted analysis of transcription factors
+# 4. Targeted analysis of transcription factors
+
+
+## (a) all TFs
 
 We found the external data base of TF2DNA that shows the target genes for each transcription factor. Since it offers a list of transcription factors as well as their target genes for 1306 transcription factors, we focus only on those transcription factors. For target genes, we use only those with the top binding scores.  
 
@@ -587,14 +590,15 @@ df = data.frame(d = d,
 plot(d,
      main = 'Targeted TF',
      ylab = 'averaged scores',
-     ylim = c(0, max(d) + 1))
+     ylim = c(0, max(d) + 1),
+     xlab = length(d) + 25)
 abline(h=3, col = 'red')
 ind = which(d > 3)
 df = df[ind,]
 with(df, text(d~xaxis, labels=genes, pos=3))
 ```
 
-## Another look at FOXM1
+## (b) FOXM1 analysis with target genes
 
 ```{r}
 i = which(results$hgnc_symbol=="FOXM1")
@@ -628,10 +632,10 @@ hist(out, 50, xlim = c(0, max(d+10, max(out))), main = "FOXM1 permutation test")
 abline(v=d, col = 'red')
 ```
 
-and at new gene ZSCAN1
+## new gene ZSCAN3
 
-```{r}
-i = which(results$hgnc_symbol=="ZSCAN1")
+```{r, fig.width = 5, fig.height = 5}
+i = which(results$hgnc_symbol=="ZSCAN30")
 targets = fread(paste0("/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
 targets = targets[which(targets$p_value == min(targets$p_value)), c(1,2,6,7)]
 target_genenames = ref[match(targets$target_name, ref$hgnc_symbol), ]
@@ -646,19 +650,19 @@ diff_cor_fox = data.frame(genes = colnames(orig)[target_ind],
                       EA = as.numeric(cor(orig[-AA_ind,fox_ind], 
                                           (orig[-AA_ind,target_ind]))))
 
-plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='ZSCAN1',
+plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='ZSCAN30',
      ylab = 'African Americans',
      xlab = 'European Americans'); abline(0,1,col = 'red')
 ```
 
 
 ```{r}
-zscan_ind = which(colnames(Y) %in% results[results$hgnc_symbol=="ZSCAN1", 1])
+zscan_ind = which(colnames(Y) %in% results[results$hgnc_symbol=="ZSCAN30", 1])
 d = get_degree_c(X$A, Y[,fox_ind], Y[,target_ind])
 out = rowSums(bootstrap_c(X$A, B, W))
-sum(out > d)
-hist(out, 50, xlim = c(0, max(d+10, max(out))), main = "ZSCAN1 permutation test")
-abline(v=d, col = 'red')
+p = sum(out>d) / B
+print(p)
+hist(out, 50, xlim = c(0, max(d+10, max(out))), main = "ZSCAN30 permutation test")
 abline(v=d, col = 'red')
 ```
 
