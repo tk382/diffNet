@@ -579,10 +579,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree0746ad450032e9aafe65833b8a73c86aa302ed0btargetblank0746ad4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/tk382/networkAnc/tree/0746ad450032e9aafe65833b8a73c86aa302ed0b" target="_blank">0746ad4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree606fa41352b1d9963546017abf2429d1985c8575targetblank606fa41a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/tk382/networkAnc/tree/606fa41352b1d9963546017abf2429d1985c8575" target="_blank">606fa41</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree0746ad450032e9aafe65833b8a73c86aa302ed0btargetblank0746ad4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree606fa41352b1d9963546017abf2429d1985c8575targetblank606fa41a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -596,7 +596,6 @@ Ignored files:
     Ignored:    R/.Rhistory
     Ignored:    analysis/.DS_Store
     Ignored:    analysis/.Rhistory
-    Ignored:    analysis/AA_EA_cache/
     Ignored:    docs/.DS_Store
     Ignored:    docs/figure/.DS_Store
 
@@ -604,6 +603,7 @@ Untracked files:
     Untracked:  .Rprofile
     Untracked:  .gitignore
     Untracked:  R/not_build/
+    Untracked:  analysis/AA_EA_cache/
     Untracked:  analysis/AA_skin_not_sun_exposed.Rmd
     Untracked:  analysis/AA_skin_not_sun_exposed.pdf
     Untracked:  analysis/HLA-DQA1.Rmd
@@ -624,7 +624,6 @@ Untracked files:
     Untracked:  analysis/degree_simulation.R
     Untracked:  analysis/export_genenames.R
     Untracked:  analysis/expression_permutation_test_result.Rdata
-    Untracked:  analysis/figure/
     Untracked:  analysis/inhibition_permutation_test_result.Rdata
     Untracked:  analysis/largeK.Rmd
     Untracked:  analysis/largeK.pdf
@@ -694,6 +693,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/tk382/networkAnc/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/AA.html" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -910,6 +926,43 @@ df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt"
      <span class="dt">main =</span> <span class="st">&#39;-log(p) values&#39;</span>,
      <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">length</span>(out<span class="op">$</span>p)<span class="op">+</span><span class="dv">10</span>))</code></pre></div>
 <p><img src="figure/AA.Rmd/unnamed-chunk-4-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-4-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ind =<span class="st"> </span><span class="kw">which</span>(df<span class="op">$</span>p <span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span>)
 <span class="cf">if</span>(<span class="kw">length</span>(ind)<span class="op">&gt;</span><span class="dv">0</span>){
   df =<span class="st"> </span>df[ind, ]
@@ -932,6 +985,43 @@ df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt"
      <span class="dt">main =</span> <span class="st">&#39;-log(p) values&#39;</span>,
      <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">length</span>(out<span class="op">$</span>p)<span class="op">+</span><span class="dv">10</span>))</code></pre></div>
 <p><img src="figure/AA.Rmd/unnamed-chunk-4-2.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
+Past versions of unnamed-chunk-4-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-4-2.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ind =<span class="st"> </span><span class="kw">which</span>(df<span class="op">$</span>p <span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span>)
 <span class="cf">if</span>(<span class="kw">length</span>(ind)<span class="op">&gt;</span><span class="dv">0</span>){
   df =<span class="st"> </span>df[ind, ]
@@ -953,6 +1043,43 @@ df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt"
      <span class="dt">main =</span> <span class="st">&#39;-log(p) values&#39;</span>,
      <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">length</span>(out<span class="op">$</span>p)<span class="op">+</span><span class="dv">10</span>))</code></pre></div>
 <p><img src="figure/AA.Rmd/unnamed-chunk-4-3.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-3">
+Past versions of unnamed-chunk-4-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-4-3.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ind =<span class="st"> </span><span class="kw">which</span>(df<span class="op">$</span>p <span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span>)
 <span class="cf">if</span>(<span class="kw">length</span>(ind)<span class="op">&gt;</span><span class="dv">0</span>){
   df =<span class="st"> </span>df[ind, ]
@@ -1012,6 +1139,43 @@ ref_chisq =<span class="st"> </span><span class="kw">qchisq</span>(<span class="
 ind =<span class="st"> </span><span class="kw">which</span>(results<span class="op">$</span>hgnc_symbol <span class="op">==</span><span class="st"> &quot;PSMB8&quot;</span>)
 <span class="kw">qqplot</span>(ref_chisq, newscores[ind,],  <span class="dt">main =</span> <span class="st">&#39;PSMB8 scores&#39;</span>, <span class="dt">ylab=</span><span class="st">&#39;scores&#39;</span>); <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
 <p><img src="figure/AA.Rmd/unnamed-chunk-6-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-6-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="c-transcription-factors" class="section level2">
 <h2>(c) Transcription Factors</h2>
@@ -1082,6 +1246,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-8-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-8-1.png" target="_blank">4053f50</a>
 </td>
 <td>
@@ -1140,6 +1315,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-9-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-9-1.png" target="_blank">4053f50</a>
@@ -1202,6 +1388,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-10-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-10-1.png" target="_blank">4053f50</a>
@@ -1271,6 +1468,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-11-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-11-1.png" target="_blank">4053f50</a>
 </td>
 <td>
@@ -1311,6 +1519,43 @@ ptch_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <spa
 <span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), ptch_d))<span class="op">+</span><span class="dv">100</span>)
 <span class="kw">abline</span>(<span class="dt">v=</span>ptch_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
 <p><img src="figure/AA.Rmd/unnamed-chunk-12-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-12-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(ptch_p)</code></pre></div>
 <pre><code>[1] 0.0014</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># par(mfrow = c(2,3))</span>
@@ -1376,6 +1621,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-15-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-15-1.png" target="_blank">4053f50</a>
 </td>
 <td>
@@ -1431,6 +1687,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-16-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-16-1.png" target="_blank">4053f50</a>
@@ -1519,6 +1786,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-17-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-17-1.png" target="_blank">4053f50</a>
 </td>
 <td>
@@ -1584,6 +1862,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-18-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-18-1.png" target="_blank">4053f50</a>
 </td>
 <td>
@@ -1624,6 +1913,43 @@ tead_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <spa
 <span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), tead_d))<span class="op">+</span><span class="dv">100</span>)
 <span class="kw">abline</span>(<span class="dt">v=</span>tead_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
 <p><img src="figure/AA.Rmd/unnamed-chunk-19-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
+Past versions of unnamed-chunk-19-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-19-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(tead_p)</code></pre></div>
 <pre><code>[1] 0.0102</code></pre>
 </div>
@@ -1680,6 +2006,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-21-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-21-1.png" target="_blank">4053f50</a>
 </td>
 <td>
@@ -1710,15 +2047,127 @@ max_scores =<span class="st"> </span><span class="kw">sort</span>(s, <span class
 <span class="kw">plot</span>(orig[<span class="op">-</span>remove, <span class="op">-</span>tead_ind][, max_scores<span class="op">$</span>ix[<span class="dv">1</span>]] <span class="op">~</span><span class="st"> </span>orig_A[<span class="op">-</span>remove],
      <span class="dt">ylab =</span> <span class="st">&quot;STK32A-AS1&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;ancestry&quot;</span>)</code></pre></div>
 <p><img src="figure/AA.Rmd/unnamed-chunk-22-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
+Past versions of unnamed-chunk-22-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-22-1.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(orig[<span class="op">-</span>remove, tead_ind] <span class="op">~</span><span class="st"> </span>orig_A[<span class="op">-</span>remove], <span class="dt">ylab =</span> <span class="st">&quot;TEAD3&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;ancestry&quot;</span>)
 <span class="kw">plot</span>(orig[<span class="op">-</span>remove, <span class="op">-</span>tead_ind][, max_scores<span class="op">$</span>ix[<span class="dv">2</span>]] <span class="op">~</span><span class="st"> </span>orig_A[<span class="op">-</span>remove],
      <span class="dt">ylab =</span> <span class="st">&quot;DNAJC12&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;ancestry&quot;</span>)</code></pre></div>
 <p><img src="figure/AA.Rmd/unnamed-chunk-22-2.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-2">
+Past versions of unnamed-chunk-22-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-22-2.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(orig[<span class="op">-</span>remove, tead_ind] <span class="op">*</span><span class="st"> </span>orig[<span class="op">-</span>remove, <span class="op">-</span>tead_ind][, max_scores<span class="op">$</span>ix[<span class="dv">1</span>]] <span class="op">~</span><span class="st"> </span>orig_A[<span class="op">-</span>remove],
      <span class="dt">ylab =</span> <span class="st">&quot;TEAD3 * STK32A-AS1&quot;</span>, <span class="dt">xlab=</span><span class="st">&#39;ancestry&#39;</span>)
 <span class="kw">plot</span>(orig[<span class="op">-</span>remove, tead_ind] <span class="op">*</span><span class="st"> </span>orig[<span class="op">-</span>remove, <span class="op">-</span>tead_ind][, max_scores<span class="op">$</span>ix[<span class="dv">2</span>]] <span class="op">~</span><span class="st"> </span>orig_A[<span class="op">-</span>remove],
      <span class="dt">ylab =</span> <span class="st">&quot;TEAD3 * DNAJC12&quot;</span>, <span class="dt">xlab=</span><span class="st">&#39;ancestry&#39;</span>)</code></pre></div>
-<img src="figure/AA.Rmd/unnamed-chunk-22-3.png" width="700" style="display: block; margin: auto;" /> <br> <br>
+<p><img src="figure/AA.Rmd/unnamed-chunk-22-3.png" width="700" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-3">
+Past versions of unnamed-chunk-22-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-22-3.png" target="_blank">432088c</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
