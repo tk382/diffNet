@@ -500,7 +500,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-04-03
+<strong>Last updated:</strong> 2019-04-07
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -579,10 +579,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctreed4931f99aef3a639fec60bfe25e88bcfa91ab253targetblankd4931f9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/tk382/networkAnc/tree/d4931f99aef3a639fec60bfe25e88bcfa91ab253" target="_blank">d4931f9</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree0746ad450032e9aafe65833b8a73c86aa302ed0btargetblank0746ad4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/tk382/networkAnc/tree/0746ad450032e9aafe65833b8a73c86aa302ed0b" target="_blank">0746ad4</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctreed4931f99aef3a639fec60bfe25e88bcfa91ab253targetblankd4931f9a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree0746ad450032e9aafe65833b8a73c86aa302ed0btargetblank0746ad4a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -596,6 +596,7 @@ Ignored files:
     Ignored:    R/.Rhistory
     Ignored:    analysis/.DS_Store
     Ignored:    analysis/.Rhistory
+    Ignored:    analysis/AA_EA_cache/
     Ignored:    docs/.DS_Store
     Ignored:    docs/figure/.DS_Store
 
@@ -621,10 +622,12 @@ Untracked files:
     Untracked:  analysis/catalysis_permutation_test_result.Rdata
     Untracked:  analysis/correction.R
     Untracked:  analysis/degree_simulation.R
+    Untracked:  analysis/export_genenames.R
     Untracked:  analysis/expression_permutation_test_result.Rdata
     Untracked:  analysis/inhibition_permutation_test_result.Rdata
     Untracked:  analysis/largeK.Rmd
     Untracked:  analysis/largeK.pdf
+    Untracked:  analysis/make_reference_hgnc.R
     Untracked:  analysis/normality_breaks.R
     Untracked:  analysis/permutation_test.Rmd
     Untracked:  analysis/permutation_test.pdf
@@ -633,6 +636,7 @@ Untracked files:
     Untracked:  analysis/remove_covariates.Rmd
     Untracked:  analysis/score_test_simulation.R
     Untracked:  analysis/simulation1.Rmd
+    Untracked:  analysis/simulation2.Rmd
     Untracked:  analysis/skin_AA.Rmd
     Untracked:  analysis/skin_AA.pdf
     Untracked:  analysis/skin_not__sun_exposed.pdf
@@ -647,6 +651,7 @@ Untracked files:
     Untracked:  code/
     Untracked:  data/
     Untracked:  docs/figure/simulation1.Rmd/
+    Untracked:  docs/figure/simulation2.Rmd/
     Untracked:  old_analysis/
     Untracked:  output/
     Untracked:  src/networkAnc.so
@@ -688,6 +693,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/tk382/networkAnc/dc21566d1401835d1d813aceac5a26cd6e12d8e8/docs/AA_EA.html" target="_blank">dc21566</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -817,8 +839,8 @@ wflow_publish(“analysis/AA_EA.Rmd”)
 <div id="data-pre-processing" class="section level1">
 <h1>1. Data pre-processing</h1>
 <p>We use the RNA-seq expression level data provided by GTEx, which has been already pre-processed. We choose to study not-sun-exposed suprapubic skin tissue as a pilot study because we expect to see some ancestry effect on the expression level on the skin tissue. Genes were selected based on expression threshold of <span class="math inline">\(&gt;0.1\)</span> RPKM in at least 10 individuals and <span class="math inline">\(\geq\)</span> reads in at least 10 individuals. Then the expression values were quantile normalized to the average empirical distribution observed across samples. That means, each gene has the same distribution across the individuals. Then they were inverse quantile normalized to fit standard normal distribution.</p>
-<div id="aload-and-clean-the-data" class="section level2">
-<h2>(a)load and clean the data</h2>
+<div id="a-load-and-clean-the-data" class="section level2">
+<h2>(a) load and clean the data</h2>
 <p>We read the expression level data and match the individuals with the ancestry information.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&quot;data/skin_not_sun_exposed_suprapubic.Rdata&quot;</span>)
 exp =<span class="st"> </span>skin; <span class="kw">rm</span>(skin)
@@ -850,9 +872,17 @@ orig =<span class="st"> </span>Y
 X<span class="op">$</span>A[X<span class="op">$</span>A <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>] =<span class="st"> </span><span class="dv">1</span>
 X<span class="op">$</span>A =<span class="st"> </span><span class="kw">scale</span>(X<span class="op">$</span>A) <span class="op">*</span><span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">length</span>(X<span class="op">$</span>A)) <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">length</span>(X<span class="op">$</span>A)<span class="op">-</span><span class="dv">1</span>)
 Y =<span class="st"> </span><span class="kw">resid</span>(<span class="kw">lm</span>(Y<span class="op">~</span>X<span class="op">$</span>A))
-<span class="co"># Y = scale(Y) * sqrt(length(X$A)) / sqrt(length(X$A)-1)</span></code></pre></div>
+Y =<span class="st"> </span><span class="kw">scale</span>(Y) <span class="op">*</span><span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">length</span>(X<span class="op">$</span>A)) <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">length</span>(X<span class="op">$</span>A)<span class="op">-</span><span class="dv">1</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ref_chisq =<span class="st"> </span><span class="kw">qchisq</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>, <span class="dt">length=</span><span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>), <span class="dv">1</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">B =<span class="st"> </span><span class="dv">5000</span></code></pre></div>
+</div>
+<div id="c-match-ensembl-id-and-hgnc-symbols" class="section level2">
+<h2>(c) match ENSEMBL ID and hgnc symbols</h2>
+<p><a href="https://www.genenames.org/download/custom/" class="uri">https://www.genenames.org/download/custom/</a></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hgnc_names =<span class="st"> </span>hgnc[<span class="kw">match</span>(<span class="kw">colnames</span>(Y), hgnc<span class="op">$</span><span class="st">`</span><span class="dt">Ensembl gene ID</span><span class="st">`</span>), <span class="st">&quot;Approved symbol&quot;</span>]
+ref =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">ensembl_gene_id =</span> <span class="kw">colnames</span>(Y), <span class="dt">hgnc_symbol =</span> hgnc_names)
+ref<span class="op">$</span>ensembl_gene_id =<span class="st"> </span><span class="kw">as.character</span>(ref<span class="op">$</span>ensembl_gene_id)
+ref<span class="op">$</span>hgnc_symbol =<span class="st"> </span><span class="kw">as.character</span>(ref<span class="op">$</span>hgnc_symbol)</code></pre></div>
 </div>
 </div>
 <div id="gene-selection" class="section level1">
@@ -867,10 +897,7 @@ Y =<span class="st"> </span><span class="kw">resid</span>(<span class="kw">lm</s
   out =<span class="st"> </span>out[[<span class="dv">1</span>]]
   genes =<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">strsplit</span>(out<span class="op">$</span>GENE, <span class="st">&quot;;&quot;</span>), <span class="cf">function</span>(x) x[<span class="dv">1</span>])
   genes =<span class="st"> </span>genes[<span class="kw">seq</span>(<span class="dv">2</span>,<span class="dv">144</span>,<span class="dt">by=</span><span class="dv">2</span>)]
-  results =<span class="st"> </span><span class="kw">getBM</span>(<span class="dt">attributes =</span> <span class="kw">c</span>(<span class="st">&#39;hgnc_symbol&#39;</span>,<span class="st">&#39;ensembl_gene_id&#39;</span>),
-                <span class="dt">filters =</span> <span class="st">&quot;hgnc_symbol&quot;</span>,
-                <span class="dt">values =</span> genes,
-                <span class="dt">mart =</span> ensembl)
+  results =<span class="st"> </span>ref[<span class="kw">match</span>(genes, ref<span class="op">$</span>hgnc_symbol), ]
   genes =<span class="st"> </span><span class="kw">colnames</span>(Y)[<span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span>results<span class="op">$</span>ensembl_gene_id)]
   results =<span class="st"> </span>results[<span class="kw">match</span>(genes, results<span class="op">$</span>ensembl_gene_id), ]
   R =<span class="st"> </span>Y[,genes]
@@ -901,55 +928,7 @@ df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt"
 ind =<span class="st"> </span><span class="kw">which</span>(df<span class="op">$</span>p <span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span>)
 df =<span class="st"> </span>df[ind, ]
 <span class="kw">with</span>(df, <span class="kw">text</span>(p <span class="op">~</span><span class="st"> </span>ind, <span class="dt">labels =</span> genes, <span class="dt">pos =</span> <span class="dv">4</span>))</code></pre></div>
-<p><img src="figure/AA_EA.Rmd/unnamed-chunk-3-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
-Past versions of unnamed-chunk-3-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-3-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA_EA.Rmd/unnamed-chunk-3-1.png" target="_blank">b8ce5bb</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/1f3a02e93dbafa6e6ca9ee5ee283ed72ad4965f8/docs/figure/AA_EA.Rmd/unnamed-chunk-3-1.png" target="_blank">1f3a02e</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-4-1.png" width="700" style="display: block; margin: auto;" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">get_result_kegg</span>(<span class="st">&quot;hsa05310&quot;</span>, B) <span class="co">#asthma</span>
 <span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
 <span class="kw">qqplot</span>(<span class="op">-</span><span class="kw">log</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length.out =</span> <span class="kw">length</span>(out<span class="op">$</span>p))), <span class="op">-</span><span class="kw">log</span>(out<span class="op">$</span>p),
@@ -966,55 +945,7 @@ df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt"
 ind =<span class="st"> </span><span class="kw">which</span>(df<span class="op">$</span>p <span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span>)
 df =<span class="st"> </span>df[ind, ]
 <span class="kw">with</span>(df, <span class="kw">text</span>(p <span class="op">~</span><span class="st"> </span>ind, <span class="dt">labels =</span> genes, <span class="dt">pos =</span> <span class="dv">4</span>))</code></pre></div>
-<p><img src="figure/AA_EA.Rmd/unnamed-chunk-3-2.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-2">
-Past versions of unnamed-chunk-3-2.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-3-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA_EA.Rmd/unnamed-chunk-3-2.png" target="_blank">b8ce5bb</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/1f3a02e93dbafa6e6ca9ee5ee283ed72ad4965f8/docs/figure/AA_EA.Rmd/unnamed-chunk-3-2.png" target="_blank">1f3a02e</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-4-2.png" width="700" style="display: block; margin: auto;" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">get_result_kegg</span>(<span class="st">&quot;hsa05320&quot;</span>, B) <span class="co">#autoimmune</span>
 <span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
 <span class="kw">qqplot</span>(<span class="op">-</span><span class="kw">log</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length.out =</span> <span class="kw">length</span>(out<span class="op">$</span>p))), <span class="op">-</span><span class="kw">log</span>(out<span class="op">$</span>p),
@@ -1031,55 +962,7 @@ df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt"
 ind =<span class="st"> </span><span class="kw">which</span>(df<span class="op">$</span>p <span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span>)
 df =<span class="st"> </span>df[ind, ]
 <span class="kw">with</span>(df, <span class="kw">text</span>(p <span class="op">~</span><span class="st"> </span>ind, <span class="dt">labels =</span> genes, <span class="dt">pos =</span> <span class="dv">4</span>))</code></pre></div>
-<p><img src="figure/AA_EA.Rmd/unnamed-chunk-3-3.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-3">
-Past versions of unnamed-chunk-3-3.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-3-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA_EA.Rmd/unnamed-chunk-3-3.png" target="_blank">b8ce5bb</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/1f3a02e93dbafa6e6ca9ee5ee283ed72ad4965f8/docs/figure/AA_EA.Rmd/unnamed-chunk-3-3.png" target="_blank">1f3a02e</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-4-3.png" width="700" style="display: block; margin: auto;" /></p>
 
 </div>
 <div id="b-hla-genes" class="section level2">
@@ -1100,10 +983,7 @@ tk382
               <span class="st">&quot;HFE&quot;</span>, <span class="st">&quot;TAP1&quot;</span>, <span class="st">&quot;TAP2&quot;</span>, <span class="st">&quot;PSMB9&quot;</span>, <span class="st">&quot;PSMB8&quot;</span>,
               <span class="st">&quot;MICA&quot;</span>, <span class="st">&quot;MICB&quot;</span>, <span class="st">&quot;MICC&quot;</span>, <span class="st">&quot;MICD&quot;</span>, <span class="st">&quot;MICE&quot;</span>)
 
-results =<span class="st"> </span><span class="kw">getBM</span>(<span class="dt">attributes =</span> <span class="kw">c</span>(<span class="st">&#39;hgnc_symbol&#39;</span>,<span class="st">&#39;ensembl_gene_id&#39;</span>), 
-                <span class="dt">filters =</span> <span class="st">&quot;hgnc_symbol&quot;</span>,
-                <span class="dt">values =</span> hla_genes,
-                <span class="dt">mart =</span> ensembl)
+results =<span class="st"> </span>ref[<span class="kw">match</span>(hla_genes, ref<span class="op">$</span>hgnc_symbol), ]
 
 genes =<span class="st"> </span><span class="kw">colnames</span>(Y)[<span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span>results<span class="op">$</span>ensembl_gene_id)]
 results =<span class="st"> </span>results[<span class="kw">match</span>(genes, results<span class="op">$</span>ensembl_gene_id), ]
@@ -1136,44 +1016,7 @@ df =<span class="st"> </span>df[ind, ]
 ref_chisq =<span class="st"> </span><span class="kw">qchisq</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length=</span><span class="kw">length</span>(newscores[<span class="dv">1</span>,])), <span class="dv">1</span>)
 ind =<span class="st"> </span><span class="kw">which</span>(results<span class="op">$</span>hgnc_symbol <span class="op">==</span><span class="st"> &quot;HLA-DQA1&quot;</span>)
 <span class="kw">qqplot</span>(ref_chisq, newscores[ind,],  <span class="dt">main =</span> <span class="st">&#39;HLA-DQA1 scores&#39;</span>, <span class="dt">ylab=</span><span class="st">&#39;scores&#39;</span>); <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
-<p><img src="figure/AA_EA.Rmd/unnamed-chunk-5-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
-Past versions of unnamed-chunk-5-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-5-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/1f3a02e93dbafa6e6ca9ee5ee283ed72ad4965f8/docs/figure/AA_EA.Rmd/unnamed-chunk-5-1.png" target="_blank">1f3a02e</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-6-1.png" width="700" style="display: block; margin: auto;" /></p>
 </div>
 <div id="c-transcription-factors" class="section level2">
 <h2>(c) Transcription Factors</h2>
@@ -1182,11 +1025,9 @@ tk382
 <p>Since transcription factors usually regulate the transcription of multiple genes, we thought they were appropriate targets to study their variance in activity across different ancestry.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">TF =<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/not_build/TFcheckpoint.txt&quot;</span>, <span class="dt">header=</span><span class="ot">TRUE</span>)
 TF =<span class="st"> </span><span class="kw">setDF</span>(TF)
+TF =<span class="st"> </span>TF[TF<span class="op">$</span>TFClass_human <span class="op">==</span><span class="st"> &quot;TFclass&quot;</span>, ] <span class="co">#newly added!</span>
 TF =<span class="st"> </span>TF[,<span class="dv">1</span>]
-results =<span class="st"> </span><span class="kw">getBM</span>(<span class="dt">attributes =</span> <span class="kw">c</span>(<span class="st">&#39;hgnc_symbol&#39;</span>,<span class="st">&#39;ensembl_gene_id&#39;</span>), 
-                <span class="dt">filters =</span> <span class="st">&quot;hgnc_symbol&quot;</span>,
-                <span class="dt">values =</span> TF,
-                <span class="dt">mart =</span> ensembl)
+results =<span class="st"> </span>ref[<span class="kw">match</span>(TF, ref<span class="op">$</span>hgnc_symbol), ]
 
 genes =<span class="st"> </span><span class="kw">colnames</span>(Y)[<span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span>results<span class="op">$</span>ensembl_gene_id)]
 results =<span class="st"> </span>results[<span class="kw">match</span>(genes, results<span class="op">$</span>ensembl_gene_id), ]</code></pre></div>
@@ -1220,73 +1061,6 @@ ref_chisq =<span class="st"> </span><span class="kw">qchisq</span>(<span class="
       <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
   }
 }</code></pre></div>
-<p><img src="figure/AA_EA.Rmd/unnamed-chunk-7-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
-Past versions of unnamed-chunk-7-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-7-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/1f3a02e93dbafa6e6ca9ee5ee283ed72ad4965f8/docs/figure/AA_EA.Rmd/unnamed-chunk-7-1.png" target="_blank">1f3a02e</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-
-</div>
-</div>
-</div>
-<div id="investigating-the-top-signals" class="section level1">
-<h1>3. Investigating the top signals</h1>
-<div id="a-hla-dqa1" class="section level2">
-<h2>(a) HLA-DQA1</h2>
-<div id="i-score-test" class="section level3">
-<h3>(i) Score test</h3>
-<p>We re-cap what we have observed in HLA-DQA1 for the score tests.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hla_genes =<span class="st"> &quot;HLA-DQA1&quot;</span>
-results =<span class="st"> </span><span class="kw">getBM</span>(<span class="dt">attributes =</span> <span class="kw">c</span>(<span class="st">&#39;hgnc_symbol&#39;</span>,<span class="st">&#39;ensembl_gene_id&#39;</span>),
-                <span class="dt">filters =</span> <span class="st">&quot;hgnc_symbol&quot;</span>,
-                <span class="dt">values =</span> hla_genes,
-                <span class="dt">mart =</span> ensembl)
-
-dqa_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(results<span class="op">$</span>ensembl_gene_id))
-smallY =<span class="st"> </span>Y[,<span class="op">-</span>dqa_ind]
-s =<span class="st"> </span>news =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)
-<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>(<span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)){
-  s[i] =<span class="st"> </span><span class="kw">get_score_c</span>(X<span class="op">$</span>A, Y[,dqa_ind], smallY[,i])
-}
-<span class="kw">plot</span>(<span class="kw">sort</span>(s) <span class="op">~</span><span class="st"> </span><span class="kw">qchisq</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length=</span><span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>), <span class="dv">1</span>),
-     <span class="dt">type =</span> <span class="st">&#39;l&#39;</span>,
-     <span class="dt">main =</span> <span class="st">&#39;pairwise scores&#39;</span>,
-     <span class="dt">xlab =</span> <span class="st">&#39;reference chi1&#39;</span>,
-     <span class="dt">ylab =</span> <span class="st">&#39;sorted scores&#39;</span>); 
-<span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
 <p><img src="figure/AA_EA.Rmd/unnamed-chunk-8-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
@@ -1325,20 +1099,32 @@ tk382
 </table>
 </div>
 </div>
+
 </div>
-<div id="ii-permutation-test" class="section level3">
-<h3>(ii) Permutation test</h3>
-<p>In order to verify if HLA-DQA truly has a signal, we perform permutation test. The p-value is indeed very small.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,dqa_ind], Y[, <span class="op">-</span>dqa_ind])
-dqa_scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W)
-dqa_d =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A, Y[,dqa_ind], Y[,<span class="op">-</span>dqa_ind])
-<span class="co"># shuffled_A = shuffle_x_c(X$A, B)</span>
-storeW =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,dqa_ind], Y[,<span class="op">-</span>dqa_ind])
-out =<span class="st"> </span><span class="kw">bootstrap_c</span>(X<span class="op">$</span>A, B, storeW)
-bootstrapped_d =<span class="st"> </span><span class="kw">rowSums</span>(out)
-dqa_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <span class="op">&gt;</span><span class="st"> </span>dqa_d) <span class="op">/</span><span class="st"> </span>B
-<span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), dqa_d))<span class="op">+</span><span class="dv">20</span>)
-<span class="kw">abline</span>(<span class="dt">v=</span>dqa_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+</div>
+</div>
+<div id="investigating-the-top-signals" class="section level1">
+<h1>3. Investigating the top signals</h1>
+<div id="a-hla-dqa1" class="section level2">
+<h2>(a) HLA-DQA1</h2>
+<div id="i-score-test" class="section level3">
+<h3>(i) Score test</h3>
+<p>We re-cap what we have observed in HLA-DQA1 for the score tests.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hla_genes =<span class="st"> &quot;HLA-DQA1&quot;</span>
+results =<span class="st"> </span>ref[<span class="kw">match</span>(hla_genes, ref<span class="op">$</span>hgnc_symbol), ]
+
+dqa_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(results<span class="op">$</span>ensembl_gene_id))
+smallY =<span class="st"> </span>Y[,<span class="op">-</span>dqa_ind]
+s =<span class="st"> </span>news =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)
+<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>(<span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)){
+  s[i] =<span class="st"> </span><span class="kw">get_score_c</span>(X<span class="op">$</span>A, Y[,dqa_ind], smallY[,i])
+}
+<span class="kw">plot</span>(<span class="kw">sort</span>(s) <span class="op">~</span><span class="st"> </span><span class="kw">qchisq</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length=</span><span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>), <span class="dv">1</span>),
+     <span class="dt">type =</span> <span class="st">&#39;l&#39;</span>,
+     <span class="dt">main =</span> <span class="st">&#39;pairwise scores&#39;</span>,
+     <span class="dt">xlab =</span> <span class="st">&#39;reference chi1&#39;</span>,
+     <span class="dt">ylab =</span> <span class="st">&#39;sorted scores&#39;</span>); 
+<span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
 <p><img src="figure/AA_EA.Rmd/unnamed-chunk-9-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
@@ -1388,8 +1174,23 @@ tk382
 </table>
 </div>
 </div>
+</div>
+<div id="ii-permutation-test" class="section level3">
+<h3>(ii) Permutation test</h3>
+<p>In order to verify if HLA-DQA truly has a signal, we perform permutation test. The p-value is indeed very small.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,dqa_ind], Y[, <span class="op">-</span>dqa_ind])
+dqa_scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W)
+dqa_d =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A, Y[,dqa_ind], Y[,<span class="op">-</span>dqa_ind])
+<span class="co"># shuffled_A = shuffle_x_c(X$A, B)</span>
+storeW =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,dqa_ind], Y[,<span class="op">-</span>dqa_ind])
+out =<span class="st"> </span><span class="kw">bootstrap_c</span>(X<span class="op">$</span>A, B, storeW)
+bootstrapped_d =<span class="st"> </span><span class="kw">rowSums</span>(out)
+dqa_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <span class="op">&gt;</span><span class="st"> </span>dqa_d) <span class="op">/</span><span class="st"> </span>B
+<span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), dqa_d))<span class="op">+</span><span class="dv">20</span>)
+<span class="kw">abline</span>(<span class="dt">v=</span>dqa_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-10-1.png" width="700" style="display: block; margin: auto;" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(dqa_p)</code></pre></div>
-<pre><code>[1] 0.0038</code></pre>
+<pre><code>[1] 0.007</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># par(mfrow = c(2,3))</span>
 <span class="co"># for (i in 1:12){</span>
 <span class="co">#   qqplot(ref_chisq, out[i, ], cex = 0.5, type = &#39;l&#39;, ylab = &#39;permuted score&#39;)</span>
@@ -1400,10 +1201,7 @@ tk382
 <h3>(iii) Genes with the highest scores</h3>
 <p>We make some diagnosis plot to observe what is driving the signal.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">max_scores =<span class="st"> </span><span class="kw">sort</span>(s, <span class="dt">decreasing=</span><span class="ot">TRUE</span>, <span class="dt">index.return=</span><span class="ot">TRUE</span>)
-results =<span class="st"> </span><span class="kw">getBM</span>(<span class="dt">attributes =</span> <span class="kw">c</span>(<span class="st">&#39;hgnc_symbol&#39;</span>,<span class="st">&#39;ensembl_gene_id&#39;</span>),
-                <span class="dt">filters =</span> <span class="st">&quot;ensembl_gene_id&quot;</span>,
-                <span class="dt">values =</span> <span class="kw">colnames</span>(Y[,<span class="op">-</span>dqa_ind])[max_scores<span class="op">$</span>ix[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]],
-                <span class="dt">mart =</span> ensembl)
+results =<span class="st"> </span>ref[<span class="kw">match</span>(<span class="kw">colnames</span>(Y[,<span class="op">-</span>dqa_ind])[max_scores<span class="op">$</span>ix[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]], ref<span class="op">$</span>ensembl_gene_id), ]
 results =<span class="st"> </span>results[<span class="kw">match</span>(results<span class="op">$</span>ensembl_gene_id, <span class="kw">colnames</span>(Y[,<span class="op">-</span>dqa_ind])[max_scores<span class="op">$</span>ix[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]]), ]
 top_genes =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">gene_name =</span> results<span class="op">$</span>hgnc_symbol, <span class="dt">score =</span> max_scores<span class="op">$</span>x[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>],
                 <span class="dt">ensembl =</span> results<span class="op">$</span>ensembl_gene_id)
@@ -1417,16 +1215,16 @@ diff_cor =<span class="st"> </span><span class="kw">data.frame</span>(<span clas
                                           (orig[EA_ind,<span class="op">-</span>dqa_ind])[, max_scores<span class="op">$</span>ix[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]])))
 <span class="kw">print</span>(<span class="kw">cbind</span>(top_genes, diff_cor[,<span class="dv">2</span><span class="op">:</span><span class="dv">3</span>]))</code></pre></div>
 <pre><code>    gene_name    score         ensembl        AA          EA
-1        LRBA 28.85008 ENSG00000198589 0.3478526 -0.14944539
-2     PLA2G4E 26.21730 ENSG00000188089 0.4189482 -0.10035988
-3      OSBPL6 24.63537 ENSG00000079156 0.4538671 -0.12932814
-4        PKP4 23.65608 ENSG00000144283 0.4588957 -0.15284831
-5       EIF4B 23.51561 ENSG00000063046 0.3425440 -0.08661835
-6       PRSS3 23.46787 ENSG00000010438 0.4111445 -0.09436705
-7             23.06378 ENSG00000272008 0.2536646 -0.01610219
-8  SUCLA2-AS1 23.05285 ENSG00000227848 0.2267855 -0.14215591
-9       UPK1B 22.55323 ENSG00000114638 0.4782435  0.04157245
-10      SUDS3 21.76107 ENSG00000111707 0.1836475 -0.22015849</code></pre>
+1        PKP4 28.88540 ENSG00000144283 0.3478526 -0.14944539
+2       UPK1B 26.21919 ENSG00000114638 0.4189482 -0.10035988
+3      OSBPL6 24.57978 ENSG00000079156 0.4538671 -0.12932814
+4        &lt;NA&gt; 23.70785 ENSG00000272008 0.4588957 -0.15284831
+5  SUCLA2-AS1 23.53029 ENSG00000227848 0.3425440 -0.08661835
+6       SUDS3 23.45660 ENSG00000111707 0.4111445 -0.09436705
+7       EIF4B 23.05234 ENSG00000063046 0.2536646 -0.01610219
+8       PRSS3 23.04438 ENSG00000010438 0.2267855 -0.14215591
+9        LRBA 22.55396 ENSG00000198589 0.4782435  0.04157245
+10    PLA2G4E 21.76423 ENSG00000188089 0.1836475 -0.22015849</code></pre>
 </div>
 <div id="iv-the-expression-level-of-hla-dqa1s-top-signal-lrba" class="section level3">
 <h3>(iv) The expression level of HLA-DQA1’s top signal LRBA</h3>
@@ -1439,16 +1237,16 @@ diff_cor =<span class="st"> </span><span class="kw">data.frame</span>(<span clas
                                           (orig[EA_ind,<span class="op">-</span>dqa_ind])[, max_scores<span class="op">$</span>ix[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]])))
 <span class="kw">print</span>(diff_cor)</code></pre></div>
 <pre><code>        genes        AA          EA
-1        LRBA 0.3478526 -0.14944539
-2     PLA2G4E 0.4189482 -0.10035988
+1        PKP4 0.3478526 -0.14944539
+2       UPK1B 0.4189482 -0.10035988
 3      OSBPL6 0.4538671 -0.12932814
-4        PKP4 0.4588957 -0.15284831
-5       EIF4B 0.3425440 -0.08661835
-6       PRSS3 0.4111445 -0.09436705
-7             0.2536646 -0.01610219
-8  SUCLA2-AS1 0.2267855 -0.14215591
-9       UPK1B 0.4782435  0.04157245
-10      SUDS3 0.1836475 -0.22015849</code></pre>
+4        &lt;NA&gt; 0.4588957 -0.15284831
+5  SUCLA2-AS1 0.3425440 -0.08661835
+6       SUDS3 0.4111445 -0.09436705
+7       EIF4B 0.2536646 -0.01610219
+8       PRSS3 0.2267855 -0.14215591
+9        LRBA 0.4782435  0.04157245
+10    PLA2G4E 0.1836475 -0.22015849</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
 <span class="kw">plot</span>(orig[AA_ind, dqa_ind] <span class="op">~</span><span class="st"> </span>orig[AA_ind,<span class="op">-</span>dqa_ind][, max_scores<span class="op">$</span>ix[<span class="dv">1</span>]],
      <span class="dt">main =</span> <span class="st">&#39;African Americans&#39;</span>,
@@ -1458,58 +1256,6 @@ diff_cor =<span class="st"> </span><span class="kw">data.frame</span>(<span clas
      <span class="dt">main =</span> <span class="st">&#39;European Americans&#39;</span>,
      <span class="dt">xlab =</span> <span class="st">&#39;LRBA&#39;</span>,
      <span class="dt">ylab =</span> <span class="st">&#39;HLA-DQA1&#39;</span>)</code></pre></div>
-<p><img src="figure/AA_EA.Rmd/unnamed-chunk-11-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
-Past versions of unnamed-chunk-11-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-11-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/1f3a02e93dbafa6e6ca9ee5ee283ed72ad4965f8/docs/figure/AA_EA.Rmd/unnamed-chunk-11-1.png" target="_blank">1f3a02e</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="v-box-plot" class="section level3">
-<h3>(v) Box Plot</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">AA_ind =<span class="st"> </span><span class="kw">which</span>(orig_A <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)
-EA_ind =<span class="st"> </span><span class="kw">which</span>(orig_A <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)
-dqa_exp =<span class="st"> </span><span class="kw">as.matrix</span>(orig[,dqa_ind])
-dqa_exp_aa =<span class="st"> </span>dqa_exp[AA_ind]
-dqa_exp_ea =<span class="st"> </span>dqa_exp[EA_ind]
-
-df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">exp =</span> dqa_exp, <span class="dt">label =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;African_Amsericans&quot;</span>, <span class="kw">length</span>(AA_ind)),<span class="kw">rep</span>(<span class="st">&quot;European_Americans&quot;</span>, <span class="kw">length</span>(EA_ind))))
-
-<span class="kw">boxplot</span>(exp <span class="op">~</span><span class="st"> </span>label, <span class="dt">data =</span> df, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">main =</span> <span class="st">&quot;distribution of expression of HLA-DQA1&quot;</span>)
-<span class="kw">stripchart</span>(exp <span class="op">~</span><span class="st"> </span>label, <span class="dt">vertical =</span> <span class="ot">TRUE</span>, <span class="dt">data =</span> df, 
-    <span class="dt">method =</span> <span class="st">&quot;jitter&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">pch =</span> <span class="dv">4</span>, <span class="dt">col =</span> <span class="st">&#39;blue&#39;</span>, <span class="dt">cex=</span><span class="fl">0.5</span>)</code></pre></div>
 <p><img src="figure/AA_EA.Rmd/unnamed-chunk-12-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
@@ -1559,26 +1305,20 @@ tk382
 </table>
 </div>
 </div>
-
 </div>
-</div>
-<div id="b-foxm1" class="section level2">
-<h2>(b) FOXM1</h2>
-<div id="i-score-test-1" class="section level3">
-<h3>(i) Score test</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gene =<span class="st"> &quot;FOXM1&quot;</span>
-results =<span class="st"> </span><span class="kw">getBM</span>(<span class="dt">attributes =</span> <span class="kw">c</span>(<span class="st">&#39;hgnc_symbol&#39;</span>,<span class="st">&#39;ensembl_gene_id&#39;</span>),
-                <span class="dt">filters =</span> <span class="st">&quot;hgnc_symbol&quot;</span>,
-                <span class="dt">values =</span> gene,
-                <span class="dt">mart =</span> ensembl)
+<div id="v-box-plot" class="section level3">
+<h3>(v) Box Plot</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">AA_ind =<span class="st"> </span><span class="kw">which</span>(orig_A <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)
+EA_ind =<span class="st"> </span><span class="kw">which</span>(orig_A <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)
+dqa_exp =<span class="st"> </span><span class="kw">as.matrix</span>(orig[,dqa_ind])
+dqa_exp_aa =<span class="st"> </span>dqa_exp[AA_ind]
+dqa_exp_ea =<span class="st"> </span>dqa_exp[EA_ind]
 
-fox_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(results<span class="op">$</span>ensembl_gene_id))
-smallY =<span class="st"> </span>Y[,<span class="op">-</span>fox_ind]
-s =<span class="st"> </span>news =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)
-<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>(<span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)){
-  s[i] =<span class="st"> </span><span class="kw">get_score_c</span>(X<span class="op">$</span>A, Y[,fox_ind], smallY[,i])
-}
-<span class="kw">plot</span>(<span class="kw">sort</span>(s) <span class="op">~</span><span class="st"> </span><span class="kw">qchisq</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length=</span><span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>), <span class="dv">1</span>), <span class="dt">type =</span> <span class="st">&#39;l&#39;</span>); <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">main =</span> <span class="st">&#39;adjusted&#39;</span>)</code></pre></div>
+df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">exp =</span> dqa_exp, <span class="dt">label =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;African_Amsericans&quot;</span>, <span class="kw">length</span>(AA_ind)),<span class="kw">rep</span>(<span class="st">&quot;European_Americans&quot;</span>, <span class="kw">length</span>(EA_ind))))
+
+<span class="kw">boxplot</span>(exp <span class="op">~</span><span class="st"> </span>label, <span class="dt">data =</span> df, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">main =</span> <span class="st">&quot;distribution of expression of HLA-DQA1&quot;</span>)
+<span class="kw">stripchart</span>(exp <span class="op">~</span><span class="st"> </span>label, <span class="dt">vertical =</span> <span class="ot">TRUE</span>, <span class="dt">data =</span> df, 
+    <span class="dt">method =</span> <span class="st">&quot;jitter&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">pch =</span> <span class="dv">4</span>, <span class="dt">col =</span> <span class="st">&#39;blue&#39;</span>, <span class="dt">cex=</span><span class="fl">0.5</span>)</code></pre></div>
 <p><img src="figure/AA_EA.Rmd/unnamed-chunk-13-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
@@ -1617,22 +1357,23 @@ tk382
 </table>
 </div>
 </div>
+
 </div>
-<div id="ii-permutation-test-1" class="section level3">
-<h3>(ii) Permutation test</h3>
-<p>We conduct the permutation test to see if the signal is real.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fox_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span>results[results<span class="op">$</span>hgnc_symbol<span class="op">==</span><span class="st">&quot;FOXM1&quot;</span>, <span class="dv">2</span>])
-W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,fox_ind], Y[, <span class="op">-</span>fox_ind])
-fox_scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W)
-fox_d =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A, Y[,fox_ind], Y[,<span class="op">-</span>fox_ind])
-shuffled_A =<span class="st"> </span><span class="kw">shuffle_x_c</span>(X<span class="op">$</span>A, B)
-storeW =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,fox_ind], Y[,<span class="op">-</span>fox_ind])
-out =<span class="st"> </span><span class="kw">bootstrap_c</span>(X<span class="op">$</span>A, B, storeW)
-bootstrapped_d =<span class="st"> </span><span class="kw">rowSums</span>(out)
-fox_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <span class="op">&gt;</span><span class="st"> </span>fox_d) <span class="op">/</span><span class="st"> </span>B
-<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))
-<span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), fox_d))<span class="op">+</span><span class="dv">100</span>)
-<span class="kw">abline</span>(<span class="dt">v=</span>fox_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+</div>
+<div id="b-foxm1" class="section level2">
+<h2>(b) FOXM1</h2>
+<div id="i-score-test-1" class="section level3">
+<h3>(i) Score test</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gene =<span class="st"> &quot;FOXM1&quot;</span>
+results =<span class="st"> </span>ref[<span class="kw">match</span>(gene, ref<span class="op">$</span>hgnc_symbol), ]
+
+fox_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(results<span class="op">$</span>ensembl_gene_id))
+smallY =<span class="st"> </span>Y[,<span class="op">-</span>fox_ind]
+s =<span class="st"> </span>news =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)
+<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>(<span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)){
+  s[i] =<span class="st"> </span><span class="kw">get_score_c</span>(X<span class="op">$</span>A, Y[,fox_ind], smallY[,i])
+}
+<span class="kw">plot</span>(<span class="kw">sort</span>(s) <span class="op">~</span><span class="st"> </span><span class="kw">qchisq</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length=</span><span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>), <span class="dv">1</span>), <span class="dt">type =</span> <span class="st">&#39;l&#39;</span>); <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">main =</span> <span class="st">&#39;adjusted&#39;</span>)</code></pre></div>
 <p><img src="figure/AA_EA.Rmd/unnamed-chunk-14-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
@@ -1682,28 +1423,22 @@ tk382
 </table>
 </div>
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(fox_p)</code></pre></div>
-<pre><code>[1] 0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># par(mfrow = c(2,3))</span>
-<span class="co"># for (i in 1:12){</span>
-<span class="co">#   qqplot(ref_chisq, out[i, ], cex = 0.5, type = &#39;l&#39;, ylab = &#39;permuted score&#39;)</span>
-<span class="co">#   abline(0,1,col = &#39;red&#39;)</span>
-<span class="co"># }</span></code></pre></div>
 </div>
-<div id="iii-box-plot" class="section level3">
-<h3>(iii) Box plot</h3>
-<p>We inspect the raw data to see any patterns between Afircan Americans and European Americans.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">AA_ind =<span class="st"> </span><span class="kw">which</span>(orig_A <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)
-EA_ind =<span class="st"> </span><span class="kw">which</span>(orig_A <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)
-fox_exp =<span class="st"> </span><span class="kw">as.matrix</span>(orig[,fox_ind])
-fox_exp_aa =<span class="st"> </span>fox_exp[AA_ind]
-fox_exp_ea =<span class="st"> </span>fox_exp[EA_ind]
-
-df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">exp =</span> fox_exp, <span class="dt">label =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;African Americans&quot;</span>, <span class="kw">length</span>(AA_ind)),<span class="kw">rep</span>(<span class="st">&quot;European Americans&quot;</span>, <span class="kw">length</span>(EA_ind))))
-
-<span class="kw">boxplot</span>(exp <span class="op">~</span><span class="st"> </span>label, <span class="dt">data =</span> df, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">main =</span> <span class="st">&quot;distribution of expression of FOXM1&quot;</span>)
-<span class="kw">stripchart</span>(exp <span class="op">~</span><span class="st"> </span>label, <span class="dt">vertical =</span> <span class="ot">TRUE</span>, <span class="dt">data =</span> df, 
-    <span class="dt">method =</span> <span class="st">&quot;jitter&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">pch =</span> <span class="dv">4</span>, <span class="dt">col =</span> <span class="st">&#39;blue&#39;</span>, <span class="dt">cex=</span><span class="fl">0.5</span>)</code></pre></div>
+<div id="ii-permutation-test-1" class="section level3">
+<h3>(ii) Permutation test</h3>
+<p>We conduct the permutation test to see if the signal is real.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fox_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span>results[results<span class="op">$</span>hgnc_symbol<span class="op">==</span><span class="st">&quot;FOXM1&quot;</span>, <span class="dv">1</span>])
+W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,fox_ind], Y[, <span class="op">-</span>fox_ind])
+fox_scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W)
+fox_d =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A, Y[,fox_ind], Y[,<span class="op">-</span>fox_ind])
+shuffled_A =<span class="st"> </span><span class="kw">shuffle_x_c</span>(X<span class="op">$</span>A, B)
+storeW =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,fox_ind], Y[,<span class="op">-</span>fox_ind])
+out =<span class="st"> </span><span class="kw">bootstrap_c</span>(X<span class="op">$</span>A, B, storeW)
+bootstrapped_d =<span class="st"> </span><span class="kw">rowSums</span>(out)
+fox_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <span class="op">&gt;</span><span class="st"> </span>fox_d) <span class="op">/</span><span class="st"> </span>B
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))
+<span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), fox_d))<span class="op">+</span><span class="dv">100</span>)
+<span class="kw">abline</span>(<span class="dt">v=</span>fox_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
 <p><img src="figure/AA_EA.Rmd/unnamed-chunk-15-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
@@ -1753,28 +1488,28 @@ tk382
 </table>
 </div>
 </div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(fox_p)</code></pre></div>
+<pre><code>[1] 0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># par(mfrow = c(2,3))</span>
+<span class="co"># for (i in 1:12){</span>
+<span class="co">#   qqplot(ref_chisq, out[i, ], cex = 0.5, type = &#39;l&#39;, ylab = &#39;permuted score&#39;)</span>
+<span class="co">#   abline(0,1,col = &#39;red&#39;)</span>
+<span class="co"># }</span></code></pre></div>
 </div>
-</div>
-<div id="c-correlation-of-hla-dqa1-and-foxm1-against-all-other-genes" class="section level2">
-<h2>(c) Correlation of HLA-DQA1 and FOXM1 against all other genes</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">diff_cor_fox =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">genes =</span> <span class="kw">colnames</span>(orig)[<span class="op">-</span>fox_ind],
-                      <span class="dt">AA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[AA_ind,fox_ind], 
-                                          (orig[AA_ind,<span class="op">-</span>fox_ind]))),
-                      <span class="dt">EA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[EA_ind,fox_ind], 
-                                          (orig[EA_ind,<span class="op">-</span>fox_ind]))))
-diff_cor_dqa =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">genes =</span> <span class="kw">colnames</span>(orig)[<span class="op">-</span>dqa_ind],
-                      <span class="dt">AA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[AA_ind,dqa_ind], 
-                                          (orig[AA_ind,<span class="op">-</span>dqa_ind]))),
-                      <span class="dt">EA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[EA_ind,dqa_ind], 
-                                          (orig[EA_ind,<span class="op">-</span>dqa_ind]))))
-<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
-<span class="kw">plot</span>(diff_cor_dqa<span class="op">$</span>AA <span class="op">~</span><span class="st"> </span>diff_cor_dqa<span class="op">$</span>EA, <span class="dt">cex=</span><span class="fl">0.3</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">main=</span><span class="st">&#39;HLA-DQA1&#39;</span>,
-     <span class="dt">ylab =</span> <span class="st">&#39;African Americans&#39;</span>,
-     <span class="dt">xlab =</span> <span class="st">&#39;European Americans&#39;</span>); <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
+<div id="iii-box-plot" class="section level3">
+<h3>(iii) Box plot</h3>
+<p>We inspect the raw data to see any patterns between Afircan Americans and European Americans.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">AA_ind =<span class="st"> </span><span class="kw">which</span>(orig_A <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)
+EA_ind =<span class="st"> </span><span class="kw">which</span>(orig_A <span class="op">&lt;=</span><span class="st"> </span><span class="dv">0</span>)
+fox_exp =<span class="st"> </span><span class="kw">as.matrix</span>(orig[,fox_ind])
+fox_exp_aa =<span class="st"> </span>fox_exp[AA_ind]
+fox_exp_ea =<span class="st"> </span>fox_exp[EA_ind]
 
-<span class="kw">plot</span>(diff_cor_fox<span class="op">$</span>AA <span class="op">~</span><span class="st"> </span>diff_cor_fox<span class="op">$</span>EA, <span class="dt">cex=</span><span class="fl">0.3</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">main=</span><span class="st">&#39;FOXM1&#39;</span>,
-     <span class="dt">ylab =</span> <span class="st">&#39;African Americans&#39;</span>,
-     <span class="dt">xlab =</span> <span class="st">&#39;European Americans&#39;</span>); <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">exp =</span> fox_exp, <span class="dt">label =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;African Americans&quot;</span>, <span class="kw">length</span>(AA_ind)),<span class="kw">rep</span>(<span class="st">&quot;European Americans&quot;</span>, <span class="kw">length</span>(EA_ind))))
+
+<span class="kw">boxplot</span>(exp <span class="op">~</span><span class="st"> </span>label, <span class="dt">data =</span> df, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">main =</span> <span class="st">&quot;distribution of expression of FOXM1&quot;</span>)
+<span class="kw">stripchart</span>(exp <span class="op">~</span><span class="st"> </span>label, <span class="dt">vertical =</span> <span class="ot">TRUE</span>, <span class="dt">data =</span> df, 
+    <span class="dt">method =</span> <span class="st">&quot;jitter&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">pch =</span> <span class="dv">4</span>, <span class="dt">col =</span> <span class="st">&#39;blue&#39;</span>, <span class="dt">cex=</span><span class="fl">0.5</span>)</code></pre></div>
 <p><img src="figure/AA_EA.Rmd/unnamed-chunk-16-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
@@ -1814,20 +1549,19 @@ tk382
 </div>
 </div>
 </div>
-<div id="d-what-happens-when-i-reduce-the-sample-size-of-european-americans" class="section level2">
-<h2>(d) What happens when I reduce the sample size of European Americans?</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EA_subset =<span class="st"> </span><span class="kw">sample</span>(EA_ind, <span class="dt">size=</span><span class="dv">31</span>)
-
-diff_cor_fox =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">genes =</span> <span class="kw">colnames</span>(orig)[<span class="op">-</span>fox_ind],
+</div>
+<div id="c-correlation-of-hla-dqa1-and-foxm1-against-all-other-genes" class="section level2">
+<h2>(c) Correlation of HLA-DQA1 and FOXM1 against all other genes</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">diff_cor_fox =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">genes =</span> <span class="kw">colnames</span>(orig)[<span class="op">-</span>fox_ind],
                       <span class="dt">AA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[AA_ind,fox_ind], 
                                           (orig[AA_ind,<span class="op">-</span>fox_ind]))),
-                      <span class="dt">EA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[EA_subset,fox_ind], 
-                                          (orig[EA_subset,<span class="op">-</span>fox_ind]))))
+                      <span class="dt">EA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[EA_ind,fox_ind], 
+                                          (orig[EA_ind,<span class="op">-</span>fox_ind]))))
 diff_cor_dqa =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">genes =</span> <span class="kw">colnames</span>(orig)[<span class="op">-</span>dqa_ind],
                       <span class="dt">AA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[AA_ind,dqa_ind], 
                                           (orig[AA_ind,<span class="op">-</span>dqa_ind]))),
-                      <span class="dt">EA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[EA_subset,dqa_ind], 
-                                          (orig[EA_subset,<span class="op">-</span>dqa_ind]))))
+                      <span class="dt">EA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[EA_ind,dqa_ind], 
+                                          (orig[EA_ind,<span class="op">-</span>dqa_ind]))))
 <span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
 <span class="kw">plot</span>(diff_cor_dqa<span class="op">$</span>AA <span class="op">~</span><span class="st"> </span>diff_cor_dqa<span class="op">$</span>EA, <span class="dt">cex=</span><span class="fl">0.3</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">main=</span><span class="st">&#39;HLA-DQA1&#39;</span>,
      <span class="dt">ylab =</span> <span class="st">&#39;African Americans&#39;</span>,
@@ -1886,17 +1620,28 @@ tk382
 </div>
 </div>
 </div>
-<div id="e-repeat-hla-dqa1-with-sampled-euopreans" class="section level2">
-<h2>(e) Repeat HLA-DQA1 with sampled Euopreans</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[<span class="kw">c</span>(AA_ind, EA_subset),dqa_ind], Y[<span class="kw">c</span>(AA_ind, EA_subset), <span class="op">-</span>dqa_ind])
-dqa_scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A[<span class="kw">c</span>(AA_ind, EA_subset)], W)
-dqa_d =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A[<span class="kw">c</span>(AA_ind, EA_subset)], Y[<span class="kw">c</span>(AA_ind, EA_subset),dqa_ind], Y[<span class="kw">c</span>(AA_ind, EA_subset),<span class="op">-</span>dqa_ind])
-storeW =<span class="st"> </span><span class="kw">store_W_c</span>(Y[<span class="kw">c</span>(AA_ind, EA_subset),dqa_ind], Y[<span class="kw">c</span>(AA_ind, EA_subset),<span class="op">-</span>dqa_ind])
-out =<span class="st"> </span><span class="kw">bootstrap_c</span>(X<span class="op">$</span>A[<span class="kw">c</span>(AA_ind, EA_subset)], B, storeW)
-bootstrapped_d =<span class="st"> </span><span class="kw">rowSums</span>(out)
-dqa_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <span class="op">&gt;</span><span class="st"> </span>dqa_d) <span class="op">/</span><span class="st"> </span>B
-<span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), dqa_d))<span class="op">+</span><span class="dv">20</span>)
-<span class="kw">abline</span>(<span class="dt">v=</span>dqa_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+<div id="d-what-happens-when-i-reduce-the-sample-size-of-european-americans" class="section level2">
+<h2>(d) What happens when I reduce the sample size of European Americans?</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EA_subset =<span class="st"> </span><span class="kw">sample</span>(EA_ind, <span class="dt">size=</span><span class="dv">31</span>)
+
+diff_cor_fox =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">genes =</span> <span class="kw">colnames</span>(orig)[<span class="op">-</span>fox_ind],
+                      <span class="dt">AA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[AA_ind,fox_ind], 
+                                          (orig[AA_ind,<span class="op">-</span>fox_ind]))),
+                      <span class="dt">EA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[EA_subset,fox_ind], 
+                                          (orig[EA_subset,<span class="op">-</span>fox_ind]))))
+diff_cor_dqa =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">genes =</span> <span class="kw">colnames</span>(orig)[<span class="op">-</span>dqa_ind],
+                      <span class="dt">AA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[AA_ind,dqa_ind], 
+                                          (orig[AA_ind,<span class="op">-</span>dqa_ind]))),
+                      <span class="dt">EA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[EA_subset,dqa_ind], 
+                                          (orig[EA_subset,<span class="op">-</span>dqa_ind]))))
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<span class="kw">plot</span>(diff_cor_dqa<span class="op">$</span>AA <span class="op">~</span><span class="st"> </span>diff_cor_dqa<span class="op">$</span>EA, <span class="dt">cex=</span><span class="fl">0.3</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">main=</span><span class="st">&#39;HLA-DQA1&#39;</span>,
+     <span class="dt">ylab =</span> <span class="st">&#39;African Americans&#39;</span>,
+     <span class="dt">xlab =</span> <span class="st">&#39;European Americans&#39;</span>); <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
+
+<span class="kw">plot</span>(diff_cor_fox<span class="op">$</span>AA <span class="op">~</span><span class="st"> </span>diff_cor_fox<span class="op">$</span>EA, <span class="dt">cex=</span><span class="fl">0.3</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">main=</span><span class="st">&#39;FOXM1&#39;</span>,
+     <span class="dt">ylab =</span> <span class="st">&#39;African Americans&#39;</span>,
+     <span class="dt">xlab =</span> <span class="st">&#39;European Americans&#39;</span>); <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
 <p><img src="figure/AA_EA.Rmd/unnamed-chunk-18-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
@@ -1946,20 +1691,18 @@ tk382
 </table>
 </div>
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(dqa_p)</code></pre></div>
-<pre><code>[1] 0.0784</code></pre>
 </div>
-<div id="f-repeat-fox-m1-with-sampled-euopreans" class="section level2">
-<h2>(f) Repeat FOX-M1 with sampled Euopreans</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[<span class="kw">c</span>(AA_ind, EA_subset),fox_ind], Y[<span class="kw">c</span>(AA_ind, EA_subset), <span class="op">-</span>fox_ind])
-fox_scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A[<span class="kw">c</span>(AA_ind, EA_subset)], W)
-fox_d =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A[<span class="kw">c</span>(AA_ind, EA_subset)], Y[<span class="kw">c</span>(AA_ind, EA_subset),fox_ind], Y[<span class="kw">c</span>(AA_ind, EA_subset),<span class="op">-</span>fox_ind])
-storeW =<span class="st"> </span><span class="kw">store_W_c</span>(Y[<span class="kw">c</span>(AA_ind, EA_subset),fox_ind], Y[<span class="kw">c</span>(AA_ind, EA_subset),<span class="op">-</span>fox_ind])
+<div id="e-repeat-hla-dqa1-with-sampled-euopreans" class="section level2">
+<h2>(e) Repeat HLA-DQA1 with sampled Euopreans</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[<span class="kw">c</span>(AA_ind, EA_subset),dqa_ind], Y[<span class="kw">c</span>(AA_ind, EA_subset), <span class="op">-</span>dqa_ind])
+dqa_scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A[<span class="kw">c</span>(AA_ind, EA_subset)], W)
+dqa_d =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A[<span class="kw">c</span>(AA_ind, EA_subset)], Y[<span class="kw">c</span>(AA_ind, EA_subset),dqa_ind], Y[<span class="kw">c</span>(AA_ind, EA_subset),<span class="op">-</span>dqa_ind])
+storeW =<span class="st"> </span><span class="kw">store_W_c</span>(Y[<span class="kw">c</span>(AA_ind, EA_subset),dqa_ind], Y[<span class="kw">c</span>(AA_ind, EA_subset),<span class="op">-</span>dqa_ind])
 out =<span class="st"> </span><span class="kw">bootstrap_c</span>(X<span class="op">$</span>A[<span class="kw">c</span>(AA_ind, EA_subset)], B, storeW)
 bootstrapped_d =<span class="st"> </span><span class="kw">rowSums</span>(out)
-fox_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <span class="op">&gt;</span><span class="st"> </span>fox_d) <span class="op">/</span><span class="st"> </span>B
-<span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), fox_d))<span class="op">+</span><span class="dv">20</span>)
-<span class="kw">abline</span>(<span class="dt">v=</span>fox_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+dqa_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <span class="op">&gt;</span><span class="st"> </span>dqa_d) <span class="op">/</span><span class="st"> </span>B
+<span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), dqa_d))<span class="op">+</span><span class="dv">20</span>)
+<span class="kw">abline</span>(<span class="dt">v=</span>dqa_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
 <p><img src="figure/AA_EA.Rmd/unnamed-chunk-19-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
@@ -2009,8 +1752,137 @@ tk382
 </table>
 </div>
 </div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(dqa_p)</code></pre></div>
+<pre><code>[1] 0.1684</code></pre>
+</div>
+<div id="f-repeat-fox-m1-with-sampled-euopreans" class="section level2">
+<h2>(f) Repeat FOX-M1 with sampled Euopreans</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[<span class="kw">c</span>(AA_ind, EA_subset),fox_ind], Y[<span class="kw">c</span>(AA_ind, EA_subset), <span class="op">-</span>fox_ind])
+fox_scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A[<span class="kw">c</span>(AA_ind, EA_subset)], W)
+fox_d =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A[<span class="kw">c</span>(AA_ind, EA_subset)], Y[<span class="kw">c</span>(AA_ind, EA_subset),fox_ind], Y[<span class="kw">c</span>(AA_ind, EA_subset),<span class="op">-</span>fox_ind])
+storeW =<span class="st"> </span><span class="kw">store_W_c</span>(Y[<span class="kw">c</span>(AA_ind, EA_subset),fox_ind], Y[<span class="kw">c</span>(AA_ind, EA_subset),<span class="op">-</span>fox_ind])
+out =<span class="st"> </span><span class="kw">bootstrap_c</span>(X<span class="op">$</span>A[<span class="kw">c</span>(AA_ind, EA_subset)], B, storeW)
+bootstrapped_d =<span class="st"> </span><span class="kw">rowSums</span>(out)
+fox_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <span class="op">&gt;</span><span class="st"> </span>fox_d) <span class="op">/</span><span class="st"> </span>B
+<span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), fox_d))<span class="op">+</span><span class="dv">20</span>)
+<span class="kw">abline</span>(<span class="dt">v=</span>fox_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-20-1.png" width="700" style="display: block; margin: auto;" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(fox_p)</code></pre></div>
 <pre><code>[1] 4e-04</code></pre>
+</div>
+</div>
+<div id="constricted-analysis-of-transcription-factors" class="section level1">
+<h1>Constricted analysis of transcription factors</h1>
+<p>We found the external data base of TF2DNA that shows the target genes for each transcription factor. Since it offers a list of transcription factors as well as their target genes for 1306 transcription factors, we focus only on those transcription factors. For target genes, we use only those with the top binding scores.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(data.table)
+TFs =<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&quot;/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/&quot;</span>)
+TFs =<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">strsplit</span>(TFs, <span class="st">&quot;.pscan&quot;</span>), <span class="cf">function</span>(x) x[[<span class="dv">1</span>]])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results =<span class="st"> </span>ref[<span class="kw">match</span>(TFs, ref<span class="op">$</span>hgnc_symbol), ]
+results =<span class="st"> </span>results[<span class="op">!</span><span class="kw">is.na</span>(results<span class="op">$</span>hgnc_symbol), ]
+out =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">TF =</span> results<span class="op">$</span>hgnc_symbol, 
+                 <span class="dt">numTargets =</span> <span class="kw">rep</span>(<span class="ot">NA</span>, <span class="kw">nrow</span>(results)),
+                 <span class="dt">degree =</span> <span class="kw">rep</span>(<span class="ot">NA</span>, <span class="kw">nrow</span>(results)))</code></pre></div>
+<p>For each transcription factor, we need to read in the target data, which can take very long due to a high number of file IO.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(results<span class="op">$</span>hgnc_symbol)){
+  targets =<span class="st"> </span><span class="kw">fread</span>(<span class="kw">paste0</span>(<span class="st">&quot;/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/&quot;</span>, results<span class="op">$</span>hgnc_symbol[i], <span class="st">&quot;.pscan&quot;</span>))
+  targets =<span class="st"> </span>targets[<span class="kw">which</span>(targets<span class="op">$</span>p_value <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(targets<span class="op">$</span>p_value)), <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">6</span>,<span class="dv">7</span>)]
+  target_genenames =<span class="st"> </span>ref[<span class="kw">match</span>(targets<span class="op">$</span>target_name, ref<span class="op">$</span>hgnc_symbol), ]
+  main_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">==</span><span class="st"> </span>results<span class="op">$</span>ensembl_gene_id[i])
+  target_ind =<span class="st"> </span><span class="kw">match</span>(target_genenames<span class="op">$</span>ensembl_gene_id, <span class="kw">colnames</span>(Y))
+  target_ind =<span class="st"> </span>target_ind[<span class="op">!</span><span class="kw">is.na</span>(target_ind)]
+  W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,main_ind], Y[, target_ind])
+  scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W)
+  out<span class="op">$</span>numTargets[i] =<span class="st"> </span><span class="kw">ncol</span>(W)
+  out<span class="op">$</span>degree[i] =<span class="st"> </span><span class="kw">sum</span>(scores)
+}
+<span class="kw">head</span>(out)</code></pre></div>
+<pre><code>     TF numTargets    degree
+1  ADNP        647 509.58348
+2 ADNP2        514 424.00513
+3 AEBP2        140  74.75281
+4  ALX1        316 205.13910
+5  ALX3        465 308.13360
+6  ALX4        316 427.57626</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but it won’t be re-run if previous chunks it depends on are updated. If you need to use caching, it is highly recommended to also set <code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the file (in a chunk that is not cached). Alternatively, you can customize the option <code>dependson</code> for each individual chunk that is cached. Using either <code>autodep</code> or <code>dependson</code> will remove this warning. See the <a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d =<span class="st"> </span>out<span class="op">$</span>degree <span class="op">/</span><span class="st"> </span>out<span class="op">$</span>numTargets
+df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">d =</span> d, 
+                <span class="dt">genes =</span> results<span class="op">$</span>hgnc_symbol, 
+                <span class="dt">xaxis =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(d))
+<span class="kw">plot</span>(d,
+     <span class="dt">main =</span> <span class="st">&#39;Targeted TF&#39;</span>,
+     <span class="dt">ylab =</span> <span class="st">&#39;averaged scores&#39;</span>,
+     <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">max</span>(d) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>))
+<span class="kw">abline</span>(<span class="dt">h=</span><span class="dv">3</span>, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
+ind =<span class="st"> </span><span class="kw">which</span>(d <span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span>)
+df =<span class="st"> </span>df[ind,]
+<span class="kw">with</span>(df, <span class="kw">text</span>(d<span class="op">~</span>xaxis, <span class="dt">labels=</span>genes, <span class="dt">pos=</span><span class="dv">3</span>))</code></pre></div>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-24-1.png" width="700" style="display: block; margin: auto;" /></p>
+<div id="another-look-at-foxm1" class="section level2">
+<h2>Another look at FOXM1</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i =<span class="st"> </span><span class="kw">which</span>(results<span class="op">$</span>hgnc_symbol<span class="op">==</span><span class="st">&quot;FOXM1&quot;</span>)
+targets =<span class="st"> </span><span class="kw">fread</span>(<span class="kw">paste0</span>(<span class="st">&quot;/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/&quot;</span>, results<span class="op">$</span>hgnc_symbol[i], <span class="st">&quot;.pscan&quot;</span>))
+targets =<span class="st"> </span>targets[<span class="kw">which</span>(targets<span class="op">$</span>p_value <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(targets<span class="op">$</span>p_value)), <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">6</span>,<span class="dv">7</span>)]
+target_genenames =<span class="st"> </span>ref[<span class="kw">match</span>(targets<span class="op">$</span>target_name, ref<span class="op">$</span>hgnc_symbol), ]
+main_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">==</span><span class="st"> </span>results<span class="op">$</span>ensembl_gene_id[i])
+target_ind =<span class="st"> </span><span class="kw">match</span>(target_genenames<span class="op">$</span>ensembl_gene_id, <span class="kw">colnames</span>(Y))
+target_ind =<span class="st"> </span>target_ind[<span class="op">!</span><span class="kw">is.na</span>(target_ind)]
+W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,main_ind], Y[, target_ind])
+scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W)
+diff_cor_fox =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">genes =</span> <span class="kw">colnames</span>(orig)[target_ind],
+                      <span class="dt">AA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[AA_ind,fox_ind], 
+                                          (orig[AA_ind,target_ind]))),
+                      <span class="dt">EA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[<span class="op">-</span>AA_ind,fox_ind], 
+                                          (orig[<span class="op">-</span>AA_ind,target_ind]))))
+
+<span class="kw">plot</span>(diff_cor_fox<span class="op">$</span>AA <span class="op">~</span><span class="st"> </span>diff_cor_fox<span class="op">$</span>EA, <span class="dt">cex=</span><span class="fl">0.3</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">main=</span><span class="st">&#39;FOXM1&#39;</span>,
+     <span class="dt">ylab =</span> <span class="st">&#39;African Americans&#39;</span>,
+     <span class="dt">xlab =</span> <span class="st">&#39;European Americans&#39;</span>); <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-25-1.png" width="700" style="display: block; margin: auto;" /></p>
+</div>
+<div id="new-permutation-test-for-foxm1" class="section level2">
+<h2>new permutation test for FOXM1</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A, Y[,fox_ind], Y[,target_ind])
+out =<span class="st"> </span><span class="kw">rowSums</span>(<span class="kw">bootstrap_c</span>(X<span class="op">$</span>A, B, W))
+p =<span class="st"> </span><span class="kw">sum</span>(out<span class="op">&gt;</span>d)<span class="op">/</span>B
+<span class="kw">print</span>(p)</code></pre></div>
+<pre><code>[1] 0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(out, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">max</span>(d<span class="op">+</span><span class="dv">10</span>, <span class="kw">max</span>(out))), <span class="dt">main =</span> <span class="st">&quot;FOXM1 permutation test&quot;</span>)
+<span class="kw">abline</span>(<span class="dt">v=</span>d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-26-1.png" width="700" style="display: block; margin: auto;" /></p>
+<p>and at new gene ZSCAN1</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i =<span class="st"> </span><span class="kw">which</span>(results<span class="op">$</span>hgnc_symbol<span class="op">==</span><span class="st">&quot;ZSCAN1&quot;</span>)
+targets =<span class="st"> </span><span class="kw">fread</span>(<span class="kw">paste0</span>(<span class="st">&quot;/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/&quot;</span>, results<span class="op">$</span>hgnc_symbol[i], <span class="st">&quot;.pscan&quot;</span>))
+targets =<span class="st"> </span>targets[<span class="kw">which</span>(targets<span class="op">$</span>p_value <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(targets<span class="op">$</span>p_value)), <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">6</span>,<span class="dv">7</span>)]
+target_genenames =<span class="st"> </span>ref[<span class="kw">match</span>(targets<span class="op">$</span>target_name, ref<span class="op">$</span>hgnc_symbol), ]
+main_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">==</span><span class="st"> </span>results<span class="op">$</span>ensembl_gene_id[i])
+target_ind =<span class="st"> </span><span class="kw">match</span>(target_genenames<span class="op">$</span>ensembl_gene_id, <span class="kw">colnames</span>(Y))
+target_ind =<span class="st"> </span>target_ind[<span class="op">!</span><span class="kw">is.na</span>(target_ind)]
+W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,main_ind], Y[, target_ind])
+scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W)
+diff_cor_fox =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">genes =</span> <span class="kw">colnames</span>(orig)[target_ind],
+                      <span class="dt">AA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[AA_ind,fox_ind], 
+                                          (orig[AA_ind,target_ind]))),
+                      <span class="dt">EA =</span> <span class="kw">as.numeric</span>(<span class="kw">cor</span>(orig[<span class="op">-</span>AA_ind,fox_ind], 
+                                          (orig[<span class="op">-</span>AA_ind,target_ind]))))
+
+<span class="kw">plot</span>(diff_cor_fox<span class="op">$</span>AA <span class="op">~</span><span class="st"> </span>diff_cor_fox<span class="op">$</span>EA, <span class="dt">cex=</span><span class="fl">0.3</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">main=</span><span class="st">&#39;ZSCAN1&#39;</span>,
+     <span class="dt">ylab =</span> <span class="st">&#39;African Americans&#39;</span>,
+     <span class="dt">xlab =</span> <span class="st">&#39;European Americans&#39;</span>); <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-27-1.png" width="700" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">zscan_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span>results[results<span class="op">$</span>hgnc_symbol<span class="op">==</span><span class="st">&quot;ZSCAN1&quot;</span>, <span class="dv">1</span>])
+d =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A, Y[,fox_ind], Y[,target_ind])
+out =<span class="st"> </span><span class="kw">rowSums</span>(<span class="kw">bootstrap_c</span>(X<span class="op">$</span>A, B, W))
+<span class="kw">sum</span>(out <span class="op">&gt;</span><span class="st"> </span>d)</code></pre></div>
+<pre><code>[1] 0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(out, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">max</span>(d<span class="op">+</span><span class="dv">10</span>, <span class="kw">max</span>(out))), <span class="dt">main =</span> <span class="st">&quot;ZSCAN1 permutation test&quot;</span>)
+<span class="kw">abline</span>(<span class="dt">v=</span>d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
+<span class="kw">abline</span>(<span class="dt">v=</span>d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+<p><img src="figure/AA_EA.Rmd/unnamed-chunk-28-1.png" width="700" style="display: block; margin: auto;" /></p>
 <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2057,21 +1929,21 @@ loaded via a namespace (and not attached):
 [33] pkgconfig_2.0.2           BiocGenerics_0.26.0      
 [35] htmltools_0.3.6           tidyselect_0.2.5         
 [37] tibble_2.1.1              workflowr_1.2.0          
-[39] IRanges_2.16.0            XML_3.98-1.19            
-[41] crayon_1.3.4              dplyr_0.8.0.1            
-[43] withr_2.1.2               bitops_1.0-6             
-[45] R.methodsS3_1.7.1         grid_3.5.3               
-[47] gtable_0.3.0              DBI_1.0.0                
-[49] git2r_0.25.2              magrittr_1.5             
-[51] scales_1.0.0              stringi_1.4.3            
-[53] XVector_0.20.0            RcppArmadillo_0.8.600.0.0
-[55] fs_1.2.7                  tools_3.5.3              
-[57] bit64_0.9-7               Biobase_2.40.0           
-[59] glue_1.3.1                purrr_0.3.2              
-[61] hms_0.4.2                 parallel_3.5.3           
-[63] yaml_2.2.0                AnnotationDbi_1.42.1     
-[65] colorspace_1.4-1          memoise_1.1.0            
-[67] knitr_1.22               </code></pre>
+[39] codetools_0.2-16          IRanges_2.16.0           
+[41] XML_3.98-1.19             crayon_1.3.4             
+[43] dplyr_0.8.0.1             withr_2.1.2              
+[45] bitops_1.0-6              R.methodsS3_1.7.1        
+[47] grid_3.5.3                gtable_0.3.0             
+[49] DBI_1.0.0                 git2r_0.25.2             
+[51] magrittr_1.5              scales_1.0.0             
+[53] stringi_1.4.3             XVector_0.20.0           
+[55] RcppArmadillo_0.8.600.0.0 fs_1.2.7                 
+[57] tools_3.5.3               bit64_0.9-7              
+[59] Biobase_2.40.0            glue_1.3.1               
+[61] purrr_0.3.2               hms_0.4.2                
+[63] parallel_3.5.3            yaml_2.2.0               
+[65] AnnotationDbi_1.42.1      colorspace_1.4-1         
+[67] memoise_1.1.0             knitr_1.22               </code></pre>
 </div>
 </div>
 </div>
