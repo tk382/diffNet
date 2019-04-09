@@ -5,7 +5,7 @@ date: "3/23/2019"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, fig.width = 5, fig.width = 5, fig.aligh="center"}
 set.seed(20190406)
 knitr::opts_chunk$set(echo = TRUE,
                       dpi = 100)
@@ -98,7 +98,7 @@ We believe the disease pathways may reflect the gene-gene correlation structure 
 
 For each pathway, we take a group of $K$ genes and for each $k$ in $1, \cdots, K$, we compute $d_k$ and compare it to the empirical distribution by permuting the ancestry. Then we show qqplot of the p values against the uniform distribution after transformation $-log_{10}(p)$.
 
-```{r}
+```{r, fig.width=8, fig.height = 4}
 get_result_kegg = function(hsacode, B){
   out = keggGet(hsacode)
   out = out[[1]]
@@ -214,7 +214,7 @@ for (i in 1:length(genes)){
 
 And the result is plotted below, where the red line is the expected mean. HLA-DQA1 stands out in its test statistic.
 
-```{r}
+```{r, fig.width=8, fig.height=4}
 par(mfrow = c(1,2))
 d = rowSums(newscores)
 df = data.frame(d = d, genes = results$hgnc_symbol, xaxis = 1:length(d))
@@ -253,7 +253,7 @@ results = results[match(genes, results$ensembl_gene_id), ]
 
 ### (ii) test all the TFs
 
-```{r}
+```{r, fig.width=8, fig.height=4}
 par(mfrow = c(1,2))
 scores = matrix(0, length(genes), ncol(Y)-1)
 for (i in 1:length(genes)){
@@ -360,7 +360,7 @@ print(cbind(top_genes, diff_cor[,2:3]))
 
 ### (iv) The expression level of HLA-DQA1's top signal LRBA
 
-```{r}
+```{r, fig.width=8, fig.height=4}
 AA_ind = which(orig_A > 0)
 EA_ind = which(orig_A == 0)
 diff_cor = data.frame(genes = top_genes$gene_name,
@@ -431,7 +431,6 @@ storeW = store_W_c(Y[,fox_ind], Y[,-fox_ind])
 out = bootstrap_c(X$A, B, storeW)
 bootstrapped_d = rowSums(out)
 fox_p = sum(bootstrapped_d > fox_d) / B
-par(mfrow = c(1,1))
 hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), fox_d))+100)
 abline(v=fox_d, col = 'red')
 print(fox_p)
@@ -463,7 +462,7 @@ stripchart(exp ~ label, vertical = TRUE, data = df,
 
 ## (c) Correlation of HLA-DQA1 and FOXM1 against all other genes
 
-```{r}
+```{r, fig.width=8, fig.height=4}
 diff_cor_fox = data.frame(genes = colnames(orig)[-fox_ind],
                       AA = as.numeric(cor(orig[AA_ind,fox_ind], 
                                           (orig[AA_ind,-fox_ind]))),
@@ -487,7 +486,7 @@ plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1),
 
 ## (d) What happens when I reduce the sample size of European Americans?
 
-```{r}
+```{r, fig.width=8, fig.height=4}
 EA_subset = sample(EA_ind, size=31)
 
 diff_cor_fox = data.frame(genes = colnames(orig)[-fox_ind],
@@ -600,7 +599,7 @@ with(df, text(d~xaxis, labels=genes, pos=3))
 
 ## (b) FOXM1 analysis with target genes
 
-```{r}
+```{r, fig.width = 5, fig.height = 5}
 i = which(results$hgnc_symbol=="FOXM1")
 targets = fread(paste0("/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
 targets = targets[which(targets$p_value == min(targets$p_value)), c(1,2,6,7)]
