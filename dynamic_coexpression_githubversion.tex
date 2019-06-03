@@ -1,4 +1,4 @@
-\documentclass[12pt]{extarticle}
+\documentclass[12pt]{article}
 \usepackage[letterpaper, margin=0.8in]{geometry}
 \usepackage{amsmath}
 \usepackage{amsthm}
@@ -20,9 +20,13 @@
 \usepackage{caption}
 \usepackage{hyperref}
 \usepackage{bbm}
+\usepackage[doublespacing]{setspace}
+\usepackage{tocloft}
+\renewcommand\cftsecafterpnum{\vskip\baselineskip}
+\renewcommand\cftsubsecafterpnum{\vskip\baselineskip}
+\renewcommand\cftsubsubsecafterpnum{\vskip\baselineskip}
 \theoremstyle{theorem}
 \newtheorem{theorem}{Theorem}[section]
-\linespread{2.0}
 
 \begin{document}
 \section{Introduction}
@@ -41,119 +45,92 @@
 	
 \section{Methods}
 \subsection{Framework}
-We assume data $\bm{y_i} \in \mathbb{R}^{K}$, $i = 1, \cdots, n$, are independent, and we define a data matrix $Y = \{y_{ik}\}_{i = 1, k = 1}^{n, K} \in \mathbb{R}^{n \times K}$. The $K$ variables have a non-trivial dependence structure. We can consider $Y$ as a network with $K$ variables connected to each other. For example, $\bm{y_i}$ is the gene expression levels measured at $K$ genes for individual $i$, and the dependence structure demonstrates the gene co-expression network. We define a covariate matrix $X =\{x_{ip}\}_{i=1,p=1}^{n,P} \in \mathbb{R}^{n \times P}$ with $P$ features to study the effect of $X$ on the variance structure of $Y$. For example, the feature vector $\bm{x_i} \in \mathbb{R}^{P}$ holds ancestry information of individual $i$, whether it is a scalar value denoting the proportion of African ancestry in an African American genome, the first few principal components of the genotypes, or local ancestry information at multiple loci of the $i$th individual.  
+We consider a network data $\bm{y_i} \in \mathbb{R}^{K}$, for $n$ independent observations $i=1, \cdots, n$ at $K$ correlated variables. Collectively we write $Y = \{y_{ik}\}_{i=1, k=1}^{n,K} \in \mathbb{R}^{n \times K}$. For example, $\bm{y_i}$ is the gene expression levels measured at $K$ genes for individual $i$, and the dependence structure among $K$ genes demonstrates the gene co-expression network. We define a covariate matrix $X =\{x_{ip}\}_{i=1,p=1}^{n,P} \in \mathbb{R}^{n \times P}$ with $P$ features to study the effect of $X$ on the variance structure of $Y$. For example, the feature vector $\bm{x_i} \in \mathbb{R}^{P}$ holds ancestry information of individual $i$, whether it is a scalar value denoting the proportion of African ancestry in an African American genome, the first few principal components of the genotypes, or local ancestry information at multiple loci of the $i$th individual.  
 
 \vspace{4mm}
-\noindent We further assume that $\bm{y_i}$ follows a K-dimensional multivariate normal distribution. We assume that diagonal entries of the covariance matrix are scaled to be 1, and we expand this to a general case in a future section(?). The scaling implies that we are studying correlation rather than covariance and that only correlation, not the variance of each variable, changes across the covariate $X$, which has been empirically justified for our example data set (expression level from GTEx and genetic ancestry). % but can potentially limit the scope of possible applications. Furthermore, when we are interested in pairwise signals, the scaling simplifies the testing procedure because we can use one test consistently across all pairs of variables. In summary, we have below,
-In summary, we have below,
+\noindent We further assume that $\bm{y_i}$ follows a $K$-dimensional multivariate normal distribution. We assume that diagonal entries of the covariance matrix are scaled to be 1, and we expand this to a general case in a future section. The scaling implies that we are studying the correlation rather than covariance and that only correlation, not the variance of each variable, changes across the covariate $X$, which has been empirically justified for our example data set of expression level from GTEx and genetic ancestry. In summary, we have below,
 
 \begin{equation}
 \bm{y_i} = \bm{b_0} + \bm{x_i}^TB + \bm{\epsilon_i}, \bm{\epsilon_i} \sim \mathcal{N}_K(\bm{0}, \Sigma(\bm{x_i}))
 \label{eq1}
 \end{equation}
 $$\Sigma (\bm{x_i}) = \{\rho_{k_1k_2}(\bm{x_i})\}_{k_1k_2 = 1}^K, \hspace{5mm} \rho_{k_1k_2}(\bm{x_i}) = 1 \text{  if  } k_1 = k_2$$
-where $\bm{b_0}$ is the intercept and $B\in \mathbb{R}^{P \times K}$ measures the effect size of $X$ on the mean of $Y$. % and the variance $\Sigma$, also a function of $X$, is essentially a correlation matrix with scaled variance 1 on diagonals and correlation $\rho$ for off-diagonals. %We further assume that each column of $X$ except the intercept has mean $0$ and sum of squares $n$. In other words,  $\sum_{i=1}^{n} x_{ip} = 0$ and $ \sum_{i=1}^{n} x_{ip}^2 = n$ for $p = 2, \cdots, P$.
+where $\bm{b_0}$ is the intercept and $B\in \mathbb{R}^{P \times K}$ measures the effect size of $X$ on the mean of $Y$, and the variance $\Sigma$, also a function of $X$, is essentially a correlation matrix with scaled variance 1 on diagonals and correlation $\rho$ for off-diagonals. 
 
 \vspace{5mm} \noindent
 We first focus on a pair of two variables and model their correlation, $\rho$, in terms of $X$. Then we combine information across multiple pairs of genes to make inference on each gene's connectivity across the entire network. The scaling of variance implies that we have a prior belief that each pair of variables are just as likely to have signal, in contrast to believing that genes with high variability are more likely to have signals.
 
 
 \subsection{Inference for $K=2$}
-In this section, we assume there are $K=2$ variables in the network, and we model the correlation $\rho$ of two variables $k_1 = 1$ and $k_2 = 2$ with respect to $X$. Here, we propose a variable transformation from $Y \in \mathbb{R}^{n \times 2}$ to either $W\in \mathbb{R}^{n\times 1}, \hspace{2mm}w_{i,12} = y_{i1} + y_{i2}$ or $V \in \mathbb{R}^{n \times 1}, \hspace{2mm}v_{i,12} = y_{i1} - y_{i2}.$ Then we can write below.
-\begin{equation}
-w_{i,12} = \bm{x_i}^T \bm{\beta_{12}} + u_{i,12}, \hspace{5mm} u_{i,12} \sim \mathcal{N}(0, 2 + 2 \rho_{12}(\bm{x_i}))
-\label{eqw2}
-\end{equation}
-\begin{equation}
-v_{i,12} = \bm{x_i}^T \bm{\beta'_{12}} + u'_{i,12}, \hspace{5mm} u'_{i,12} \sim \mathcal{N}(0, 2 - 2 \rho_{12}(\bm{x_i}))
-\label{eqv2}
-\end{equation}
-$$\bm{\beta_{12}} = \bm{\beta_1} + \bm{\beta_2},\hspace{5mm} \bm{\beta'_{12}} = \bm{\beta_1} - \bm{\beta_2}$$
-where $\bm{\beta_1}$ is the first column of matrix $B$ and $\bm{\beta_2}$ the second column. These two transformations allows us to model the correlation in a simple univariate setting without losing too much information from the original bivariate model. Under the null hypothesis where $\rho_{12}(\bm{x_i})$ does not depend on $\bm{x_i}$, the maximum likelihood estimators for each of the two models are exactly the same, given that $\sum_i y_{i1}^2$ and $\sum_i y_{i2}^2$ are scaled to be 1. Under the alternative hypothesis, the log likelihoods differ like below.
-$$\ell_{w_i} = -log(2\pi) - \frac{1}{2} log(2+2\rho_i) - \frac{2(1 + y_{1i}y_{2i})}{2(2+2\rho_i)}$$
-$$\ell_{v_i} = -log(2\pi) - \frac{1}{2} log(2-2\rho_i) - \frac{2(1 - y_{1i}y_{2i})}{2(2-2\rho_i)}$$
-$$\ell_{\bm{y_i}} = -log(2\pi) - \frac{1}{2} log(1-\rho_i^2) - \frac{2(1-\rho_i y_{i1}y_{i2})}{2(1-\rho_i^2)}$$
-When we consider the bivariate variable, the likelihood mostly depends on $\rho_i^2$ and not $\rho$, making negative correlation and positive correlation have similar effects on the likelihood. However, when we transform $Y$ into a univariate variable $W$ or $V$, the sign of $\rho_i$ has a big impact on the likelihood. We later show in the simulation that when the estimated $\rho_i$ is positive, using $V$ instead of $Y$ gives similar statistical power; when $\rho_i$ is negative, $W$ instead of $Y$. In practice, we can estimate one estimate for $\hat{\rho} = \sum_{i=1}^{n} y_{i1} y_{i2}$. If $\rho$ is close to 0, choosing either transformation will lead to similar results, so the accuracy of this estimate is inconsequential. The important part is that this variable transformation allows us to use classical univariate methods that can test for heteroskedasticity. Here, we define $\sigma_i^2$ as our variance term of either $W$ or $V$, meaning it can be either $2 + 2\rho_{12}(\bm{x_i})$ or $2 - 2\rho_{12}(\bm{x_i})$.\\
+In this section, we assume there are $K=2$ variables in the network, and we model the correlation $\rho$ of two variables $k_1 = 1$ and $k_2 = 2$ with respect to $X$. Here, we propose the following variable transformation
+\begin{singlespace}
+$$\begin{bmatrix} w_{i,12} \\ v_{i,12} \end{bmatrix} = 
+\begin{bmatrix} y_{i1} + y_{i2} \\ y_{i1} - y_{i2} \end{bmatrix} = 
+ \bm{x_i}^T \begin{bmatrix} \bm{\beta_1} + \bm{\beta_2} \\ \bm{\beta_1} - \bm{\beta_2}\end{bmatrix} + \begin{bmatrix} u_w^2 \\ u_v^2\end{bmatrix} \hspace{6mm} \begin{bmatrix} u_w^2 \\ u_v^2\end{bmatrix} \sim  \mathcal{N} \left( \bm{0}, \begin{bmatrix} 2 + 2\rho & 0 \\ 0 & 2-2\rho \end{bmatrix} \right)$$
+ \label{transformed_model}
+ \end{singlespace}
+\noindent where $\bm{\beta_1}$ is the first column of matrix $B$ and $\bm{\beta_2}$ the second column. This transformation is special because it creates two independent variables through simple linear transformation and allows us to move on from modeling the correlation to modeling the variance, which has been studied extensively in literature. For the rest of the section, we drop the subscripts 12. \\
 
-\noindent
-For now, without loss of generality, we assume $\hat{\rho}$ is negative and we transform $Y$ into $W$. We also drop the subscripts 12 for notational convenience. Even after the transformation, a challenge remains to define a specific form of heteroskedasticity. It is difficult define the function $h$ without any prior knowledge, especially under the constraint that $\rho$'s must collectively form a covariance matrix $\Sigma$ that is positive definite. We therefore focus on flexibility and present the model below,
+\noindent Another challenge remains to define the specific form of heteroskedasticity. It is difficult to model how the correlation changes continuously, without any prior knowledge, under the support constraint of (-1,1) and $\rho$s must collectively form a covariance matrix $\Sigma$ that is positive definite. We therefore focus on flexibility and present the model below
+$$\rho(\bm{x_i}) = h(\bm{x_i^T}\bm{\alpha})$$
+where both $\bm{x_i}$ and $\bm{\alpha}$ are a length $P$ vector, and $h$ can be any function bounded in (-1,1) with a second derivative. The linearity and additivity in $\bm{x_i^T\alpha}$ may or many not be justified depending on the context, but it is a common assumption in statistical modeling, and in our application of ancestry, $\bm{x_i}$ is a scalar, so the additivity assumption disappears. Still, both assumptions are required to derive the test statistic when we compute the derivative of the likelihood. One example of possible $h$ is Fisher-transformation, as it satisfies the support condition by naturally mapping the correlation to its correct range, and it has additional attractive property that Fisher-transformed correlation asymptotically follows the standard normal distribution. Of course, there are multiple other forms that can map any values to (-1,1) such as any cumulative distribution function that are supported on the whole real line. Therefore, in order to avoid the model mis-specification problem, we use a ``model free" method that does not require an explicit function of $h$. We first set up our null hypothesis as follows.
 \begin{equation}
-    \sigma_{i}^2 = h(\bm{x_i}^T\bm{\alpha})
-    \label{sigma}
-\end{equation}
-where $\bm{\alpha}$ is a length $P$ vector and $h$ is any function bounded in (0,4) that has second derivative. The linearity and additivity in $\bm{x_i}^T \bm{\alpha}$ may or may not be justified depending on the context, but it is a common assumption in statistical modeling, and in our application of ancestry, $\bm{x_i}$ is a scalar, so the additivity assumption not necessary at all. Still, both assumptions are required to derive the test statistic, especially computing the derivative of the likelihood. One example of possible $h$ functions is Fisher-transformation. It naturally maps the correlation to its correct range $(-1,1)$, and Fisher-transformed correlation asymptotically follows the standard normal distribution. With the transformation $\frac{1}{2} log \left(
-\frac{1 + \rho(\bm{x_i})}{1-\rho(\bm{x_i})}
-\right) = \frac{1}{2} \bm{x_i}^T \bm{\alpha}$, we can define $h$ like following.
-\begin{equation}
-\sigma_{i}^2 = 2 + 2\rho(\bm{x_i}) = h(\bm{x_i}^T \bm{\alpha}) = 4 \left( 1 - \frac{1}{e^{\bm{x_i}^T \bm{\alpha}}+1} \right)
-\label{fisher}
-\end{equation}
-\noindent There are multiple other functions that can map any values to (-1, 1) such as any cumulative distribution functions that are supported on the whole real line. Therefore, in order to avoid the model-misspecification problem, we use a ``model-free" method that does not require the explicit format of $h$. Under the setting of (\ref{eqw2}) and (\ref{sigma}), the null hypothesis is that $h(\bm{x_i}^T \bm{\alpha})$ is equal to a constant variance  across $i = 1, \cdots, n$,
-\begin{equation}
-H_0: h(\bm{x_i}^T\bm{\alpha}) = \sigma^2,
+H_0: \bm{\alpha} = \bm{0}
 \label{null1}
 \end{equation}
-which is equivalent to $H_0: \bm{\alpha} = \bm{0}$. With this set-up, we can use the result from Breusch and Pagan \cite{breusch1979simple}. \\
+The null hypothesis states the value of $\rho(\bm{x_i}) = h(\bm{x_i}^T\alpha)$ does not depend on the values of $\bm{x_i}$, meaning the variable $W$ and $V$ both have constant variance. 
+With this set-up, we can use Lagrange Multiplier test proposed by Breusch and Pagan \cite{breusch1979simple}. 
+\noindent 
+The Lagrange Multiplier (LM) test \cite{breusch1979simple}, or efficient scores criterion by Rao (1948) \cite{rao1948large}, is a popular choice to test heteroskedasticity in a linear model. One practical advantage is that the test statistic does not depend on the specific form of heteroskedasticity, making it an attractive choice under our context where no prior knowledge is available for the specific form of heteroskedasticity. Another advantage is that it is computationally simple. It only requires the computation of score function and fisher information only under the null hypothesis (\ref{null1}). This allows a closed form expression of the test statistic. \\
 
 \noindent 
-The Lagrange Multiplier (LM) test \cite{breusch1979simple}, or efficient scores criterion by Rao (1948) \cite{rao1948large}, is a popular choice to test heteroskedasticity in a linear model. One practical advantage is that the test statistic does not depend on the specific form of heteroskedasticity, making it an attractive choice under our context where no prior knowledge is available for the specific form of heteroskedasticity. Another advantage is that it only requires parameter estimation assuming that the null hypothesis is true, and it uses restricted maximum likelihood, i.e., it obtains the maximum log likelihood of (\ref{eq2}) subject to the restriction of null hypothesis (\ref{null1}). This allows a closed frorm expression of the test statistic. So, in order to compute the restricted maximum likelihood estimate, we first define the ordinary least squares (OLS) residuals of model (\ref{eq2}) as $\hat{u}_{i}^2$ and estimated residual variance under the null as $\hat{\sigma}^2 = \frac{1}{n} \sum_{i=1}^{n} \hat{u}_{i}^2$. \\
+We first present the log likelihood of model in (\ref{transformed_model}).
+\begin{align*}
+\ell(\bm{\alpha, \beta}) &= -\frac{n}{2} log(2\pi) - \frac{1}{2} \sum_i log(2 + 2h(\bm{x_i}^T \bm{\alpha})) - \sum_{i=1}^{n} \frac{(w_i - \bm{x_i}^T \bm{\beta})^2}{2 + 2h(\bm{x_i}^T \bm{\alpha})} \\
+&-\frac{n}{2} log(2\pi) - \frac{1}{2} \sum_i log(2 - 2h(\bm{x_i}^T \bm{\alpha})) - \sum_{i=1}^{n} \frac{(v_i - \bm{x_i}^T \bm{\beta})^2}{2 - 2h(\bm{x_i}^T \bm{\alpha})}
+\end{align*}
 
-\noindent 
-We first establish the log likelihood of model in (\ref{eq2}).
-$$\ell(\bm{\alpha, \beta}) = -\frac{n}{2} log(2\pi) - \frac{1}{2} \sum_i log(h(\bm{x_i}^T \bm{\alpha})) - \sum_{i=1}^{n} \frac{(w_i - \bm{x_i}^T \bm{\beta})^2}{2h(\bm{x_i}^T \bm{\alpha})}$$
-Plugging in the MLE of $\bm{\beta}$, we get the first and second derivatives
-$$\frac{\partial \ell}{\partial \bm{\alpha}}\mid_{\bm{\alpha}=\bm{0}} = d_{\bm{\alpha}} = \frac{1}{2} \sum_i \frac{h'(\bm{x_i}^T \bm{\alpha})}{\hat{\sigma}^2} \bm{x_i} \left(
-1-\frac{\hat{u}^2}{\hat{\sigma}^2}
-\right)$$
-$$\frac{\partial^2 \ell}{\partial \bm{\alpha}^2}\mid_{\bm{\alpha} = \bm{0}} = I_{\bm{\alpha}\bm{\alpha}} = \frac{1}{2} \left( \frac{h'(\bm{x_i}^T\bm{\alpha})}{\hat{\sigma}^2} \right) \sum_{i=1}^{n} \bm{x_i} \bm{x_i}^T$$
-
-\noindent The Lagrange Multiplier test statistic $q$ for the variable pair (1,2) is, as defined in Breusch and Pagan (1979), 
+\noindent For Lagrange Multiplier test, we can replace all the nuisance parameters with maximum likelihood estimators assuming that the null hypothesis is true. We therefore define $\hat{\bm{\beta}}$ as the OLS estimator of $\bm{\beta}$ and $\hat{u}_w^2$, and $\hat{u}_v^2$ as the OLS residuals in the model (\ref{transformed_model}). We also define $\hat{\sigma}_w^2 = \sum_{i=1}^{n} \hat{u}_w^2$ and $\hat{\sigma}_v^2 = \sum_{i=1}^{n} \hat{u}_v^2$ for maximum likelihood estimates for the variance under the null hypothesis of constant variance. Then, the first derivative of the likelihood function evaluated at $\bm{\alpha} = 0$ is as follows. 
 \begin{equation}
-q = d_{\alpha}^T I_{\alpha\alpha}^{-1}d_{\alpha} = \frac{1}{2n} \left( \sum_{i=1}^{n} \bm{x_i} \left( \frac{\hat{u}_{i}^2}{\hat{\sigma}^2} - 1 \right) \right)^T \left( \sum_{i=1}^{n} \bm{x_i} \bm{x_i}^T \right)^{-1} \left( \sum_{i=1}^{n} \bm{x_i} \left( \frac{\hat{u}_{i}^2}{\hat{\sigma}^2} - 1 \right) \right).
+\bm{\tilde{d}_{\alpha}} = \bm{d_{\alpha}}\mid_{\bm{\alpha}=\bm{0}} = -h'(0) \sum_i  \left(
+\frac{\bm{x_i}}{\hat{\sigma}_{w}^2} \left(
+1-\frac{\hat{u}_{wi}^2}{\hat{\sigma}_{w}^2}
+\right)
+-
+\frac{\bm{x_i}}{\hat{\sigma}_{v}^2} \left(
+1-\frac{\hat{u}_{vi}^2 }{\hat{\sigma}_{v}^2}
+\right)
+\right)
+\label{first_derivative}
+\end{equation}
+The second derivative is,
+\begin{align*}
+\tilde{I}_{\bm{\alpha\alpha}} = I_{\bm{\alpha\alpha}} \mid_{\bm{\alpha} = \bm{0}} = 2h'(0)^2 \left( \frac{1}{\hat{\sigma}_w^4}  + \frac{1}{\hat{\sigma}_v^4}\right)\sum_{i=1}^{n}  \bm{x_i x_i^T}.
+\end{align*}
+The Lagrange Multiplier (LM) test statistic $q$ for the variable pair (1,2) is, as defined in Breusch and Pagan (1979), 
+\begin{align}
+q &= \tilde{d}_{\bm{\alpha}}^T \tilde{I}_{\bm{\alpha\alpha}}^{-1}\tilde{d}_{\alpha}\\
+&= \frac{1}{2 \left(\frac{1}{\hat{\sigma}_w^4} + \frac{1}{\hat{\sigma}_v^4}\right)} 
+\bigg(\bigg(
+\sum_{i=1}^{n} \bm{x_{i}} 
+\left(
+\frac{1}{\hat{\sigma}_w^2} - \frac{\hat{u}_{wi}^2}{\hat{\sigma}_w^4}\right)  - \left( \frac{1}{\hat{\sigma}_v^2} - \frac{\hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+\right)
+\bigg)^T 
+\left( \sum_{i=1}^{n} \bm{x_i^T x_i} \right)^{-1}
 \label{q}
-\end{equation}
-Breusch and Pagan (1979) \cite{breusch1979simple} proves that $q$ asymptotically follows $\chi_{P}^2$. Below, we make more assumptions on our covariate matrix $X$ to simplify the test statistic and aid intuitive interpretation.\\
-
-\noindent
-Note that our null hypothesis tests for all covariates at the same time, so we can orthogonalize $X$ to make $\sum_{i=1}^{n} \bm{x_i} \bm{x_i}^T$ an identity matrix without affecting the inference. Let $\tilde{X}$ be the orthogonalized covariate matrix, and $\tilde{x}_{ip}$ be the corresponding entries with $\sum_{i=1}^{n}\tilde{x}_{ip} = 0$ and $\sum_{i=1}^{n} \tilde{x}_{ip}  = n$. Then (\ref{q}) can be alternatively written as follows, where we define $r_{p}$,
-\begin{equation}
-q = \sum_{p=1}^{P} \left( \frac{1}{\sqrt{2n}}\sum_{i=1}^{n} \tilde{x}_{ip} \left( \frac{\hat{u}^2_{i}}{\hat{\sigma}^2} - 1 \right) \right)^2 = \sum_{p=1}^P {r_{p}}^2.
-\label{r}
-\end{equation}
-Due to the Central Limit Theorem, $$\sqrt{n} \bigg( \frac{1}{n} \sum_{i=1}^{n} \tilde{x}_{ip} \bigg( \hat{u}_{i}^2 - \hat{\sigma}^2 \bigg) \bigg)$$ converges in distribution to normal with mean $E(\tilde{x}_{ip}(\hat{u}_{i}^2 - \hat{\sigma}^2)) = E(x_{ip}) E(\hat{u}_{i}^2 - \hat{\sigma}^2) = 0$ and Var$(\tilde{x}_{ip} (\hat{u}_{i}^2 - \hat{\sigma}^2)) = E(\tilde{x}_{ip}^2) E(\hat{u}_{i}^2 - \hat{\sigma}^2)^2 = 2\sigma^4$ from the fact that the sample variance converges asymptotically to the population variance. Also, $\frac{1}{\hat{\sigma}^2}$ converges in probability to $\frac{1}{\sigma^2}$, and therefore,
-\begin{equation*}
-r_{p} \rightarrow N(0,1)
-\end{equation*}
-independently for all $p = 1, \cdots, K$. It again confirms the result of
-\begin{equation*}
-q = \sum_{p = 1}^{P} r_{p}^2  \rightarrow \chi^2_{P}.
-\end{equation*}
-%\begin{equation*}
-%r_{12,p} \rightarrow N(0,1)
-%\end{equation*}
-%asymptotically follows $\chi_{p-1}^2$ distribution. 
-%Note that (\ref{q}) can be written as follows.
-%\begin{equation}
-%\left(\sum_{p=1}^{P} \frac{1}{\sqrt{2n} }\sum_{i=1}^{n} x_{ip} \left(\frac{\hat{u}_{i,12}^2}{\hat{\sigma}_{12}^2} - 1 \right) \right)^2
-%\end{equation}
-%When $p = 1$, $ \frac{1}{\sqrt{2n}}\left( \sum_{i=1}^{n} x_{ip} \left(\frac{\hat{u}_{i,12}^2}{\hat{\sigma}^2} - 1 \right) \right)$ is equal to 0 due to the construction of $\hat{u}_{i,12}^2$ and $\hat{\sigma}^2$. On the other hand, when $p \neq 1$, the same expression can be written as follows
-%\begin{equation}
-%\frac{1}{2n} \left( \sum_{i=1}^{n} x_{ip} \left(\frac{\hat{u}_{i,12}^2}{\hat{\sigma}^2} - 1 \right) \right)^2 =  \left(\frac{1}{\sqrt{2\hat{\sigma}^4}} \cdot \sqrt{n} \left(\frac{1}{n}
-%\sum_{i=1}^{n} x_{ip} (\hat{u}_{i,12}^2 - \hat{\sigma}^2)
-%\right)\right)^2 = r_{12,p}^2
-%\label{r}
-%\end{equation}
-%Due to CLT, $\sqrt{n} \bigg( \frac{1}{n} \sum_{i=1}^{n} x_{ip} \bigg( \hat{u}_{i,12}^2 - \hat{\sigma}^2 \bigg) \bigg)$ converges in distribution to normal with mean $E(x_{ip}(\hat{u}_{i,12}^2 - \hat{\sigma}^2)) = E(x_{ip}) E(\hat{u}_{i,12}^2 - \hat{\sigma}^2) = 0$ and Var$(x_{ip} (\hat{u}_{i,12}^2 - \hat{\sigma}^2)) = E(x_{ip}^2) E(\hat{u}_{i,12}^2 - \hat{\sigma}^2)^2 = 2\sigma^4$ from the fact that the sample variance converges asymptotically to the population variance. Also, $\frac{1}{\hat{\sigma}^2}$ converges in probability to $\frac{1}{\sigma^2}$, and therefore,
-%\begin{equation*}
-%r_{12,p} \rightarrow N(0,1)
-%\end{equation*}
-%It confirms the result of Breusch and Pagan (1979) that 
-%\begin{equation*}
-%q_{12} = r_{12}^2 \rightarrow \chi^2_{P-1}.
-%\end{equation*}
+\end{align}
+$$\hspace{5cm} \bigg(
+\sum_{i=1}^{n} \bm{x_{i}} 
+\left(
+\frac{1}{\hat{\sigma}_w^2} - \frac{\hat{u}_{wi}^2}{\hat{\sigma}_w^4}\right)  - \left( \frac{1}{\hat{\sigma}_v^2} - \frac{\hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+\right)
+\bigg) \bigg)$$
+where the unknown function $h$ has been canceled out. Every component of the test statistic is easily acquired from the data, and the computational burden is low. The only assumption is that the matrix $\bm{x_i^T x_i}$ be full rank. Under this setting, Breusch and Pagan (1979) \cite{breusch1979simple} proves that $q$ asymptotically follows $\chi_{P}^2$,
+$$q \rightarrow \chi_P^2$$
 
 \subsection{Small Sample Correction}
-Although the introduced test statistic has nice asymptotic properties, in many applications, the sample size is not large enough to safely assume the asymptotic properties. Specifically, the LM statistic has its error in the order of $n^{-1}$ \cite{harris1985asymptotic}, and many Monte Carlo experiments showed that the test rejects the null hypothesis less frequently than indicated by its nominal size \cite{honda1988size} \cite{godfrey1978testing} \cite{griffiths1986monte}. In response, Harris (1985) \cite{harris1985asymptotic} used Edgeworth expansion to obtain the distribution and moment generating function to order $n^{-1}$ of the LM test statistic. Building on this expansion, Honda (1986) \cite{honda1988size} and Cribari-Neto and Ferrari \cite{cribari1995improved} \cite{cribari2001monotonic} proposed corrections to the critical value or to the test statistic that allows better inference even when the sample size is small while preserving the asymptotic properties. 
+Although the introduced test statistic has nice asymptotic properties, in many applications, the sample size is not large enough. Specifically, the LM statistic has its error in the order of $n^{-1}$ \cite{harris1985asymptotic}, and many Monte Carlo experiments showed that the test rejects the null hypothesis less frequently than indicated by its nominal size \cite{honda1988size} \cite{godfrey1978testing} \cite{griffiths1986monte}. In response, Harris (1985) \cite{harris1985asymptotic} used Edgeworth expansion to obtain the distribution and moment generating function to order $n^{-1}$ of the LM test statistic. Building on this expansion, Honda (1986) \cite{honda1988size} and Cribari-Neto and Ferrari \cite{cribari1995improved} \cite{cribari2001monotonic} proposed corrections to the critical value or to the test statistic that allows better inference even when the sample size is small while preserving the asymptotic properties. 
 
 \vspace{5mm} \noindent
 Honda (1988) provided a closed-form formula to adjust the critical value in the order of $O(n^{-1})$ to correct the size of the test. This adjustment only depends on the covariate, sample size, and the degrees of freedom, but not on the data. The proposed adjustment is a cubic function with respect to $C_{\gamma}$, the critical value at the level of type I error $\gamma$, i.e. $P(\chi_{P}^2 \geq C_{\gamma}) = \gamma$, and we refer to this cubic function as $g$ defined as follows.
@@ -183,7 +160,7 @@ The first two terms inside the square root are $O(1)$ and the last term is $O(n)
 \vspace{5mm} \noindent
 Similar argument is offered in Cribari (1995) \cite{cribari1995improved}. Based on the correction of the critical value in (\ref{hondacorrection}), Cribari (1995) proposes to subtract the correction $\tilde{g}(C_{\gamma})$ so that
 $$P(q  \geq g(C_{\gamma})) = P(q \geq C_{\gamma} + \tilde{g}(C_{\gamma})) = P(q - \tilde{g}(C_{\gamma}) \geq C_{\gamma}).$$
-This treats the correction as de-biasing instead of changing the overall shape of the distribution. Although this adjustment of the test statistic corrects the size of the test at a given threshold, it prevents the next, more sophisticated analysis of the test statistic which we introduce in the next section. 
+This treats the correction as de-biasing instead of changing the overall shape of the distribution. Although this adjustment of the test statistic corrects the size of the test at a given threshold, it prevents further analysis of the test statistic which we introduce in the next section. 
 
 \vspace{5mm} \noindent
 Instead, we aim to adjust the test statistic so that the overall shape of null distribution is closer to $\chi_{P}^2$. We assume a large enough sample size for monotonicity of $g$ and define the inverse function of $g$ to propose the new adjusted LM statistic $\tilde{q}_{12}$ = $g^{-1}(q)$
@@ -193,7 +170,7 @@ $$q - g(C_{\gamma}) = 0$$
 which is guaranteed to be unique by the monotonicity of $g$. The cubic equation can be solved both analytically and numerically efficiently given the covariate $X$. 
 
 \subsection{Connection to Liquid Association}
-Under $K=2$, similar scientific problem has been addressed by Li in terms of liquid association, a term used to conceptualize the internal evolution of coexpression pattern for a pair of genes \cite{li2002genome}. In order to analyze the coexpression pattern that changes across different cellular state that cannot be directly observed, he uses the expression level of another gene to represent the cellular state. This expression level can be considered analogous to the sample-specific covariate $X$ in our model, and then his problem becomes similar to ours: to measure the change in $cor(Y_1, Y_2)$ across a continuous variable $X$. \\
+When $K=2$, similar scientific problem has been addressed by Li (2002) in terms of liquid association, a term used to conceptualize the internal evolution of coexpression pattern for a pair of genes \cite{li2002genome}. In order to analyze the coexpression pattern that changes across different cellular state that cannot be directly observed, he uses the expression level of another gene to represent the cellular state. This expression level can be considered analogous to the sample-specific covariate $X$ in our model, and then his problem becomes similar to ours: to measure the change in $cor(Y_1, Y_2)$ across a continuous variable $X$. \\
 
 \noindent Li defines the function $g$ to denote the mean of correlation between two genes $Y_1$ and $Y_2$ conditional on $X$,
 $$g(X) = E(Y_1 Y_2 | X).$$
@@ -219,18 +196,16 @@ Under our null hypothesis $\alpha = 0$, $\tilde{h}(X\alpha)$ is a constant and i
 \noindent However, his model is different from ours in some critical ways. First, Li restricts the covariate to be a 1-dimensional vector while our method can be expanded to multidimensional covariate $X$. Second, Li treats $X$ as a random variable that follows standard normal distribution, while we treat it as fixed and does not depend on any distributional assumption. Therefore, our method can be generalized and applied to a wide range of problems. Furthermore, the liquid association only measures the strength of \textit{linear} correlation between the coexpression and the cellular state, while our method can detect any type of cases that deviate from null hypothesis with various shapes of $h$. We compare the performance in detail in the simulations. 
 
 \subsection{Inference for $K>2$}
-In the previous section, we proposed the LM test statistic $q$ that tests a pair of variables 1 and 2 to measure the evidence that their correlation changes with respect to the covariate $X$. Then we made a small sample correction to obtain $\tilde{q}_{12}$ that closely follows $\chi_{P}^2$ distribution even when sample size is small. As a natural extension, we can repeat the procedure for all variable pairs $k_1$ and $k_2$ to obtain $\tilde{q}_{k_1k_2}$. In this section, we propose a way to combine the test statistics to test a new global null hypothesis with improved statistical power. \\
-
-\noindent
-We define the global null hypothesis for variable $1$ as follows by extending (\ref{null1}),
-	\begin{equation}
-\bm{H_0^{(1)}}: \bm{\alpha_{12}} = \bm{\alpha_{13}} = \cdots = \bm{\alpha_{1K}} = 0,
+%In the previous section, we proposed the LM test statistic $q$ that tests a pair of variables 1 and 2 to measure the evidence that their correlation changes with respect to the covariate $X$. Then we made a small sample correction to obtain $\tilde{q}_{12}$ that closely follows $\chi_{P}^2$ distribution even when sample size is small. 
+As a natural extension to the pair-wise test statistic, we can repeat the procedure for all variable pairs $k_1$ and $k_2$ to obtain $\tilde{q}_{k_1k_2}$. In this section, we propose a way to combine the test statistics to test a new global null hypothesis with improved statistical power. We define the global null hypothesis for variable $1$ by extending (\ref{null1}),
+\begin{equation}
+    \bm{H_0^{(1)}}: \bm{\alpha_{12}} = \bm{\alpha_{13}} = \cdots = \bm{\alpha_{1K}} = 0,
 \label{newnull}
 \end{equation}
 where the superscript in $\bm{H_0^{(1)}}$ indicates that the null hypothesis applies to variable 1. Under $\bm{H_0^{(1)}}$, no other variables' correlation with variable 1 changes across the different values of  $X$. \\
 
 \noindent
-Combining the test statistics is a double-edged sword; the procedure can accrue relevant evidence to improve the statistical power, or it can accumulate noise to do the exact opposite. Therefore, we must carefully decide how to combine the test statistics based on the alternative hypothesis we would like to leverage against, and the alternative hypothesis must be constructed reflecting our prior knowledge about the network structure. Chen (2012) discusses two ways to construct the alternative hypothesis \cite{chen2012exponential}. One way, called a sparse alternative, is to test whether only a small number among all tests have non-zero effects while all other tests are null. Another way is to test if at least one test has a non-zero effect size. Chen (2012) focuses on the sparse alternative and proposes the exponential-combination framework. Here, we do not assume that our alternative is sparse and propose a simpler linear combination of the test statistics
+Combining the test statistics can have either positive or negative impact; the procedure can accrue relevant evidence to improve the statistical power, or it can accumulate noise to do the exact opposite. Therefore, we must carefully decide how to combine the test statistics based on the alternative hypothesis we would like to leverage against, and the alternative hypothesis must be constructed reflecting our prior knowledge about the network structure. Chen (2012) discusses two ways to construct the alternative hypothesis \cite{chen2012exponential}. One way, called a sparse alternative, is to test whether only a small number among all tests have non-zero effects while all other tests are null. Another way is to test if at least one test has a non-zero effect size. Chen (2012) focuses on the sparse alternative and proposes the exponential-combination framework. Here, we do not assume that our alternative is sparse and propose a simpler linear combination of the test statistics
 \begin{equation}
 d_1 = \tilde{q}_{12} + \tilde{q}_{13} + \cdots + \tilde{q}_{1K} = \sum_{k=2}^{K} \tilde{q}_{1k}.
 \label{d}
@@ -238,7 +213,34 @@ d_1 = \tilde{q}_{12} + \tilde{q}_{13} + \cdots + \tilde{q}_{1K} = \sum_{k=2}^{K}
 We believe combining the test statistics like (\ref{d}) improves the statistical power of tests for any network whose structure is similar to scale-free topology \cite{horvath2008geometric}, i.e. where the ``hot spot" variables or ``hub" variables are connected to a lot of other nodes forming cliques or modules. This is therefore appropriate to apply to the gene co-expression network. We know that transcription factors regulate the gene expression of multiple genes, and if one transcription factor varies with respect to the covariate, the transcriptions of those genes regulated by that transcription factor are likely to be correlated with the covariate as well. The effect sizes for each gene pair may be too small to be detected, but combining them by simple addition like in (\ref{d}) can form a stronger signal.
 
 \vspace{5mm} \noindent
-In order to test the significance of $d_1$ against the null hypothesis (\ref{newnull}), we need the null distribution of $d_1$, which is non-trivial because each $\tilde{q}_{1k}$ is correlated to one another although they separately follow $\chi_{P}^2$. Therefore, in this section, we acquire a closed-form covariance structure of $r$ defined in (\ref{r}). First, we begin with a multivariate central limit theorem to write the following in terms of $r$
+In order to test the significance of $d_1$ against the null hypothesis (\ref{newnull}), we need the null distribution of $d_1$. Although $\tilde{q}_{1k}$ separately follow $\chi_{P}^2$, they are correlated to one another, so their null distribution is not trivial. \\
+
+\noindent Our null hypothesis tests for all covariates at the same time, so we can orthogonalize $X$ to make $\frac{1}{n} \sum_{i=1}^{n} \bm{x_i} \bm{x_i}^T$ an identity matrix without affecting the inference. Let $\tilde{X}$ be the orthogonalized covariate matrix, and $\tilde{x}_{ip}$ be the corresponding entries with $\sum_{i=1}^{n}\tilde{x}_{ip} = 0$ and $\sum_{i=1}^{n} \tilde{x}_{ip}^2  = n$. Then (\ref{q}) can be alternatively written as follows, where we define $r_{p}.$
+\begin{align}
+q = \sum_{p=1}^{P}
+ \left(\frac{1}{\sqrt{n}}
+ \sqrt{\frac{\hat{\sigma}_w^4 \hat{\sigma}_v^4}{\hat{\sigma}_w^4 + \hat{\sigma}_v^4}}
+ \sum_{i=1}^{n} x_{ip} \left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4}
+ - \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+ \right)
+\right)^2 = \sum_{p=1}^{P}r_p^2
+\label{r}
+\end{align}
+For each $p$, $r_p$ follows the standard normal distribution by the central limit theorem. 
+$$E\left(x_{ip}\left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4}
+ - \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+ \right)\right) = x_{ip} E\left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4} \right) E\left( \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+ \right) = 0$$
+$$Var\left(x_{ip}\left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4}
+ - \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+ \right)\right) = 
+ x_{ip}^2 \left( Var\left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4} \right)  + Var\left( \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+ \right)\right)
+ $$
+ $$ = \frac{\hat{\sigma}_w^4 + \hat{\sigma}_v^4}{\hat{\sigma}_w^4 \hat{\sigma}_v^4}$$
+This confirms the previous result
+$$\sum_{p=1}^{P} r_p^2 \rightarrow \chi_P^2$$
+\noindent Now, we acquire a closed-form covariance structure of $r$. First, we begin with a multivariate central limit theorem to write the following in terms of $r$
 \begin{equation}
 \bm{r_{1,p}} = \begin{bmatrix}
 r_{12,p} \\ r_{13, p} \\ \cdots \\ r_{1K,p}
@@ -246,7 +248,7 @@ r_{12,p} \\ r_{13, p} \\ \cdots \\ r_{1K,p}
 \label{H}
 \end{equation}
 $H_1$ is a $(K-1) \times (K-1)$ matrix where $(k_1-1, k_2-1)$th element is $\eta_{1k_1, 1k_2}$ for $k_1, k_2 = 2, \cdots K$. From (\ref{r}), it is easy to see that $H_1$ has 1 at the diagonals. Also, we use the 4th moments of 3-dimensional multivariate normal distribution and the fact that $\hat{\sigma}_{k_1k_2} \rightarrow \sigma_{k_1k_2}^2 = 2\rho_{k_1k_2} + 2$ in probability to show that $\eta_{1k_1, 1k_2}$ converges in probability to
-\begin{equation} \frac{6+8\rho_{1k_1}+8\rho_{1k_2}+4\rho_{k_1k_2}+2\rho^2_{1k_1}+2\rho^2_{1k_2}+2\rho^2_{k_1k_2}+8\rho_{1k_1}\rho_{1k_2}+4\rho_{1k_1}\rho_{k_1k_2}+4\rho_{1k_2}\rho_{k_1k_2}}{8(\rho_{1k_1}+1)(\rho_{1k_2}+1)} - \frac{1}{2} .
+\begin{equation} \frac{\rho_{1k_1}^3\rho_{1k_2}^3 + \rho_{1k_1}^3 \rho_{1k_2} + \rho_{1k_1}\rho_{1k_2}^3 - 3\rho_{1k_1}^2\rho_{1k_2}^2\rho_{k_1k_2} + 2\rho_{1k_1}\rho_{1k_2}\rho_{k_1k_2}^2 - \rho_{1k_1}^2\rho_{k_1k_2} - \rho_{1k_2}^2\rho_{k_1k_2} - \rho_{1k_1}\rho_{1k_2} + \rho_{k_1k_2}}{(1-\rho_{1k_1})^2(1-\rho_{1k_2})^2\sqrt{(1+\rho_{1k_1}^2)(1+\rho_{1k_2}^2)}}.
 \label{eta}
 \end{equation}
 
@@ -255,7 +257,7 @@ $H_1$ is a $(K-1) \times (K-1)$ matrix where $(k_1-1, k_2-1)$th element is $\eta
 d_1 = \sum_{p=1}^{P} \|\bm{r_{1,p}}\|_2^2 = \sum_{p=1}^{P} \sum_{k=2}^K r_{1k,p}^2,
 \label{d2}
 \end{equation}
-and we can derive the distribution of $d_1$ as well. Let $H_1 = U_1 \Lambda_1 U_1^T$ be the eigen-decomposition of the covariance matrix $H_1$ in (\ref{H}), where the diagonal matrix $\Lambda$ has eigenvalues $\lambda_{12}, \cdots, \lambda_{1K}$ in a decreasing order. Then, we can next consider the transformation $\bm{r_{1,p}^*} = U\bm{r_{1,p}}$ that follows normal distribution with diagonal covariance matrix $N_{K-1}(\bm{0}, \Lambda_1)$. Note that $\|\bm{r_{1,p}}\|_2^2 = \|\bm{r_{1,p}}^*\|_2^2$ due to the orthogonal invariance of L2 norm. Then,
+and we can derive the distribution of $d_1$ as well. Let $H_1 = U_1 \Lambda_1 U_1^T$ be the eigen-decomposition of the covariance matrix $H_1$ in (\ref{H}), where the diagonal matrix $\Lambda$ has eigenvalues $\lambda_{12}, \cdots, \lambda_{1K}$ in a decreasing order. Then, we can next consider the transformation $\bm{r_{1,p}^*} = U\bm{r_{1,p}}$ that follows normal distribution with diagonal covariance matrix $N_{K-1}(\bm{0}, \Lambda_1)$. Note that $\|\bm{r_{1,p}}\|_2^2 = \|U\bm{r_{1,p}}\|_2^2$ due to the orthogonal invariance of L2 norm. Then,
 \begin{align}
 d_1 = & \sum_{p=1}^{P} {r_{12,p}^*}^2 + \cdots +\sum_{p=1}^P{r_{1K,p}^*}^2\\
 &\sum_{p=1}^{P} {r_{1k,p}^*}^2 \sim \Gamma \left( \frac{P}{2}, \frac{\lambda_{1k}}{2} \right), \hspace{5mm} k = 2, \cdots, K
@@ -270,169 +272,284 @@ In (\ref{eta}), we define the element-wise mapping $\phi: \Sigma \rightarrow H$.
 
 \noindent However, when $K$ is much larger than $n$, an accurate estimation of $\Sigma$ is a difficult problem, especially when we don't impose a structural assumption such as sparsity or low rank. So we instead turn to the permutation test, which is valid under the independence assumption in (\ref{eq1}). Empirically, we justify the exchangeability of GTEx subjects through some exploratory analysis which shows that the covariance matrix of the gene expression levels has small non-diagonal elements. Also the principal components didn't show any clustering. We conclude that permutation test is well justified, and so we shuffle the covariate vector and test against the network data to preserve the correlation structure of the network. 
 
+\subsection{Unscaled $Y$}
+For a more general case, consider
+\begin{singlespace}
+\begin{equation}
+\bm{y_i} = \bm{b_0} + \bm{x_i}^TB + \bm{\epsilon_i}, \bm{\epsilon_i} \sim \mathcal{N}_K(\bm{0}, \Sigma(\bm{x_i}))
+\label{eq_general}
+\end{equation}
+$$\Sigma (\bm{x_i}) = \{\rho_{k_1k_2}(\bm{x_i})\}_{k_1k_2 = 1}^K$$
+\end{singlespace}
+\noindent where $\rho_{k_1 k_2}$ is fixed when $k_1 = k_2$, and it only varies across the covariates only when $k_1 \neq k_2$.
+\begin{singlespace}
+$$\hspace{-5mm} \begin{bmatrix} w_{i,12} \\ v_{i,12} \end{bmatrix} = 
+\begin{bmatrix} y_{i1} + \tau y_{i2} \\ y_{i1} - \tau y_{i2} \end{bmatrix} = 
+ \bm{x_i}^T \begin{bmatrix} \bm{\beta_1} + \tau \bm{\beta_2} \\ \bm{\beta_1} - \tau \bm{\beta_2}\end{bmatrix} + \begin{bmatrix} u_{wi}^2 \\ \tau^2 u_{vi}^2\end{bmatrix}$$
+ $$\begin{bmatrix} u_{wi}^2 \\ \tau^2 u_{vi}^2\end{bmatrix} \sim  \mathcal{N} \left( \bm{0}, \begin{bmatrix} \rho_{11} + \tau^2 \rho_{22} + 2\tau \rho_{12} & 0 \\ 0 & \rho_{11} + \tau^2 \rho_{22} - 2\tau \rho_{12} \end{bmatrix} \right)$$
+ \label{transformed_model_general}
+\end{singlespace}
+if $\tau = \frac{\rho_{22}^2 \pm \sqrt{\rho_{11}\rho_{12}}}{\rho_{12}}$
+\noindent We can keep the definition of $\hat{\sigma}_w^2$ and $\hat_{\sigma}_v^2$ the same and the inference would not change for pairwise test statistic $q$.
+
+
+
+
+
+
 \section{Simulation Studies}
+In this section, we compare the proposed method with two other alternatives for pairwise analysis. One is the Liquid Association proposed by Li (2002), \cite{li2002genome} and the other is the likelihood ratio test. In order to conduct the likelihood ratio test, we explored xx possible models for the function $h$. We used \textit{optim} function in R to find the maximum likelihood estimators of $\bm{\alpha}$ numerically. 
 
-\subsection{Comparison with Likelihood Ratio Test}
-A simple alternative to the proposed method is the likelihood ratio test using the model in (\ref{eq2}). In order to conduct the likelihood ratio test, one must assume a specific model in $h$, and estimate the maximum likelihood estimate (MLE) numerically. Explicitly modeling $h$ is a double-edged sword. If the model is correct, the statistical power will naturally improve; if the model is mis-specified, the performance could be worse. Our proposed method avoids this problem because it is ``model-free" in that the test statistic does not depend on $h$.  In this section, through simulations, we show that our method is better than the likelihood ratio test for three reasons. First, the simulations under the null hypothesis show that the likelihood ratio test statistics are poorly calibrated to $\chi_1^2$ distribution when sample size is not sufficiently large. Second, simulations under the alternative hypothesis show that the statistical power is only minimally better than the proposed method when the model is correctly specified while is worse than our method when the model is mis-specified. Third, since the maximum likelihood estimate of $\alpha$ cannot be obtained analytically, likelihood ratio test requires numerical optimization to find the MLE for each pair of variables, making it an unattractive choice in terms of computational burden as well.\\
+\subsection{Under the Null Hypothesis}
 
-\noindent The first simulation is under the null hypothesis. We use sample size $n = 30, 100,$ and $500$ and store the $p$-values by comparing the test statistics, both likelihood ratio and Lagrange Multiplier, to the $\chi_1^2$ distribution. Given the sample size $n$, we simulate $X$ once from uniform distribution, to reflect the distribution of genetic ancestry. For this fixed $X$, we simulate $Y_1$ and $Y_2$ 1,000 times from bivariate normal distribution, where $Y_1$ and $Y_2$ both have mean 0 and variance 1 marginally with their covariance $\rho(X)$ fixed to 0.5. \\
+LR test poorly calibrated
 
-\noindent The results are summarized in Figure \ref{calibration}. The qq-plots shows that the p-values from the likelihood ratio tests are poorly calibrated to the expected uniform distribution for cases of $n=100$ and $n=30$. Meanwhile, the Lagrange Multiplier test, with the help of small sample correction, effectively controls the type I error and the test statistics are well calibrated to $\chi_1^2$ distribution even under the extremely low sample size of $n=30$.
-% \begin{table}[!htbp] \centering 
-% \begin{tabular}{ccc} 
-% \\[-1.8ex]\hline 
-% \hline \\[-1.8ex] 
-%  & LM & LR\\
-% \hline \\[-1.8ex] 
-% $n=30$ & $0.048$ & $0.044$ \\ 
-% $n=100$ & $0.048$ & $0.086$\\ 
-% $n=500$ & $0.047$ & $0.051$\\
-% \hline \\[-1.8ex] 
-% \end{tabular} 
-%   \caption{  \label{mle_size} False discovery rate under the null hypothesis for lagrangian multiplier test and likelihood ratio test for varying sample sizes. Even when $n=100$, which is reasonably large, likelihood ratio test leads to $p$ values that are poorly calibrated to $\chi_1^2$. } 
-% \end{table}
+\subsection{Under the Alternative Hypothesis}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.98\linewidth]{figures/calibration.png}
-    \caption{\label{calibration} Calibration of $p$-values under the null hypothesis for two methods of Lagrangian Multiplier test and likelihood ratio test. LM stands for Lagrangian Multiplier test, and LR stands for likelihood ratio test.}
-\end{figure}
+Power analysis
 
+% \subsection{Comparison with Likelihood Ratio Test}
+% A simple alternative to the proposed method is the likelihood ratio test using the model in (\ref{eq2}). In order to conduct the likelihood ratio test, one must assume a specific model in $h$, and estimate the maximum likelihood estimate (MLE) numerically. Explicitly modeling $h$ can either benefit or harm the analysis. If the model is correct, the statistical power will naturally improve; if the model is mis-specified, the performance could be worse. Our proposed method avoids this problem because it is ``model-free" in that the test statistic does not depend on $h$.  In this section, through simulations, we show that our method is better than the likelihood ratio test for three reasons. First, the simulations under the null hypothesis show that the likelihood ratio test statistics are poorly calibrated to $\chi_1^2$ distribution when sample size is not sufficiently large. Second, simulations under the alternative hypothesis show that the statistical power is only minimally better than the proposed method when the model is correctly specified while is often worse than our method when the model is mis-specified. Third, since the maximum likelihood estimate of $\alpha$ cannot be obtained analytically, likelihood ratio test requires numerical optimization to find the MLE for each pair of variables, making it an unattractive choice in terms of computational burden as well.\\
 
-\noindent Next, we simulate under the alternative hypothesis where $h$ is specified to be the Fisher transformation defined in (\ref{fisher}). Based on the result of the first simulation, we use sample size $n=500$ to ensure type I error control. Under a simple scenario of $K=2$, we simulate $X$ once from uniform distribution to reflect the distribution of genetic ancestry. For this fixed $X$, we simulate $Y_1$ and $Y_2$ 1,000 times from bivariate normal distribution, where $Y_1$ and $Y_2$ both have mean 0 and variance 1 and their covariance $\rho(X)$ depends on function $h$ as shown in (\ref{sigma}) and (\ref{eq1}). Based on this generated data, we use \textit{optim} function in R to numerically find the MLE of $\alpha$ in model (\ref{eq2}). At first, we conduct the likelihood ratio test assuming correctly that $h$ is Fisher transformation. Then, we conduct the same test with the wrong assumption that $h$ is a cumulative distribution function of standard normal. We finally conduct our proposed ``model-free" method. For all three cases, we record the $p$-values and record how many are smaller than 0.05. \\
+% \noindent The first simulation is under the null hypothesis. We use sample size $n = 30, 100,$ and $500$ and store the $p$-values by comparing the test statistics, both likelihood ratio and Lagrange Multiplier, to the $\chi_1^2$ distribution. Given the sample size $n$, we simulate $X$ once from uniform distribution, to reflect the distribution of genetic ancestry. For this fixed $X$, we simulate $Y_1$ and $Y_2$ 1,000 times from bivariate normal distribution, where $Y_1$ and $Y_2$ both have mean 0 and variance 1 marginally with their covariance $\rho(X)$ fixed to 0.5. \\
 
-\noindent Table \ref{mle_power} summarizes the statistical power under three scenarios with varying strengths of the signal $\alpha$. The comparison of first and third column shows that when the MLEs were calculated assuming the correct Fisher model, the statistical power is mostly greater than our proposed method, but only marginally. Meanwhile, the comparison of second and third column shows that when the wrong model is assumed, the statistical power is worse than our model-free, flexible method. \\
-
-\begin{table}[!htbp] \centering 
-\begin{tabular}{lccc} 
-\\[-1.8ex]\hline 
-\hline \\[-1.8ex] 
-& Proposed & Fisher & Normal CDF \\ 
-\hline \\[-1.8ex] 
-$\alpha = 0$ & $0.054$ & $0.051$ & $0.046$ \\ 
-$\alpha = 0.2$ & $0.078$ & $0.084$ & $0.071$  \\ 
-$\alpha = 0.4$ & $0.162$ & $0.172$ & $0.153$ \\ 
-$\alpha = 0.6$ & $0.322$ & $0.338$ & $0.306$  \\ 
-$\alpha = 0.8$ & $0.483$ & $0.490$ & $0.449$ \\ 
-$\alpha = 1$ & $0.628$ & $0.645$ & $0.610$ \\ 
-\hline \\[-1.8ex] 
-\end{tabular} 
-  \caption{  \label{mle_power}  Power analysis under the alternative hypothesis where $h$ is the Fisher transformation in \ref{fisher}. The proposed method doesn't perform as well as the likelihood ratio test when the model is correctly specified, but it performs better than the same test when model is mis-specified. } 
-\end{table}
-
-\noindent Lastly, we empirically measured the computing time of the likelihood ratio test and the proposed Lagrange Multiplier test. The result summarized in Figure ? suggests that the proposed method is preferred.
-
-\subsection{Comparison with Liquid Association}
-
-We also compare the performance of the proposed method with that of liquid association \cite{li2002genome}. Similarly, under the simple scenario of $K=2$, we simulate $X$ once with sample size of $n=100$. (Is this okay? Should I make it 500 for consistency?) For this scenario, we simulate $X$ from standard normal distribution to match the assumptions of liquid association. For this fixed $X$, we simulate $Y_1$ and $Y_2$ 1,000 times from bivariate normal distribution, where $Y_1$ and $Y_2$ both have mean 0 and variance 1 and their covariance $\rho(X)$ depends on function $h$. We use two different $h$ functions; one is Fisher function defined in (\ref{fisher}) which by definition gives a strict range of (0,1) to $\rho$, and the other is a quadratic function designed to do the same for $X$ in $(-2.5, 2.5)$ and $\alpha$ in $(0,4)$.
-$$h(X) = \frac{(X\alpha)^2}{50} + 2.1$$ 
-The two options of $h$ are illustrated in Figure (\ref{la_h}).\\
-
-\noindent The results in Table \ref{power_la} show that under the Fisher model, the liquid association has higher power, especially as the signal gets stronger. However, when the $\rho(X)$ has a quadratic pattern and is not monotonic with respect to $X$, the same method loses all its statistical power. 
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.4\linewidth]{figures/Fisher.png}
-    \includegraphics[width=0.4\linewidth]{figures/Quadratic.png}
-    \caption{\label{la_h} The two heteroskedastic models used to generate data. Simulation results show that the liquid association can only capture the relationship between $\rho(X)$ and $X$ for the left case.}
-\end{figure}
-
-
-\begin{table}[!htbp] \centering 
-\begin{tabular}{@{\extracolsep{5pt}} ccc|cc} 
-\\[-1.8ex]\hline 
-\hline \\[-1.8ex] 
-& \multicolumn{2}{c}{Fisher} & \multicolumn{2}{c}{Quadratic}  \\
-\hline \\[-1.8ex] 
- & LA & LM & LA & LM \\ 
-\hline \\[-1.8ex] 
-$\alpha=1$ & $0.044$ & $\bm{0.077}$ & $0.005$ & $\bm{0.052}$ \\ 
-$\alpha=2$ & $\bm{0.109}$ & $\bm{0.109}$ & $0.009$ & $\bm{0.052}$ \\ 
-$\alpha=3$ & $\bm{0.150}$ & $0.113$ & $0.005$ & $\bm{0.067}$ \\ 
-$\alpha=4$ & $\bm{0.186}$ & $0.132$ & $0.006$ & $\bm{0.073}$ \\ 
-\hline \\[-1.8ex] 
-\end{tabular} 
-  \caption{True discovery rate for various signal strength $\alpha$ and two models for heterogeneity. LA stands for liquid association and LM stands for Lagrange Multiplier. Under the Fisher model, where the heteroskedasticity is monotonic, liquid association performs better, especially as the signal becomes stronger, because it captures the linear correlation between the covariate and the correlation between the two variables. Under the quadratic model, where heteroskedasticity is non-monotonic, liquid association loses all its power, and the proposed method performs better.   \label{power_la} } 
-\end{table} 
-
-\subsection{Case for $K>2$?}
-
-
-\subsection{Case for $p>2$?}
-
-% In this section, we perform an extensive simulation studies to progress from the simplest case to more complicated case and test the extent to which our proposed method is effective. \\
-
-% First, we investigate the effects of small sample correction. We use sample size of $n=31$, equal to the number of available African American samples for the expression level data in skin tissue in GTEx. $Y$ is generated with multivariate normal distribution $B$ times independently with $K=2$. Without the correction, type 1 error is less than the nominal value, meaning the $p$-values are generally inflated that lead to low power. 
-
-
-% Then, we decrease the sample size to 31 and observe how small sample correction affects the inference. $Y$ is generated with the same multivariate normal distribution as above. The result shows that the type 1 error is less than the nominal value, as the p-values are generally inflated as shown in the histogram. It is interesting to note that at the other end of the extreme, p-values are smaller than the extreme values that follow $\chi_1^2$. After the Honda correction, the type 1 error is much closer to the nominal value, but the inflated signals are not very well adjusted. However, the adjustment is non-linear and adjusts the test statistics at both the extremes in the correct direction. The largest score statistics were adjusted to be lower, while the smallest score statistics were adjusted to be higher.\\
-
-
-% % \begin{figure}[ht]
-% %     \centering
-% %     \includegraphics[width=1\linewidth]{figures/sim1.png}
-% %     \includegraphics[width=1\linewidth]{figures/sim2.png}
-% %     \caption{\label{sim_simulatedX} (a)-(c) blah blah (d)-(e) blah blah}
-% % \end{figure}
-
-
-% \noindent 
-% We next expand the number of nodes. We simulate $Y$ with $K=5$ nodes with relatively large sample size $n=300$. We generate 1,000 data sets, and check if the distribution of the degree statistics match the sum of different gamma distributions as derived above. \\
-
-% \noindent
-% Finally, we simulate the high dimensional case where $Y$ has $K=100$ nodes with small $n=31$ sample. We perform the permutation test, and observe both type I and tyep II error under various effect sizes of $\alpha$. 
-
-% \begin{table}[ht]
-%     \centering
-%     \begin{tabular}{l |c | c | c | c}
-%           & $n=300, K=2$ & $n=31, K=2$ & $n=300, K=5$ & $n=31, K=100$\\
-%          \hline
-%   $\alpha = -2$ & 0.823 & 0.149 & 0.932 & 0.161\\
-%   $\alpha = -1$ & 0.741 & 0.132 & 0.844 & 0.149\\
-%   $\alpha = 0$ & 0.041 & 0.039 & 0.057 & 0.052\\
-%   $\alpha = 1$ & 0.757 & 0.105 & 0.811 & 0.110\\
-%   $\alpha = 2$ & 0.836 & 0.131 & 0.909 & 0.165
-%     \end{tabular}
-%     \caption{\label{table_simulatedX} Proportion of $q$ statistic in each scenario’s simulations that had p-values of less than 0.05 under null hypothesis $\alpha=0$ and alternative hypothesis $\alpha \neq 0$. The score test itself is essentially powerless with low sample size of $31$. Still, the small sample correction does improve the calibration with the $\chi^2$ distribution as shown in Figure \ref{simfigure} (a)-(e)}
-% \end{table}
-
+% \noindent The results are summarized in Figure \ref{calibration}. The qq-plots shows that the p-values from the likelihood ratio tests are poorly calibrated to the expected uniform distribution for cases of $n=100$ and $n=30$. Meanwhile, the Lagrange Multiplier test, with the help of small sample correction, effectively controls the type I error and the test statistics are well calibrated to $\chi_1^2$ distribution even under the extremely low sample size of $n=30$.
 
 % \begin{figure}[ht]
-% \includegraphics[width=1\linewidth]{figures/sim3.png}
-% \includegraphics[width=1\linewidth]{figures/sim4.png}
-% \caption{\label{sim_trueX} (a)-(c) blah blah (d)-(e) blah blah}
+%     \centering
+%     \includegraphics[width=0.98\linewidth]{figures/calibration.png}
+%     \caption{\label{calibration} Calibration of $p$-values under the null hypothesis for two methods of Lagrangian Multiplier test and likelihood ratio test. LM stands for Lagrangian Multiplier test, and LR stands for likelihood ratio test.}
 % \end{figure}
 
 
+% \noindent Next, we simulate under the alternative hypothesis where $h$ is specified to be the Fisher transformation defined in (\ref{fisher}). Based on the result of the first simulation, we use sample size $n=500$ to ensure type I error control. Under a simple scenario of $K=2$, we simulate $X$ once from uniform distribution to reflect the distribution of genetic ancestry. For this fixed $X$, we simulate $Y_1$ and $Y_2$ 1,000 times from bivariate normal distribution, where $Y_1$ and $Y_2$ both have mean 0 and variance 1 and their covariance $\rho(X)$ depends on function $h$ as shown in (\ref{sigma}) and (\ref{eq1}). Based on this generated data, we use \textit{optim} function in R to numerically find the MLE of $\alpha$ in model (\ref{eq2}). At first, we conduct the likelihood ratio test assuming correctly that $h$ is Fisher transformation. Then, we conduct the same test with the wrong assumption that $h$ is a cumulative distribution function of standard normal. We finally conduct our proposed ``model-free" method. For all three cases, we record the $p$-values and record how many are smaller than 0.05. \\
+
+% \noindent Table \ref{mle_power} summarizes the statistical power under three scenarios with varying strengths of the signal $\alpha$. The comparison of first and third column shows that when the MLEs were calculated assuming the correct Fisher model, the statistical power is mostly greater than our proposed method, but only marginally. Meanwhile, the comparison of second and third column shows that when the wrong model is assumed, the statistical power is worse than our model-free, flexible method. \\
+
+% \begin{table}[!htbp] \centering 
+% \begin{tabular}{lccc} 
+% \\[-1.8ex]\hline 
+% \hline \\[-1.8ex] 
+% & Proposed & Fisher & Normal CDF \\ 
+% \hline \\[-1.8ex] 
+% $\alpha = 0$ & $0.054$ & $0.051$ & $0.046$ \\ 
+% $\alpha = 0.2$ & $0.078$ & $0.084$ & $0.071$  \\ 
+% $\alpha = 0.4$ & $0.162$ & $0.172$ & $0.153$ \\ 
+% $\alpha = 0.6$ & $0.322$ & $0.338$ & $0.306$  \\ 
+% $\alpha = 0.8$ & $0.483$ & $0.490$ & $0.449$ \\ 
+% $\alpha = 1$ & $0.628$ & $0.645$ & $0.610$ \\ 
+% \hline \\[-1.8ex] 
+% \end{tabular} 
+%   \caption{  \label{mle_power}  Power analysis under the alternative hypothesis where $h$ is the Fisher transformation in \ref{fisher}. The proposed method doesn't perform as well as the likelihood ratio test when the model is correctly specified, but it performs better than the same test when model is mis-specified. } 
+% \end{table}
+
+% \noindent Lastly, we empirically measured the computing time of the likelihood ratio test and the proposed Lagrange Multiplier test. The result summarized in Figure ? suggests that the proposed method is preferred.
+
+% \subsection{Comparison with Liquid Association}
+
+% We also compare the performance of the proposed method with that of liquid association \cite{li2002genome}. Similarly, under the simple scenario of $K=2$, we simulate $X$ once with sample size of $n=100$. (Is this okay? Should I make it 500 for consistency?) For this scenario, we simulate $X$ from standard normal distribution to match the assumptions of liquid association. For this fixed $X$, we simulate $Y_1$ and $Y_2$ 1,000 times from bivariate normal distribution, where $Y_1$ and $Y_2$ both have mean 0 and variance 1 and their covariance $\rho(X)$ depends on function $h$. We use two different $h$ functions; one is Fisher function defined in (\ref{fisher}) which by definition gives a strict range of (0,1) to $\rho$, and the other is a quadratic function designed to do the same for $X$ in $(-2.5, 2.5)$ and $\alpha$ in $(0,4)$.
+% $$h(X) = \frac{(X\alpha)^2}{50} + 2.1$$ 
+% The two options of $h$ are illustrated in Figure (\ref{la_h}).\\
+
+% \noindent The results in Table \ref{power_la} show that under the Fisher model, the liquid association has higher power, especially as the signal gets stronger. However, when the $\rho(X)$ has a quadratic pattern and is not monotonic with respect to $X$, the same method loses all its statistical power. 
+
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[width=0.4\linewidth]{figures/Fisher.png}
+%     \includegraphics[width=0.4\linewidth]{figures/Quadratic.png}
+%     \caption{\label{la_h} The two heteroskedastic models used to generate data. Simulation results show that the liquid association can only capture the relationship between $\rho(X)$ and $X$ for the left case.}
+% \end{figure}
+
+
+% \begin{table}[!htbp] \centering 
+% \begin{tabular}{@{\extracolsep{5pt}} ccc|cc} 
+% \\[-1.8ex]\hline 
+% \hline \\[-1.8ex] 
+% & \multicolumn{2}{c}{Fisher} & \multicolumn{2}{c}{Quadratic}  \\
+% \hline \\[-1.8ex] 
+%  & LA & LM & LA & LM \\ 
+% \hline \\[-1.8ex] 
+% $\alpha=1$ & $0.044$ & $\bm{0.077}$ & $0.005$ & $\bm{0.052}$ \\ 
+% $\alpha=2$ & $\bm{0.109}$ & $\bm{0.109}$ & $0.009$ & $\bm{0.052}$ \\ 
+% $\alpha=3$ & $\bm{0.150}$ & $0.113$ & $0.005$ & $\bm{0.067}$ \\ 
+% $\alpha=4$ & $\bm{0.186}$ & $0.132$ & $0.006$ & $\bm{0.073}$ \\ 
+% \hline \\[-1.8ex] 
+% \end{tabular} 
+%   \caption{True discovery rate for various signal strength $\alpha$ and two models for heterogeneity. LA stands for liquid association and LM stands for Lagrange Multiplier. Under the Fisher model, where the heteroskedasticity is monotonic, liquid association performs better, especially as the signal becomes stronger, because it captures the linear correlation between the covariate and the correlation between the two variables. Under the quadratic model, where heteroskedasticity is non-monotonic, liquid association loses all its power, and the proposed method performs better.   \label{power_la} } 
+% \end{table} 
+
+
 \section{Applications to GTEx Data}
-We next apply this method to African American samples from GTEx. We aim to find a group of genes that change its coexpression structure as the genome's proportion of African ancestry changes. The proportion of African ancestry for each individual is defined as global ancestry, and it is referred from software LAMP \cite{pacsaniuc2009imputation}. The data sets are explained in more detail in the Appendix.\\
+% We next apply this method to African American samples from GTEx. We aim to find a group of genes that change its coexpression structure as the genome's proportion of African ancestry changes. The proportion of African ancestry for each individual is defined as global ancestry, and it is referred from software LAMP \cite{pacsaniuc2009imputation}. The data sets are explained in more detail in the Appendix.\\
 
-\noindent Should I include the analysis of European Americans vs African Americans? \\
+% \noindent Should I include the analysis of European Americans vs African Americans? \\
 
-\noindent We first conducted the data analysis on the supra-pubic skin tissue (not sun exposed), where 31 African American samples are available. Due to low sample size, we restricted our search space to only transcription factors. Transcription factors are known to have high correlation with many other genes, and if their impact sizes on other genes are different based on genetic ancestry, such relationship could have important biological implications. \\
+% \noindent We first conducted the data analysis on the supra-pubic skin tissue (not sun exposed), where 31 African American samples are available. Due to low sample size, we restricted our search space to only transcription factors. Transcription factors are known to have high correlation with many other genes, and if their impact sizes on other genes are different based on genetic ancestry, such relationship could have important biological implications. \\
 
-\noindent We acquired the list of transcription factors from TF2DNA database \cite{pujato2014prediction}, and for each transcription factor $k$, we computed the pair-wise test statistic $q_{kj}$, defined in (\ref{q}), for the rest of the genes $j$ across the entire genome and subsequently added them up to acquire $d_k$, defined in (\ref{d}). $d_k$ measures the evidence against the hypothesis the correlation between the transcription factor $k$ and the rest of the genes remain the same across different genetic ancestry. 
+% \noindent We acquired the list of transcription factors from TF2DNA database \cite{pujato2014prediction}, and for each transcription factor $k$, we computed the pair-wise test statistic $q_{kj}$, defined in (\ref{q}), for the rest of the genes $j$ across the entire genome and subsequently added them up to acquire $d_k$, defined in (\ref{d}). $d_k$ measures the evidence against the hypothesis the correlation between the transcription factor $k$ and the rest of the genes remain the same across different genetic ancestry. 
+
+% \subsection{Data}
+%  We use the genotype data and normalized gene expression level data from GTEx V6p release \cite{lonsdale2013genotype} to apply the method to the African American samples and their gene coexpression network. The data has been pre-processed by GTEx as explained in the GTEx portal (https://gtexportal.org). In order to select African Americans from the available samples, we first inferred the local ancestry of the samples who identified themselves as European Americans or African Americans and verified that their genetic ancestry is consistent. For local ancestry inference, we use the software LAMP that reaches as high as 98\% accuracy level for distinguishing YRI and CEU ancestry \cite{pacsaniuc2009imputation}. We also need the reference minor allele frequency from the pure population, so we used data from 1000 Genome Project. For initial setting of hyperparameters in LAMP, we use 7 for the number of generations of admixture, 0.2 and 0.8 for the initial proportion of CEU and YRI population, and $10^{-8}$ for recombination rate, but the results are robust to these settings. LAMP returns local ancestry at each SNP as the count of African chromosomes (0, 1, or 2) at each locus, and we use the SNP closest to the center of the gene to represent the local ancestry of the entire gene.  Around 92\% of the genes showed no recombination event in all of the subjects, and less than 3\% of the genes have more than one individual with ancestry switch within the gene, so we believe this is a valid approximation. \\
 
 
+% \noindent We define global ancestry as a value between 0 and 1 that quantifies the proportion of African chromosome in each subject. We first estimate it by averaging the inferred local ancestry, and this estimate is cross-checked with principal component analysis which can effectively cluster the subjects into subpopulations \cite{pritchard2000inference}. We also include pure YRI and CEU population for PCA, and most African Americans lie strictly between the YRI and CEU population showing a two-way admixture between pure Europeans and pure Africans. We observed some outliers that were not placed between pure populations, and so we removed them. We also observed some self-identified Europeans whose genetic ancestry is more than 10\% African, and we include them in our analysis as African Americans. \\
 
+% \noindent The expression levels provided by GTEx were measured using RNA-seq for 38,498 genes in the autosomal chromosomes. For each tissue, only genes with RPKM higher than 0.1 were included. Then the expression levels are normalized, log-transformed, and corrected for technical artifacts by GTEx. In addition, for each tissue, we regressed out the first two principal components of the expression level matrix to remove the effects of the technical noise confounded with the measurements of each individual. Different subjects were sequenced for different sets of tissues, introducing a number of missing values in the expression level matrices. Lastly, we didn't analyze genes that were expressed in only one tissue, because linear regression suffices to analyze them. 
 
 \section{Discussion}
 
 
 
 \section{Appendix}
+\subsection{Derivation of $q$}
+The likelihood of the model in (\ref{transformed_model}) is
+\begin{align*}
+\ell(\bm{\alpha, \beta}) &= -\frac{n}{2} log(2\pi) - \frac{1}{2} \sum_i log(2 + 2h(\bm{x_i}^T \bm{\alpha})) - \sum_{i=1}^{n} \frac{(w_i - \bm{x_i}^T \bm{\beta})^2}{2 + 2h(\bm{x_i}^T \bm{\alpha})} \\
+&-\frac{n}{2} log(2\pi) - \frac{1}{2} \sum_i log(2 - 2h(\bm{x_i}^T \bm{\alpha})) - \sum_{i=1}^{n} \frac{(v_i - \bm{x_i}^T \bm{\beta})^2}{2 - 2h(\bm{x_i}^T \bm{\alpha})}.
+\end{align*}
 
-\subsection{Data}
- We use the genotype data and normalized gene expression level data from GTEx V6p release \cite{lonsdale2013genotype} to apply the method to the African American samples and their gene coexpression network. The data has been pre-processed by GTEx as explained in the GTEx portal (https://gtexportal.org). In order to select African Americans from the available samples, we first inferred the local ancestry of the samples who identified themselves as European Americans or African Americans and verified that their genetic ancestry is consistent. For local ancestry inference, we use the software LAMP that reaches as high as 98\% accuracy level for distinguishing YRI and CEU ancestry \cite{pacsaniuc2009imputation}. We also need the reference minor allele frequency from the pure population, so we used data from 1000 Genome Project. For initial setting of hyperparameters in LAMP, we use 7 for the number of generations of admixture, 0.2 and 0.8 for the initial proportion of CEU and YRI population, and $10^{-8}$ for recombination rate, but the results are robust to these settings. LAMP returns local ancestry at each SNP as the count of African chromosomes (0, 1, or 2) at each locus, and we use the SNP closest to the center of the gene to represent the local ancestry of the entire gene.  Around 92\% of the genes showed no recombination event in all of the subjects, and less than 3\% of the genes have more than one individual with ancestry switch within the gene, so we believe this is a valid approximation. \\
+Then the first derivative is 
+\begin{align*}
+\bm{d_{\alpha}} &= \frac{\partial \ell}{\partial \bm{\alpha}}\\
+&= -\frac{1}{2} \sum_i  \frac{2h'(\bm{x_i}^T \bm{\alpha})\bm{x_i}}{2+2h(\bm{x_i^T\alpha})} \left(
+1 - \frac{(\bm{w_i} - \bm{x_i}^T (\bm{\beta_1 + \beta_2}))^2}{2+2h(\bm{x_i^T\alpha})} 
+\right) \\
+& \hspace{2cm} 
++ \frac{1}{2} \sum_{i=1}^{n}\frac{2h'(\bm{x_i}^T \bm{\alpha})\bm{x_i}}{2-2h(\bm{x_i^T\alpha})} \left(
+1 - \frac{(\bm{v_i} - \bm{x_i}^T (\bm{\beta_1 - \beta_2}))^2}{2-2h(\bm{x_i^T\alpha})} .
+\right)
+\end{align*}
+
+\noindent Now, we replace $\bm{\beta}$ and $\bm{\alpha}$ with the maximum likelihood estimators under the null hypothesis. $\bm{\beta}$ is therefore replaced by the OLS estimators, and $\bm{\alpha}$ is 0. Moreover,
+$2 + 2h(\bm{0}) = \hat{\sigma}_w^2$ and $2-2h(\bm{0}) = \hat{\sigma}_v^2$. 
+\begin{align}
+\bm{\tilde{d}_{\alpha}} &= \bm{d_{\alpha}}\mid_{\bm{\alpha}=\bm{0}} \\
+&= -\frac{1}{2} \sum_i \left(
+\frac{2h'(0)\bm{x_i}}{\hat{\sigma}_{w}^2} \left(
+1-\frac{\hat{u}_{wi}^2}{\hat{\sigma}_{w}^2}
+\right)
+-
+\frac{2h'(0)\bm{x_i}}{\hat{\sigma}_{v}^2} \left(
+1-\frac{\hat{u}_{vi}^2}{\hat{\sigma}_{v}^2}
+\right)
+\right)\\
+&= -h'(0) \sum_i  \left(
+\frac{\bm{x_i}}{\hat{\sigma}_{w}^2} \left(
+1-\frac{\hat{u}_{wi}^2}{\hat{\sigma}_{w}^2}
+\right)
+-
+\frac{\bm{x_i}}{\hat{\sigma}_{v}^2} \left(
+1-\frac{\hat{u}_{vi}^2 }{\hat{\sigma}_{v}^2}
+\right)
+\right)
+\label{first_derivative}
+\end{align}
+
+\noindent For the second derivative below, we denote $\phi_i = 2+2h(\bm{x_i^T\alpha})$ and $\psi_i = 2-2h(\bm{x_i^T\alpha})$. Then $\phi'_i = 2h'(\bm{x_i^T\alpha})\bm{x_i}$, and similarly $\psi'_i = -2h'(\bm{x_i^T\alpha})\bm{x_i}$. Also, note that $\phi_i$ evaluated under the null is $\tilde{\phi}_i = \hat{\sigma}_w^2 = \sum_i \frac{2\hat{u}_{wi}^2}{n}$ and similarly $\tilde{\psi}_i = \hat{\sigma}_v^2 = \sum_i \frac{\hat{u}_{vi}^2}{n}$.
+\begin{align*}
+I_{\bm{\alpha\alpha}} &= \frac{\partial^2 \ell}{\partial \bm{\alpha}^2} \\
+&= 
+-\frac{1}{2} \frac{\partial}{\partial {\bm{\alpha}}} 
+\sum_{i=1}^{n} \bm{x_i}^T\frac{\phi_i'}{\phi_i}\left( 1- \frac{\hat{u}_{vi}^2}{\phi_i}\right) + \frac{1}{2} \sum_{i=1}^{n} \bm{x_i}^T \frac{\psi'}{\psi} \left(1 - \frac{\hat{u}_{vi}^2}{\psi} \right)\\
+&= -\frac{1}{2} \sum_{i=1}^{n} \bm{x_i x_i^T} \left(\frac{\phi_i (\phi_i-\hat{u}_{wi}^2) \phi_i'' + (2\hat{u}_{wi}^2 - \phi_i)\phi_i'^2}{\phi_i^3} 
+- 
+\frac{\psi_i (\psi_i-\hat{u}_{wi}^2) \psi_i'' + (2\hat{u}_{wi}^2 - \psi_i)\psi_i'^2}{\psi_i^3}  \right)\\
+%&= -\frac{1}{2} \sum_{i=1}^{n} \bm{x_i x_i^T} \left(  \frac{(2h'(\bm{x_i^T\alpha}))^2}{\phi_i^2} + \frac{(2h'(\bm{x_i^T\alpha}))^2}{\psi_i^2}\right)
+\end{align*}
+Plugging in $\bm{\alpha} = \bm{0}$, we obtain $\tilde{I}_{\bm{\alpha\alpha}}$ evaluated at the null hypothesis.
+\begin{align*}
+\tilde{I}_{\bm{\alpha\alpha}} = 2h'(\bm{0})^2 \left( \frac{1}{\hat{\sigma}_w^4}  + \frac{1}{\hat{\sigma}_v^4}\right)\sum_{i=1}^{n}  \bm{x_i x_i^T}
+\end{align*}
+
+\noindent Therefore, the test statistic $q$ is 
+\begin{equation}
+q = \tilde{d}_{\bm{\alpha}} \tilde{I}_{\bm{\alpha\alpha}}^{-1} \tilde{d}_{\bm{\alpha}}
+\label{original_LM}
+\end{equation}
+$$ = \frac{1}{2} \cdot \frac{1}{\frac{1}{\hat{\sigma}_w^4} + \frac{1}{\hat{\sigma}_v^4}} \left(
+\sum_{i=1}^{n} \bm{x_{i}} 
+\left(
+\frac{1}{\hat{\sigma}_w^2} - \frac{\hat{u}_{wi}^2}{\hat{\sigma}_w^4}\right)  - \left( \frac{1}{\hat{\sigma}_v^2} - \frac{\hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+\right)
+\right)^T 
+\left( \sum_{i=1}^{n} \bm{x_i^T x_i} \right)^{-1}
+\left(
+\sum_{i=1}^{n} \bm{x_{i}} 
+\left(
+\frac{1}{\hat{\sigma}_w^2} - \frac{\hat{u}_{wi}^2}{\hat{\sigma}_w^4}\right)  - \left( \frac{1}{\hat{\sigma}_v^2} - \frac{\hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+\right)
+\right)
+$$
 
 
-\noindent We define global ancestry as a value between 0 and 1 that quantifies the proportion of African chromosome in each subject. We first estimate it by averaging the inferred local ancestry, and this estimate is cross-checked with principal component analysis which can effectively cluster the subjects into subpopulations \cite{pritchard2000inference}. We also include pure YRI and CEU population for PCA, and most African Americans lie strictly between the YRI and CEU population showing a two-way admixture between pure Europeans and pure Africans. We observed some outliers that were not placed between pure populations, and so we removed them. We also observed some self-identified Europeans whose genetic ancestry is more than 10\% African, and we include them in our analysis as African Americans. \\
+\subsection{Derivation of $\eta_{12,13}$}
+\noindent We start from the test statistic $q$ computed when the covariates have been orthogonalized.
+$$ q = \sum_{p=1}^{P}
+ \left(\frac{1}{\sqrt{n}}
+ \sqrt{\frac{\hat{\sigma}_w^4 \hat{\sigma}_v^4}{\hat{\sigma}_w^4 + \hat{\sigma}_v^4}}
+ \sum_{i=1}^{n} x_{ip} \left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4}
+ - \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+ \right)
+\right)^2 = \sum_{p=1}^{P}r_p^2$$
+$r_p$ for each $p$ follows standard normal distribution by the central limit theorem. 
+$$E\left(x_{ip}\left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4}
+ - \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+ \right)\right) = x_{ip} E\left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4} \right) E\left( \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+ \right) = 0$$
+$$Var\left(x_{ip}\left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4}
+ - \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+ \right)\right) = 
+ x_{ip}^2 \left( Var\left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4} \right)  + Var\left( \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
+ \right)\right)
+ $$
+ $$ = \frac{\hat{\sigma}_w^4 + \hat{\sigma}_v^4}{\hat{\sigma}_w^4 \hat{\sigma}_v^4}$$
 
-\noindent The expression levels provided by GTEx were measured using RNA-seq for 38,498 genes in the autosomal chromosomes. For each tissue, only genes with RPKM higher than 0.1 were included. Then the expression levels are normalized, log-transformed, and corrected for technical artifacts by GTEx. In addition, for each tissue, we regressed out the first two principal components of the expression level matrix to remove the effects of the technical noise confounded with the measurements of each individual. Different subjects were sequenced for different sets of tissues, introducing a number of missing values in the expression level matrices. Lastly, we didn't analyze genes that were expressed in only one tissue, because linear regression suffices to analyze them. 
+\noindent We can re-write $r_{12,p}$ as following as a pre-processing to compute $cov(r_{12,p}, r_{12,p})$,
+$$\hat{\sigma}_w^2 = 2 + 2\hat{\rho}_{12}$$
+$$\hat{\sigma}_v^2 = 2 - 2\hat{\rho}_{12}$$
+where $\rho_{12}$ is the constant correlation between variables 1 and 2 under the null hypothesis. Note that asymptotically $\hat{\sigma}_w^2$ converges to $\sigma_w^2$ in probability, and so does $\hat{\rho}_{12}$ to $\rho_{12}$.
+\begin{align*}
+    r_{p,12}&\\
+    = &\frac{1}{\sqrt{2n}} \frac{1}{\sqrt{8(1 + \hat{\rho}_{12}^2)}}
+    \sum_{i=1}^{n} x_{ip}\left( (2-2\hat{\rho}_{12})- \frac{2-2\hat{\rho}_{12}}{2+2\hat{\rho}_{12}}(\hat{u}_{1i}+\hat{u}_{2i})^2\right)  - \left( (2+2\hat{\rho}_{12}) - \frac{2+2\hat{\rho}_{12}}{2-2\hat{\rho}_{12}}(\hat{u}_{1i}-\hat{u}_{2i})^2\right)\\
+    &= \frac{1}{\sqrt{16n(1+\hat{\rho}_{12}^2)}} \sum_{i=1}^{n}x_{ip}
+    \left( 
+    \frac{4((\hat{\rho}_{12}^3 - \hat{\rho}_{12}) - \hat{u}_{1i}\hat{u}_{2i}(\hat{\rho}_{12}^2 + 1) + \hat{\rho}_{12}(\hat{u}_{1i}^2 + \hat{u}_{2i}^2))}{(1-\hat{\rho}_{12})(1+\hat{\rho}_{12})}
+    \right)\\
+    &= \frac{1}{\sqrt{n(1+\hat{\rho}_{12}^2)}}\sum_{i=1}^{n}x_{ip} \left( 
+    \frac{(\hat{\rho}_{12}^3 - \hat{\rho}_{12}) - \hat{u}_{1i}\hat{u}_{2i}(\hat{\rho}_{12}^2 + 1) + \hat{\rho}_{12}(\hat{u}_{1i}^2 + \hat{u}_{2i}^2))}{(1-\hat{\rho}_{12})(1+\hat{\rho}_{12})}
+    \right)
+\end{align*}
+
+\noindent Similarly,
+\begin{align*}
+    r_{p,13} = 
+    \frac{1}{\sqrt{n(1+\hat{\rho}_{13}^2)}}\sum_{i=1}^{n}x_{ip} \left( 
+    \frac{(\hat{\rho}_{13}^3 - \hat{\rho}_{13}) - \hat{u}_{1i}\hat{u}_{3i}(\hat{\rho}_{13}^2 + 1) + \hat{\rho}_{13}(\hat{u}_{1i}^2 + \hat{u}_{3i}^2))}{(1-\hat{\rho}_{13})(1+\hat{\rho}_{13})}
+    \right)
+\end{align*}
+
+\noindent Then, after some algebra,
+$$cov(r_{12,p}, r_{13,p}) = E(r_{12,p}r_{13,p}) - E(r_{12,p})E(r_{13,p}) = E(r_{12,p}r_{13,p})$$
+can be expressed as 
+
+$$\frac{\rho_{12}^3\rho_{13}^3 + \rho_{12}^3 \rho_{13} + \rho_{12}\rho_{13}^3 - 3\rho_{12}^2\rho_{13}^2\rho_{23} + 2\rho_{12}\rho_{13}\rho_{23}^2 - \rho_{12}^2\rho_{23} - \rho_{13}^2\rho_{23} - \rho_{12}\rho_{13} + \rho_{23}}{(1-\rho_{12})^2(1-\rho_{13})^2\sqrt{(1+\rho_{12}^2)(1+\rho_{13}^2)}}$$
+
+% $$\frac{numerator}{(1-\rho_{12}^4)(1-\rho_{13}^2)}$$
+
+% \begin{align*}
+%     numerator = &\rho_{12}^4\rho_{13}^2 + \rho_{12}^4 - 2\rho_{12}^3 \rho_{13}^3 - 4 \rho_{12}^3\rho_{13}\rho_{23} + 2 \rho_{12}^3\rho_{13} + \rho_{12}^2\rho_{13}^4 \\
+%     & + \rho_{12}^2\rho_{13}^2\rho_{23}^2 + 5\rho_{12}^2\rho_{13}^2 + \rho_{12}^2\rho_{23}^2 - 4\rho_{12}^2 - 4\rho_{12}\rho_{13}^3\rho_{23} + 2\rho_{12}\rho_{13}^3 - 2\rho_{12}\rho_{13} + \rho_{13}^4\\
+%     & + \rho_{13}^2\rho_{23}^2 - 4\rho_{13}^2 + \rho_{23}^2 + 3
+% \end{align*}
+
+
+
 
 
 \bibliographystyle{plain}
 \bibliography{ref}
+
 
 
 \end{document}
