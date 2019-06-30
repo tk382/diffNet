@@ -1,0 +1,237 @@
+---
+title: "W_and_V_alt"
+output: html_document
+---
+
+```{r setup, include=FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      dpi=100,
+                      fig.height = 3, fig.width=3,
+                      warning = FALSE)
+library(diversitree)
+library(reshape2)
+library(ggplot2)
+source("R/utilities_wv.R")
+Rcpp::sourceCpp('src/utilities.cpp')
+set.seed(20190531)
+```
+
+```{r, echo = FALSE}
+do_sim = function(X, n, B, rho, mles = FALSE){
+  likelihood_fisher = function(alpha, opt = list(X, Y)){
+    rho = h1_fisher(X, alpha)
+    l = sum(dnorm(Y[,1] + Y[,2], 0, sqrt(2 + 2 * rho), log = TRUE)) +
+        sum(dnorm(Y[,1] - Y[,2], 0, sqrt(2 - 2 * rho), log = TRUE))
+    return(l)
+  }
+  
+  likelihood_quadratic = function(alpha, opt = list(X, Y)){
+    rho = h6_quadratic(X, alpha)
+    l = sum(dnorm(Y[,1] + Y[,2], 0, sqrt(2 + 2 * rho), log = TRUE)) +
+        sum(dnorm(Y[,1] - Y[,2], 0, sqrt(2 - 2 * rho), log = TRUE))
+    return(l)
+  }
+
+  likelihood_cdf = function(alpha, opt = list(X, Y)){
+    rho = h3_cdf(X, alpha)
+    l = sum(dnorm(Y[,1] + Y[,2], 0, sqrt(2 + 2 * rho), log = TRUE)) +
+        sum(dnorm(Y[,1] - Y[,2], 0, sqrt(2 - 2 * rho), log = TRUE))
+      return(l)
+  }
+  
+  likelihood_sin = function(alpha, opt = list(X, Y)){
+    rho = h4_sin(X, alpha)
+    l = sum(dnorm(Y[,1] + Y[,2], 0, sqrt(2 + 2 * rho), log = TRUE)) +
+        sum(dnorm(Y[,1] - Y[,2], 0, sqrt(2 - 2 * rho), log = TRUE))
+      return(l)
+  }
+  
+  likelihood_null = function(rho, opt = list(X, Y)){
+    l = sum(dnorm(Y[,1] + Y[,2], 0, sqrt(2 + 2 * rho), log = TRUE)) +
+        sum(dnorm(Y[,1] - Y[,2], 0, sqrt(2 - 2 * rho), log = TRUE))
+    return(l)
+  }
+  
+  la = lm = fisher = cdf = sin = rep(NA, B)
+  t_lm = t_la = t_fisher = rep(NA, B)
+  #quadratic = rep(NA, B)
+  
+  shuffle = matrix(NA, n, 1000)
+  for (d in 1:1000){
+    shuffle[,d] = sample(1:n)
+  }
+  
+  for (b in 1:B){
+    #generate data
+    if(length(rho)==1){  #simulation under the null
+      Y = mvrnormArma(n, rep(0,2), matrix(c(1, rho, rho, 1), nrow=2))
+      Y = scale(Y) * sqrt(n) / sqrt(n-1)
+    }else{ #simulation under the alternative hypothesis
+      Y = matrix(NA, n, 2)
+      for (c in 1:n){
+        Sigma = matrix(rho[c], 2, 2); diag(Sigma) = 1
+        Y[c,] = mvrnormArma(1, rep(0,2), Sigma)
+      }
+      Y = scale(Y) * sqrt(n) / sqrt(n-1)
+      
+    }
+    coef = cubic_coeff_c(X[,2], pchisq(0.05, 1), 2, 2)
+    ## LM
+    t = Sys.time()
+    truelm = get_q(Y[,1], Y[,2], X[,2], coef, correction = TRUE)
+    t_lm[b] = Sys.time() - t
+    
+    ## LA: use permutation, LM: chi squared
+    t = Sys.time()
+    truela = mean(Y[,1]*Y[,2]*X[,2])
+    la_null = rep(0, 1000)
+    for (d in 1:1000){
+      la_null[d] = mean(Y[,1] * Y[,2] * X[shuffle[,d], 2])
+    }
+    t_la[b] = Sys.time() - t
+    
+    la[b] = sum(abs(la_null) > abs(truela)) / 1000
+    lm[b] = 1-pchisq(truelm, 1)
+    # lm[b] = sum(lm_null > truelm)/1000
+    
+    if (mles){
+      # find mle's
+      t = Sys.time()
+      mle_fisher   = find.mle(likelihood_fisher,
+                            c(0,0),
+                            method = "optim",
+                            opt = list(X = X, Y = Y),
+                            lower=-5, upper=5)$par
+      
+    
+      # mle_cdf      = find.mle(likelihood_cdf,
+      #                       c(0,0),
+      #                       method = "optim",
+      #                       opt = list(X = X, Y = Y),
+      #                       lower=-30, upper=30)$par
+      # 
+      # mle_sin      = find.mle(likelihood_sin,
+      #                       c(0,0),
+      #                       method = "optim",
+      #                       opt = list(X = X, Y = Y),
+      #                       lower = -30, upper=30)$par
+  
+      mle_null      = find.mle(likelihood_null,
+                             0.5,
+                             method = "optim",
+                             opt = list(X = X, Y = Y),
+                             lower= -1+1e-10, upper= 1-1e-10)$par
+    
+      llr_fisher = likelihood_null(mle_null, opt=list(X, Y)) - likelihood_fisher(mle_fisher, opt=list(X, Y))
+      # llr_cdf = likelihood_null(mle_null, opt=list(X, Y))- likelihood_cdf(mle_cdf, opt=list(X, Y))
+      # llr_sin = likelihood_null(mle_null, opt = list(X, Y)) - likelihood_sin(mle_sin, opt = list(X, Y))
+      # 
+      fisher[b] = 1-pchisq(-2 * llr_fisher, 1)
+      t_fisher[b] = Sys.time() - t
+      # cdf[b] = 1-pchisq(-2 * llr_cdf, 1)
+      # sin[b] = 1-pchisq(-2 * llr_sin, 1)
+    }
+    
+    
+  }
+  return(list(lm = lm, la = la, fisher = fisher, cdf = cdf, sin = sin,
+              t_lm = t_lm, t_la = t_la, t_fisher = t_fisher))
+}
+```
+
+
+# Simulate X
+
+```{r}
+n = 30
+X = scale(rnorm(n)) * sqrt(n) / sqrt(n-1)
+X = cbind(rep(1, n), X)
+B = 1000
+```
+
+# Simulation under Fisher
+
+```{r}
+power = c("LM", "LA", "Fisher")
+for (a in c(0, 0.5, 1, 1.5, 2)){
+  if(a==0){
+    rho = runif(1,-1,1)
+  }
+  else{
+    alpha = c(0, a)
+    rho = h1_fisher(X, alpha)
+  }
+  out = do_sim(X = X, n = n, B = B, rho = rho, mles = TRUE)
+  save(out, file = paste0("simulation_n30_fisher_", a, ".RData"))
+  power = cbind(power, powercheck(out, B = B, n = a)[,2])
+}
+print(power)
+
+newX = cbind(rep(1, 1000), sort(runif(1000, -2.5, 2.5)))
+df = data.frame(alpha1 = h1_fisher(newX, c(0,0.5)),
+                alpha2 = h1_fisher(newX, c(0,1)),
+                alpha3 = h1_fisher(newX, c(0,1.5)),
+                alpha4 = h1_fisher(newX, c(0,2)))
+df = melt(df)
+df$X = rep(newX[,2], 4)
+levels(df$variable) = c("0.5", "1", "1.5", "2")
+colnames(df)[1] = "alpha"
+ggplot(df, aes(x = X, y = value, col = alpha)) + geom_line() + labs(color=expression(alpha))  +
+  ylab(expression(rho)) +
+  xlab(expression(X)) +
+  theme_bw(base_size=12)+
+  ggtitle("tanh")
+```
+
+
+```{r}
+power = c("LM", "LA", "Fisher")
+for (a in c(0.2, 0.3, 0.4, 0.5)){
+  if(a==0){
+    rho = runif(1,-1,1)
+  }
+  else{
+    alpha = c(0, a)
+    rho = h6_quadratic(X, alpha)
+    rho = pmin(0.99, rho); rho = pmax(-0.99, rho)
+  }
+  out = do_sim(X = X, n = n, B = B, rho = rho, mles = TRUE)
+  save(out, file = paste0("simulation_n30_sin_", a, ".RData"))
+  power = cbind(power, powercheck(out, B = B, n = a)[,2])
+}
+print(power)
+
+newX = cbind(rep(1, 1000), sort(runif(1000, -2.5, 2.5)))
+df = data.frame(alpha1 = h6_quadratic(newX, c(0,0.2)),
+                alpha2 = h6_quadratic(newX, c(0,0.3)),
+                alpha3 = h6_quadratic(newX, c(0,0.4)),
+                alpha4 = h6_quadratic(newX, c(0,0.5)))
+
+df = melt(df)
+df$X = rep(newX[,2], 4)
+levels(df$variable) = c("0.2", "0.3", "0.4", "0.5")
+colnames(df)[1] = "alpha"
+ggplot(df, aes(x = X, y = value, col = alpha)) + geom_line() +labs(color=expression(alpha))  +
+  ylab(expression(rho)) +
+  xlab(expression(X)) +
+  theme_bw(base_size=12)+
+  ggtitle("quadratic")
+```
+
+## Time comparison
+
+```{r, fig.height = 3, fig.width = 3}
+t_la = out$t_la
+t_fisher = out$t_fisher
+t_lm = out$t_lm
+
+df = data.frame(score = log10(t_lm),
+                LR = log10(t_fisher),
+                LA = log10(t_la))
+ggplot(melt(df), aes(x=variable, y=value)) + 
+  geom_violin() + 
+  ylab(expression(log[10]~time)) + 
+  xlab("") + 
+  ylim(c(-5, -1)) + 
+  ggtitle("computation time")
+```

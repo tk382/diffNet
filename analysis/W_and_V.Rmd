@@ -1,0 +1,256 @@
+---
+title: "W_and_V"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      dpi=100,
+                      height = 3, width=3,
+                      warning = FALSE)
+library(diversitree)
+source("R/utilities_wv.R")
+Rcpp::sourceCpp('src/utilities.cpp')
+set.seed(20190531)
+```
+
+# Simulation under Null Hypothesis
+```{r}
+do_sim_null = function(X, n, B){
+  likelihood_fisher = function(alpha, opt = list(X, Y)){
+    rho = h1_fisher(X, alpha)
+    l = sum(dnorm(Y[,1] + Y[,2], 0, sqrt(2 + 2 * rho), log = TRUE)) +
+        sum(dnorm(Y[,1] - Y[,2], 0, sqrt(2 - 2 * rho), log = TRUE))
+    return(l)
+  }
+
+  likelihood_cdf = function(alpha, opt = list(X, Y)){
+    rho = h3_cdf(X, alpha)
+    l = sum(dnorm(Y[,1] + Y[,2], 0, sqrt(2 + 2 * rho), log = TRUE)) +
+        sum(dnorm(Y[,1] - Y[,2], 0, sqrt(2 - 2 * rho), log = TRUE))
+      return(l)
+  }
+  
+  likelihood_sin = function(alpha, opt = list(X, Y)){
+    rho = h4_sin(X, alpha)
+    l = sum(dnorm(Y[,1] + Y[,2], 0, sqrt(2 + 2 * rho), log = TRUE)) +
+        sum(dnorm(Y[,1] - Y[,2], 0, sqrt(2 - 2 * rho), log = TRUE))
+      return(l)
+  }
+  
+  likelihood_null = function(rho, opt = list(X, Y)){
+    l = sum(dnorm(Y[,1] + Y[,2], 0, sqrt(2 + 2 * rho), log = TRUE)) +
+        sum(dnorm(Y[,1] - Y[,2], 0, sqrt(2 - 2 * rho), log = TRUE))
+    return(l)
+  }
+  
+  la = lm = fisher = cdf = sin = rep(NA, B)
+  
+  shuffle = matrix(NA, n, 1000)
+  for (d in 1:1000){
+    shuffle[,d] = sample(1:n)
+  }
+  for (b in 1:B){
+    rho = runif(1, -1, 1)
+    Y = mvrnormArma(n, rep(0,2), matrix(c(1, rho, rho, 1), nrow=2))
+    Y = scale(Y) * sqrt(n) / sqrt(n-1)
+
+    coef = cubic_coeff_c(X[,2], pchisq(0.05, 1), 2, 2)
+    ## LA and BP: use permutation
+    truela = mean(Y[,1]*Y[,2]*X[,2])
+    truelm = get_q(Y[,1], Y[,2], X[,2], coef, correction = TRUE)
+    la_null = lm_null = rep(0, 1000)
+    for (d in 1:1000){
+      la_null[d] = mean(Y[,1] * Y[,2] * X[shuffle[,d], 2])
+    }
+    
+    la[b] = sum(abs(la_null) > abs(truela)) / 1000
+    lm[b] = 1-pchisq(truelm, 1)
+    
+    # find mle's
+    mle_fisher   = find.mle(likelihood_fisher,
+                            c(0,0),
+                            method = "optim",
+                            opt = list(X = X, Y = Y),
+                            lower=-5, upper=5)$par
+  
+    # mle_cdf      = find.mle(likelihood_cdf,
+    #                         c(0,0),
+    #                         method = "optim",
+    #                         opt = list(X = X, Y = Y),
+    #                         lower=-5, upper=5)$par
+    # 
+    # mle_sin      = find.mle(likelihood_sin,
+    #                         c(0,0),
+    #                         method = "optim",
+    #                         opt = list(X = X, Y = Y),
+    #                         lower = -5, upper=5)$par
+    mle_null      = find.mle(likelihood_null,
+                             0.5,
+                             method = "optim",
+                             opt = list(X = X, Y = Y),
+                             lower= -1+1e-10, upper= 1-1e-10)$par
+  
+    llr_fisher = likelihood_null(mle_null, opt=list(X, Y)) - likelihood_fisher(mle_fisher, opt=list(X, Y))
+    # llr_cdf = likelihood_null(mle_null, opt=list(X, Y))- likelihood_cdf(mle_cdf, opt=list(X, Y))
+    # llr_sin = likelihood_null(mle_null, opt = list(X, Y)) - likelihood_sin(mle_sin, opt = list(X, Y))
+    # 
+    fisher[b] = 1-pchisq(-2 * llr_fisher, 1)
+    # cdf[b] = 1-pchisq(-2 * llr_cdf, 1)
+    # sin[b] = 1-pchisq(-2 * llr_sin, 1)
+  
+  }
+  return(list(lm = lm, la = la, fisher = fisher, cdf = cdf, sin = sin))
+}
+```
+
+## K=2, n=500
+
+```{r}
+n = 500 #sample size
+B = 5000 #number of simulations
+ref_unif = seq(0,1,length=B)
+X = scale(rnorm(n)) * sqrt(n) / sqrt(n-1)
+X = cbind(rep(1,n), X)
+sim500 = do_sim_null(X = X, n = n, B = B)
+print(powercheck(sim500, n=n, B=B))
+```
+
+```{r}
+n = 100 #sample size
+X = scale(rnorm(n)) * sqrt(n) / sqrt(n-1)
+X = cbind(rep(1,n), X)
+coef = cubic_coeff_c(X, qchisq(0.05, 1), 2, 2)
+
+sim100 = do_sim_null(X = X, n = 100, B = B)
+print(powercheck(sim100, n = n, B = B))
+```
+
+
+```{r}
+n=30
+X = scale(rnorm(n)) * sqrt(n) / sqrt(n-1)
+X = cbind(rep(1,n), X)
+coef = cubic_coeff_c(X, qchisq(0.05, 1), 2, 2)
+sim30 = do_sim_null(X = X, n = 30, B = B, seed=20190531)
+print(powercheck(sim30, B=B, n=n))
+```
+
+```{r, fig.height = 3, fig.width = 9}
+par(mfrow = c(1,3))
+plot(-log(ref_unif), sort(-log(sim500$lm), decreasing=TRUE), ylim = c(0,6), xlim = c(0,6), ylab = "observed", xlab = "expected", main = "n=500", type = 'l')
+lines(-log(ref_unif), sort(-log(sim500$fisher), decreasing=TRUE), col = 2)
+lines(-log(ref_unif), sort(-log(sim500$la), decreasing=TRUE), col = 3); abline(0,1,lty = 2)
+legend("topleft", col = c(1,2,3), lty = 1, legend = c("LM", "LR", "LA"))
+
+plot(-log(ref_unif), sort(-log(sim100$lm), decreasing=TRUE), ylim = c(0,6), xlim = c(0,6), ylab = "observed", xlab = "expected", type = 'l', main = "n=100")
+lines(-log(ref_unif), sort(-log(sim100$fisher), decreasing=TRUE), col=2)
+lines(-log(ref_unif), sort(-log(sim100$la), decreasing=TRUE), col = 3); abline(0,1,lty = 2)
+
+plot(-log(ref_unif), sort(-log(sim30$lm), decreasing=TRUE), ylim = c(0,6), xlim = c(0,6), ylab = "observed", xlab = "expected", type = 'l', main = "n=30")
+lines(-log(ref_unif), sort(-log(sim30$fisher), decreasing=TRUE), col=2)
+lines(-log(ref_unif), sort(-log(sim30$la), decreasing=TRUE), col = 3); abline(0,1,lty = 2)
+```
+
+
+
+
+
+
+## K = 5, n = 500
+
+```{r}
+K = 5
+n = 100
+X = scale(rnorm(n)) * sqrt(n) / sqrt(n-1)
+B = 5000
+Sigma = matrix(0.2, K, K); diag(Sigma) = 1
+d3 = p3 = rep(0, B)
+coef = cubic_coeff_c(X,qchisq(0.05, 1), 2, 2)
+
+H = get_est_H(Sigma)
+lambda = eigen(H)$values
+U      = eigen(H)$vectors
+null = matrix(NA, B, K-1)
+for (k in 1:(K-1)){
+  null[,k] = rgamma(B, 1/2, 1/(2*lambda[k]))
+}
+null_d = rowSums(null)
+
+for (b in 1:B){
+  Y = mvrnormArma(n,rep(0, K), Sigma)
+  Y = resid(lm(Y~X))
+  Y = scale(Y) * sqrt(n) / sqrt(n-1)
+  d3[b] = get_q(Y[,1], Y[,2], X, coef) +
+    get_q(Y[,1], Y[,3], X, coef) +
+    get_q(Y[,1], Y[,4], X, coef) +
+    get_q(Y[,1], Y[,5], X, coef)
+  p3[b] = sum(null_d > d3[b]) / B
+}
+par(mfrow = c(1,2))
+qqplot(null_d, d3, xlab = "expected", ylab = "observed"); abline(0,1,col = 'red')
+hist(p3, 20)
+alpha3 = sum(p3 < 0.05)/B
+print(alpha3)
+```
+
+## K = 5, n = 500, unknown Sigma
+
+```{r}
+K = 5
+n = 500
+X = scale(rnorm(n)) * sqrt(n) / sqrt(n-1)
+B = 5000
+Sigma = matrix(0.5, K, K); diag(Sigma) = 1
+d4 = p4 = rep(0, B)
+coef = cubic_coeff_c(X,qchisq(0.95, 1), 2, 2)
+
+for (b in 1:B){
+  Y = mvrnormArma(n,rep(0, K), Sigma)
+  Y = resid(lm(Y~X))
+  Y = scale(Y) * sqrt(n) / sqrt(n-1)
+  est_Sigma = cor(Y)
+  est_H = get_est_H(est_Sigma)
+  lambda = eigen(H)$values
+  U      = eigen(H)$vectors
+  null_d = matrix(NA, 5000, K-1)
+  for (k in 1:(K-1)){
+    null_d[,k] = rgamma(5000, 1/2, 1/(2*lambda[k]))
+  }
+  null_d = rowSums(null)
+  d4[b] = get_q(Y[,1], Y[,2], X, coef) +
+    get_q(Y[,1], Y[,3], X, coef) +
+    get_q(Y[,1], Y[,4], X, coef) +
+    get_q(Y[,1], Y[,5], X, coef)
+  p4[b] = sum(null_d > d4[b]) / 5000
+}
+par(mfrow = c(1,2))
+qqplot(null_d, d4, xlab = "expected", ylab = "observed"); abline(0,1,col = 'red')
+hist(p4, 20)
+alpha4 = (sum(p4 < 0.05)/B)
+print(alpha4)
+```
+
+
+## Not scaled
+
+```{r}
+n = 100
+B = 1000
+K=2
+X = scale(rnorm(n)) * sqrt(n) / sqrt(n-1)
+s1 = p1 = rep(0, B)
+ref_chisq = qchisq(seq(0,1,length=B), 1)
+coef = cubic_coeff_c(X, qchisq(0.05, 1), 2, 2)
+for (i in 1:B){
+  Sigma = matrix(c(3, 0.5, 0.5, 1), nrow=2)
+  Y = mvrnormArma(n, rep(0, K), Sigma)
+  s1[i] = get_q(Y[,1], Y[,2], X, coef, correction = TRUE)
+  p1[i] = 1-pchisq(s1[i],1)
+}
+par(mfrow = c(1,2))
+qqplot(ref_chisq, s1, xlab = "expected", ylab = "observed"); abline(0,1,col = 'red')
+hist(p1, 20, xlim = c(0,1))
+alpha1 = sum(p1 < 0.05)/B
+print(alpha1)
+```
