@@ -128,6 +128,8 @@ arma::vec get_score_W_c(const arma::vec x,
   return out;
 }
 
+
+
 //' get_degree_c
 //'
 //' This function returns a sum statistic d for vector y tested with all other variables in matrix Y against covariate x
