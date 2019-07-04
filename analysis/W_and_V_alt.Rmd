@@ -181,8 +181,10 @@ ggplot(df, aes(x = X, y = value, col = alpha)) + geom_line() + labs(color=expres
   xlab(expression(X)) +
   theme_bw(base_size=12)+
   ggtitle("tanh")
+ggsave("fisher.png", height = 3, width = 3)
 ```
 
+## Simulation under Quadratic Function
 
 ```{r}
 power = c("LM", "LA", "Fisher")
@@ -216,6 +218,7 @@ ggplot(df, aes(x = X, y = value, col = alpha)) + geom_line() +labs(color=express
   xlab(expression(X)) +
   theme_bw(base_size=12)+
   ggtitle("quadratic")
+ggsave("quadratic.png", width=3, height=3)
 ```
 
 ## Time comparison

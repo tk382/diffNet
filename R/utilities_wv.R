@@ -1,26 +1,36 @@
+
 get_grad = function(sigw, sigv, uw, uv, x){
   return(sum(x * (1/sigw - (uw^2)/(sigw^2) - 1/sigv + (uv^2)/(sigv^2))))
-  # var1 = 4 + sigw - sigv # 4 + 4rho
-  # var2 = 4 - sigw + sigv # 4 - 4rho
-  # part1 = x/var1 * (1-uw^2/var1)
-  # part2 = x/var2 * (1-uv^2/var2)
-  # return(sum(part1-part2))
 }
+
 
 const = function(sigw, sigv){
   tmp = 2 * (1/sigw^2 + 1/sigv^2)
   return(1/tmp)
-  # var1 = (4 + sigw - sigv)^2
-  # var2 = (4 - sigw + sigv)^2
-  # denom = 1/var1 + 1/var2
-  # return(2 * 1/denom)
 }
 
+
+#' Computes the small sample correction
+#'
+#' @param score score statistic computed from get_score
+#' @param coef coefficients for the cubic function
+#'
+#' @export
 post_score = function(score, coef){
   roots = polyroot(c(-score, coef))
   return(Re(roots)[abs(Im(roots)) < 1e-6][1])
 }
 
+
+#' Computes initial score statistic
+#' The order of y1 and y2 does not matter.
+#'
+#' @param y1 observation of the first variable
+#' @param y2 observation of the second variable
+#' @param x covariate vector
+#' @param coef coefficients for the cubic function. see cubic_coeff_c
+#'
+#' @export
 get_q = function(y1, y2, x, coef, correction = TRUE){
   w = y1 + y2
   v = y1 - y2
@@ -38,19 +48,31 @@ get_q = function(y1, y2, x, coef, correction = TRUE){
   return(q)
 }
 
+
+#' Helper function for get_est_H
+#' Returns each element of matrix H
+#'
+#' @param rho12 correlation between variable 1 and variable 2
+#' @param rho23 correlation between variable 2 and variable 3
+#' @param rho13 correlation between variable 1 and variable 3
+#'
+#' @export
 get_cor_r = function(rho12, rho23, rho13){
   num = (rho23 + 2 * rho12 * rho23)* (rho12^2+1) * (rho13^2 + 1)
   num = num + rho12 * rho13* (6 + 2 * rho12 + 2 * rho13 + 2 * rho23)
   num = num - rho12 * (rho13^2 + 1) * (3*rho13 + rho13 + 2 * rho12*rho23)
   num = num - rho13 * (rho12^2 + 1) * (3*rho12 + rho12 + 2 * rho13 * rho23)
-  # num = rho12^3*rho13^3 - 3*rho12^2*rho13^2*rho23
-  # num = num + 2*rho12*rho13*rho23^2 - rho12^2*rho23
-  # num = num - rho13^2*rho23 - rho12 * rho13 + rho23
-  # num = num + rho12^3 * rho13 + rho13^3 * rho12
   denom = (1-rho12^2)*(1-rho13^2) * sqrt(1+rho12^2)*sqrt(1+rho13^2)
   return(num / denom)
 }
 
+
+#' Computes the correlation matrix of the combined test statistics r
+#' Takes input of the estimated or true covariance matrix
+#'
+#' @param Sigma estimate or true covariance matrix of $K$ variables
+#'
+#' @export
 get_est_H = function(Sigma){
   K = nrow(Sigma)
   est_H = matrix(0, K-1, K-1)
@@ -65,9 +87,6 @@ get_est_H = function(Sigma){
 }
 
 
-
-#three h functions to define $\sigma^2$.
-#$\sigma^2 = 2 + 2\rho$, ranges from 2 to 4 (assumes rho is positive)
 
 
 #' Returns rho
