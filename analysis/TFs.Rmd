@@ -1,0 +1,155 @@
+---
+title: "Transcription factors"
+author: "Tae Kim"
+date: "3/18/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+set.seed(20190318)
+knitr::opts_chunk$set(echo = TRUE)
+library(MASS)
+library(mvtnorm)
+library(data.table)
+library(nleqslv)
+library(ggplot2)
+library(KEGGREST)
+library(biomaRt)
+R.utils::sourceDirectory("R/", modifiedOnly=FALSE)
+Rcpp::sourceCpp("../src/utilities.cpp")
+ensembl = useMart("ENSEMBL_MART_ENSEMBL",
+                dataset = "hsapiens_gene_ensembl")
+
+get_result_stringdb = function(database, B){
+  intersection = intersect(unique(c(database$gene_a, database$gene_b)), colnames(Y))
+  R = Y[, match(intersection, colnames(Y))]
+  ref = database[database$gene_a %in% intersection & 
+                 database$gene_b %in% intersection, ]
+
+  d = rep(0, ncol(R))
+  p = rep(0, ncol(R))
+  for (i in 1:ncol(R)){
+    d[i] = get_degree_c(X$A, R[,i], R[,-i])
+    shuffled_A = shuffle_x_c(X$A, B)
+    storeW = store_W_c(R[,i], R[,-i])
+    out = rowSums(bootstrap_c(shuffled_A, storeW))
+    p[i] = sum(out > d[i]) / B
+  }
+  return(list(p = p, d = d))
+}
+
+get_R = function(genes){
+  R = Y[, genes]
+  return(R)
+}
+
+get_p_d = function(R, B){
+  d = rep(0, ncol(R))
+  p = rep(0, ncol(R))
+  for (i in 1:ncol(R)){
+    d[i] = get_degree_c(X$A, R[,i], R[,-i])
+    shuffled_A = shuffle_x_c(X$A, B)
+    storeW = store_W_c(R[,i], R[,-i])
+    out = rowSums(bootstrap_c(shuffled_A, storeW))
+    p[i] = sum(out > d[i]) / B
+  }
+  return(list(p = p, d = d))
+}
+
+get_result_kegg = function(hsacode, B){
+  out = keggGet(hsacode) #melanoma disease
+  out = out[[1]]
+  genes = sapply(strsplit(out$GENE, ";"), function(x) x[1])
+  genes = genes[seq(2,144,by=2)]
+  results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'),
+                filters = "hgnc_symbol",
+                values = genes,
+                mart = ensembl)
+  genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
+  results = results[match(genes, results$ensembl_gene_id), ]
+  R = get_R(genes)
+  out = get_p_d(R, B)
+  return(list(p = out$p, d = out$d, genes = results))
+}
+```
+
+
+```{r dataclean, echo = FALSE}
+## data clean ##
+load("../data/skin_not_sun_exposed_suprapubic.Rdata")
+exp = skin;
+rm(skin)
+colnames(exp) = gsub("[.]", "-", colnames(exp))
+ind = which(colSums(!is.na(exp)) == 0)
+exp = exp[,-ind]
+ind= which(rowSums(!is.na(exp)) == 0)
+exp = exp[-ind, ]
+invisible(gc())
+finalA = read.table("../data/finalA.txt", header=TRUE)
+AAs = intersect(colnames(exp), finalA$subject)
+EAs = colnames(exp)[! colnames(exp) %in% finalA$subject]
+newA= data.frame(subject = AAs, A = finalA[match(AAs, finalA$subject), 2])
+Y = exp[, c(AAs, EAs)]
+rm(exp); invisible(gc())
+EA_A = data.frame(subject = EAs, A = 0)
+X = rbind(newA, EA_A)
+rm(newA, EA_A, AAs, EAs, ind, finalA)
+rownames(Y) = sapply(strsplit(rownames(Y), '[.]'), function(x) x[1])
+Y = t(Y)
+```
+
+# scale the data and regress out the mean
+
+```{r scale}
+X$A[X$A > 0] = 1
+X$A = scale(X$A) * sqrt(length(X$A)) / sqrt(length(X$A)-1)
+Y = resid(lm(Y~X$A))
+Y = scale(Y) * sqrt(length(X$A)) / sqrt(length(X$A)-1)
+```
+
+
+# read TF data
+```{r}
+TF = fread("../data/TFcheckpoint.txt", header=TRUE)
+TF = setDF(TF)
+TF = TF[,1]
+results = getBM(attributes = c('hgnc_symbol','ensembl_gene_id'), 
+                filters = "hgnc_symbol",
+                values = TF,
+                mart = ensembl)
+
+genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
+results = results[match(genes, results$ensembl_gene_id), ]
+```
+
+# test
+
+```{r}
+scores = matrix(0, length(genes), ncol(Y)-1)
+for (i in 1:length(genes)){
+  ind = which(colnames(Y) == results$ensembl_gene_id[i])
+  W = store_W_c(Y[,ind], Y[, -ind])
+  scores[i,] = get_score_W_c(X$A, W)
+}
+
+ref_chisq = qchisq(seq(0,1, length=ncol(Y)-1), 1)
+for (i in 1:length(genes)){
+    if(results$hgnc_symbol[i] %in% c("FOXM1", "POLR2G")){
+      qqplot(ref_chisq, scores[i, ], 
+            main = paste(results$hgnc_symbol[i], 'unadjusted'),
+            cex = 0.5)
+      abline(0,1,col = 'red')
+  }
+}
+
+par(mfrow = c(1,1))
+d = rowSums(scores)
+df = data.frame(d = d, genes = results$hgnc_symbol, xaxis = 1:length(d))
+plot(d, 
+     ylab = 'd', 
+     main = 'Transcription Factors')
+abline(h=25190, col='red')
+ind = which(d > ncol(Y) + 200 * sqrt(2*ncol(Y)))
+df = df[ind, ]
+with(df, text(d ~ xaxis, labels = genes, pos = 4))
+```

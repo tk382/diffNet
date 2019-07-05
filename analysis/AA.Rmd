@@ -16,9 +16,8 @@ library(nleqslv)
 library(ggplot2)
 library(KEGGREST)
 library(biomaRt)
-R.utils::sourceDirectory("R/", modifiedOnly=FALSE)
-Rcpp::sourceCpp("src/utilities.cpp")
-hgnc = setDF(fread("data/hgnc_ensembl.txt"))
+library(diffNet)
+hgnc = setDF(fread("data/not_build/hgnc_ensembl.txt"))
 hgnc = hgnc[hgnc$`Ensembl gene ID` != "", ]
 ```
 

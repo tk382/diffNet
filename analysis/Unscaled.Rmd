@@ -1,0 +1,38 @@
+---
+title: "Unscaled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reshape2)
+library(ggplot2)
+source("R/utilities_wv.R")
+Rcpp::sourceCpp('src/utilities.cpp')
+library(MASS)
+set.seed(20190531)
+```
+
+
+```{r cars}
+n = 30
+B = 5000
+X = scale(rnorm(n))*sqrt(n)/sqrt(n-1); q1 = rep(0, 1000)
+for (i in 1:B){
+  Y = mvrnorm(n, rep(0,2), matrix(c(2,0.5, 0.5, 1), nrow=2))
+  Y = scale(Y) * sqrt(n) / sqrt(n-1)
+  q1[i] = get_q(Y[,1], Y[,2], X, coef = 0, correction = FALSE)
+}
+qqplot(q1, rchisq(B, 1),
+       main = "post-scaled",
+       ylab = "observed", xlab = 'expected'); abline(0,1,col = 'red')
+
+
+for (i in 1:B){
+  Y = mvrnorm(n, rep(0,2), matrix(c(1,0.5, 0.5, 1), nrow=2))
+  q1[i] = get_q(Y[,1], Y[,2], X, coef = 0, correction = FALSE)
+}
+qqplot(q1, rchisq(B, 1),
+       main = "true variance = 1"); abline(0,1,col = 'red')
+```
+

@@ -1,5 +1,5 @@
 ---
-title: "W_and_V_alt"
+title: "Performance Comparison through Simulations"
 output: html_document
 ---
 
@@ -149,7 +149,7 @@ X = cbind(rep(1, n), X)
 B = 1000
 ```
 
-# Simulation under Fisher
+# Generate $\rho$ using tanh function
 
 ```{r}
 power = c("LM", "LA", "Fisher")
@@ -162,7 +162,7 @@ for (a in c(0, 0.5, 1, 1.5, 2)){
     rho = h1_fisher(X, alpha)
   }
   out = do_sim(X = X, n = n, B = B, rho = rho, mles = TRUE)
-  save(out, file = paste0("simulation_n30_fisher_", a, ".RData"))
+  # save(out, file = paste0("simulation_n30_fisher_", a, ".RData"))
   power = cbind(power, powercheck(out, B = B, n = a)[,2])
 }
 print(power)
@@ -184,7 +184,7 @@ ggplot(df, aes(x = X, y = value, col = alpha)) + geom_line() + labs(color=expres
 ggsave("fisher.png", height = 3, width = 3)
 ```
 
-## Simulation under Quadratic Function
+## Generate $\rho$ using quadratic function
 
 ```{r}
 power = c("LM", "LA", "Fisher")
@@ -198,7 +198,7 @@ for (a in c(0.2, 0.3, 0.4, 0.5)){
     rho = pmin(0.99, rho); rho = pmax(-0.99, rho)
   }
   out = do_sim(X = X, n = n, B = B, rho = rho, mles = TRUE)
-  save(out, file = paste0("simulation_n30_sin_", a, ".RData"))
+  # save(out, file = paste0("simulation_n30_sin_", a, ".RData"))
   power = cbind(power, powercheck(out, B = B, n = a)[,2])
 }
 print(power)

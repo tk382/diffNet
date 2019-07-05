@@ -1,0 +1,522 @@
+---
+title: 'Simulations5: Combined MLE and LA'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      dpi = 100,
+                      fig.width=5,
+                      fig.height=5,
+                      warning = FALSE,
+                      message = FALSE)
+library(MASS)
+library(mvtnorm)
+library(data.table)
+library(nleqslv)
+library(stargazer)
+library(ggplot2)
+library(diffNet)
+library(dplyr)
+library(ggpubr)
+library(diversitree)
+library(evd)
+source("R/get_MLstat.R")
+```
+
+## data generating functions
+
+```{r, echo = FALSE}
+do_sim = function(X, n, B, rho, seed, compareBivariate = FALSE, minus = FALSE){
+  likelihood_fisher = function(alpha, opt = list(X, W)){
+    rho = h1_fisher(X, alpha)
+    sigma2 = 2 + 2 * rho
+    l1 = sum(dnorm(W, 0, sqrt(sigma2), log = TRUE))
+    return(l1)
+  }
+  
+  likelihood_fisher2 = function(alpha, opt = list(X, V)){
+    rho = h1_fisher(X, alpha)
+    sigma2 = 2 - 2 * rho
+    l2 = sum(dnorm(V, 0, sqrt(sigma2), log = TRUE))
+    return(l2)
+  }
+  
+  likelihood_quadratic = function(alpha, opt = list(X, W)){
+    rho = h6_quadratic(X, alpha)
+    sigma2 = 2 + 2 * rho
+    l1 = sum(dnorm(W, 0, sqrt(sigma2), log = TRUE))
+    return(l1)
+  }
+  
+  likelihood_quadratic2 = function(alpha, opt = list(X, V)){
+    rho = h6_quadratic(X, alpha)
+    sigma2 = 2 - 2 * rho
+    l2 = sum(dnorm(V, 0, sqrt(sigma2), log = TRUE))
+    return(l2)
+  }
+  
+  likelihood_cdf = function(alpha, opt = list(X, W)){
+    rho = h3_cdf(X, alpha)
+    sigma2 = 2 + 2 * rho
+    l1 = sum(dnorm(W, 0, sqrt(sigma2), log = TRUE))
+    return(l1)
+  }
+  
+  likelihood_cdf2 = function(alpha, opt = list(X, V)){
+    rho = h3_cdf(X, alpha)
+    sigma2 = 2 - 2 * rho
+    l2 = sum(dnorm(V, 0, sqrt(sigma2), log = TRUE))
+    return(l2)
+  }
+  
+  likelihood_null = function(rho, opt = list(X, W)){
+    sigma2 = 2 + 2 * rho
+    l1 = sum(dnorm(W, 0, sqrt(sigma2), log = TRUE))
+    return(l1)
+  }
+  
+  likelihood_null2 = function(rho, opt = list(X, V)){
+    sigma2 = 2 - 2 * rho
+    l2 = sum(dnorm(V, 0, sqrt(sigma2), log = TRUE))
+    return(l2)
+  }
+  
+  likelihood_fisher_biv = function(alpha, opt = list(X, Y)){
+    rhoo = h1_fisher(X, alpha)
+    l = 0
+    for (i in 1:nrow(X)){
+      Sigma = matrix(c(1, rhoo[i], rhoo[i], 1), nrow=2)
+      l = l + dmvnorm(c(Y[i,1], Y[i,2]), mean = rep(0,2), sigma = Sigma, log = TRUE)
+    }
+    return(l)
+  }
+  
+  likelihood_quadratic_biv = function(alpha, opt = list(X, Y)){
+    rhoo = h6_quadratic(X, alpha)
+    l = 0
+    for (i in 1:nrow(X)){
+      Sigma = matrix(c(1, rhoo[i], rhoo[i], 1), nrow=2)
+      l = l + dmvnorm(c(Y[i,1], Y[i,2]), mean = rep(0,2), sigma = Sigma, log = TRUE)
+    }
+    return(l)
+  }
+  
+  likelihood_cdf_biv = function(alpha, opt = list(X, Y)){
+    rhoo = h3_cdf(X, alpha)
+    l = 0
+    for (i in 1:nrow(X)){
+      Sigma = matrix(c(1, rhoo[i], rhoo[i], 1), nrow=2)
+      l = l + dmvnorm(c(Y[i,1], Y[i,2]), mean = rep(0,2), sigma = Sigma, log = TRUE)
+    }
+    return(l)
+  }
+  
+  likelihood_null_biv = function(rhoo, opt = list(X, Y)){
+    Sigma = matrix(c(1,rhoo, rhoo, 1), nrow=2)
+    l = sum(dmvnorm(Y, rep(0,2), Sigma, log=TRUE))
+    return(l)
+  }
+  
+  la = bp1 = bp2 = fisher1 = fisher2 = quadratic1 = quadratic2 = cdf1 = cdf2 = 
+    fisher_biv = quadratic_biv = cdf_biv = rep(NA, B)
+  
+  shuffle = matrix(NA, n, 1000)
+  for (d in 1:1000){
+    shuffle[,d] = sample(1:n)
+  }
+  
+  for (b in 1:B){
+    
+    #generate data
+    if(length(rho)==1){  #simulation under the null
+      
+      Y = mvrnorm(n, rep(0,2), matrix(c(1, rho, rho, 1), nrow=2))
+      Y = scale(Y) * sqrt(n) / sqrt(n-1)
+      W = rowSums(Y)
+      V = Y[,1] - Y[,2]
+      
+    }else{ #simulation under the alternative hypothesis
+      
+      Y = matrix(NA, n, 2)
+      for (c in 1:n){
+        Sigma = matrix(rho[c], 2, 2); diag(Sigma) = 1
+        Y[c,] = mvrnormArma(1, rep(0,2), Sigma)
+      }
+      Y = scale(Y) * sqrt(n) / sqrt(n-1)
+      W = rowSums(Y)
+      V = Y[,1] - Y[,2]
+      
+    }
+
+    ## LA and BP: use permutation
+    truela = mean(Y[,1]*Y[,2]*X[,2])
+    truebp1 = get_score_w_c(x = X[,2], w = W)
+    truebp2 = get_score_w_c(x = X[,2], w = V)
+    la_null = bp_null1 = bp_null2 = rep(0, 1000)
+    
+    for (d in 1:1000){
+      la_null[d] = mean(Y[,1] * Y[,2] * X[shuffle[,d], 2])
+      bp_null1[d] = get_score_w_c(x = X[shuffle[,d], 2], w = W)
+      bp_null2[d] = get_score_w_c(x = X[shuffle[,d], 2], w = V)
+    }
+    
+    la[b] = sum(abs(la_null) > abs(truela)) / 1000
+    bp1[b] = sum(bp_null1 > truebp1) / 1000
+    bp2[b] = sum(bp_null2 > truebp2) / 1000
+    
+    
+    # find mle's
+    mle_fisher   = find.mle(likelihood_fisher,
+                            c(1,1),
+                            method = "optim",
+                            opt = list(X = X, W = W),
+                            lower=-5, upper=5)$par
+    
+    mle_cdf      = find.mle(likelihood_cdf,
+                            c(1,1),
+                            method = "optim",
+                            opt = list(X = X, W = W),
+                            lower=-5, upper=5)$par
+
+    mle_quadratic = find.mle(likelihood_quadratic,
+                            c(1,1),
+                            method = "optim",
+                            opt = list(X = X, W = W),
+                            lower=-10, upper=10)$par
+  
+    mle_null      = find.mle(likelihood_null,
+                             0.5,
+                             method = "optim",
+                             opt = list(X = X, W = W),
+                             lower= -1+1e-10, upper= 1-1e-10)$par
+    
+    llr_fisher = likelihood_null(mle_null, opt=list(X, W)) - likelihood_fisher(mle_fisher, opt=list(X, W))
+    llr_quadratic = likelihood_null(mle_null, opt=list(X, W)) - likelihood_quadratic(mle_quadratic, opt=list(X, W))
+    llr_cdf = likelihood_null(mle_null, opt=list(X, W))- likelihood_cdf(mle_cdf, opt=list(X, W))
+    
+    fisher1[b] = 1-pchisq(-2 * llr_fisher, 1)
+    quadratic1[b] = 1-pchisq(-2 * llr_quadratic, 1)
+    cdf1[b] = 1-pchisq(-2 * llr_cdf, 1)
+    
+    if(minus){
+      mle_fisher2  = find.mle(likelihood_fisher2,
+                            c(1,1),
+                            method="optim",
+                            opt = list(X = X, V = V),
+                            lower=-5, upper=5)$par
+      mle_cdf2      = find.mle(likelihood_cdf2,
+                            c(1,1),
+                            method = "optim",
+                            opt = list(X = X, V = V),
+                            lower=-5, upper=5)$par
+      
+      mle_quadratic2 = find.mle(likelihood_quadratic2,
+                            c(1,1),
+                            method = "optim",
+                            opt = list(X = X, V = V),
+                            lower=-10, upper=10)$par
+      mle_null2      = find.mle(likelihood_null2,
+                             0.5,
+                             method = "optim",
+                             opt = list(X = X,V = V),
+                             lower= -1+1e-10, upper= 1-1e-10)$par
+      
+      llr_fisher2 = likelihood_null2(mle_null2, opt=list(X, V)) - likelihood_fisher2(mle_fisher2, opt=list(X, V))
+      llr_quadratic2 = likelihood_null2(mle_null2, opt=list(X, V)) - likelihood_quadratic2(mle_quadratic2, opt=list(X, V))
+      llr_cdf2 = likelihood_null2(mle_null2, opt=list(X, V))- likelihood_cdf2(mle_cdf2, opt=list(X, V))
+      
+      fisher2[b] = 1-pchisq(-2 * llr_fisher2, 1)
+      quadratic2[b] = 1-pchisq(-2 * llr_quadratic2, 1)
+      cdf2[b] = 1-pchisq(-2 * llr_cdf2, 1)
+      
+    }
+    
+    if(compareBivariate){
+      mle_fisher_biv   = find.mle(likelihood_fisher_biv,
+                            c(1,1),
+                            method = "optim",
+                            opt = list(X = X, Y = Y),
+                            lower=-5, upper=5)$par
+    
+      mle_cdf_biv      = find.mle(likelihood_cdf_biv,
+                            c(1,1),
+                            method = "optim",
+                            opt = list(X = X, Y = Y),
+                            lower=-5, upper=5)$par
+
+      mle_quadratic_biv = find.mle(likelihood_quadratic_biv,
+                            c(1,1),
+                            method = "optim",
+                            opt = list(X = X, Y = Y),
+                            lower=-10, upper=10)$par
+
+      mle_null_biv      = find.mle(likelihood_null_biv,
+                             0.5,
+                             method = "optim",
+                             opt = list(X = X, Y = Y),
+                             lower=-1 + 1e-10, upper=1-1e-10)$par
+
+
+      llr_fisher_biv = likelihood_null_biv(mle_null_biv, list(X, Y)) - likelihood_fisher_biv(mle_fisher_biv, list(X, Y))
+      llr_quadratic_biv = likelihood_null_biv(mle_null_biv, list(X, Y)) - likelihood_quadratic_biv(mle_quadratic_biv, list(X, Y))
+      llr_cdf_biv = likelihood_null_biv(mle_null_biv, list(X, Y))- likelihood_cdf_biv(mle_cdf_biv, list(X, Y))
+
+
+      fisher_biv[b] = 1-pchisq(-2 * llr_fisher_biv, 1)
+      quadratic_biv[b] = 1-pchisq(-2 * llr_quadratic_biv, 1)
+      cdf_biv[b] = 1-pchisq(-2 * llr_cdf_biv, 1)
+    }
+
+  }
+  
+  return(list(bp1 = bp1, bp2 = bp2, la = la, fisher1=fisher1, quadratic1 = quadratic1, cdf1 = cdf1,
+              fisher_biv = fisher_biv, quadratic_biv = quadratic_biv, cdf_biv = cdf_biv,
+              fisher2 = fisher2, quadratic2 = quadratic2, cdf2 = cdf2))
+
+
+}
+
+powercheck = function(out, n){
+  size = as.character(n)
+  df = data.frame(n = c("BP1", "BP2", "LA", "Fisher1", "Fisher2", "CDF1", "CDF2", "Q1", "Q2", "Fisher_Biv", "CDF_Biv", "Q_Biv"),
+                  size = c(sum(out$bp1 < 0.05)/B,
+                           sum(out$bp2 < 0.05)/B,
+                           sum(out$la < 0.05)/B,
+                           sum(out$fisher1 < 0.05)/B,
+                           sum(out$fisher2 < 0.05)/B,
+                           sum(out$cdf1 < 0.05)/B,
+                           sum(out$cdf2 < 0.05)/B,
+                           sum(out$quadratic1 < 0.05)/B,
+                           sum(out$quadratic2 < 0.05)/B,
+                           sum(out$fisher_biv<0.05)/B,
+                           sum(out$cdf_biv < 0.05)/B,
+                           sum(out$quadratic_biv < 0.05)/B))
+  colnames(df)[2] = size
+  return(df)
+}
+```
+
+
+## include bivariate
+
+```{r, cache=TRUE}
+
+par(mfrow = c(1,2))
+# set.seed(20190528)
+# B = 10
+# n = 500
+# X = cbind(rep(1, n), rnorm(n))
+# 
+# rho = h1_fisher(X, c(1, 0.3))
+# plot(rho ~ X[,2])
+# sim500_A = do_sim(X, n, B, rho, 1, compareBivariate = TRUE, minus = TRUE)
+# simulation_biv_alt1 = list(result = sim500_A,
+#                    n = 500,
+#                    B = 10,
+#                    X = X,
+#                    seed = 1,
+#                    alpha = c(1,0.3),
+#                    rho = rho)
+# save(simulation_biv_alt1, file = "simulation_biv_alt1.RData")
+load("simulation_biv_alt1.RData")
+plot(simulation_biv_alt1$rho ~ simulation_biv_alt1$X[,2])
+fisher1 = -log(simulation_biv_alt1$result$fisher1)
+fisher2 = -log(simulation_biv_alt1$result$fisher2)
+fisherbiv = -log(simulation_biv_alt1$result$fisher_biv)
+plot(fisher2 ~ fisherbiv, ylim = c(0,20), xlim = c(0,20), ylab = 'fisherv'); abline(0,1,col = 'red')
+
+
+# rho = h1_fisher(X, c(-1, 0.3))
+# plot(rho ~ X[,2])
+# sim500_B = do_sim(X, n, B, rho, 1, compareBivariate = TRUE, minus = TRUE)
+# simulation_biv_alt2 = list(result = sim500_B,
+#                    n = 500,
+#                    B = 10,
+#                    X = X,
+#                    seed = 1,
+#                    alpha = c(-1,0.3),
+#                    rho = rho)
+# save(simulation_biv_alt2, file = "simulation_biv_alt2.RData")
+
+load("simulation_biv_alt2.RData")
+plot(simulation_biv_alt2$rho ~ simulation_biv_alt2$X[,2])
+fisher1 = -log(simulation_biv_alt2$result$fisher1)
+fisher2 = -log(simulation_biv_alt2$result$fisher2)
+fisherbiv = -log(simulation_biv_alt2$result$fisher_biv)
+plot(fisher1 ~ fisherbiv, ylim = c(0,20), xlim = c(0,20)); abline(0,1,col = 'red', ylab = 'fisherw')
+```
+
+## positive vs negative
+
+```{r, cache=TRUE}
+set.seed(20190528)
+
+B = 1000
+
+# n = 500
+# X = cbind(rep(1, n), rnorm(n))
+# sim500 = do_sim(X, n, B, 0.5, 1, compareBivariate = FALSE, minus = TRUE)
+# powercheck(sim500, n=500)
+# simulation_pm_null = list(result = sim500,
+#                    n = n,
+#                    B = B,
+#                    X = X,
+#                    seed = 1,
+#                    alpha = 0,
+#                    rho = 0.5)
+# save(simulation_pm_null, file = "simulation_pm_null.RData")
+load("simulation_pm_null.RData")
+pc = powercheck(simulation_pm_null$result, n=500)
+colnames(pc) = c("alpha", simulation_pm_null$alpha)
+print(pc)
+
+# rho = h1_fisher(X, c(1, 0.3))
+# plot(rho ~ X[,2])
+# sim500_A = do_sim(X, n, B, rho, 1, compareBivariate = FALSE, minus = TRUE)
+# powercheck(sim500_A, n=500)
+# simulation_pm_alt1 = list(result = sim500_A,
+#                    n = n,
+#                    B = B,
+#                    X = X,
+#                    seed = 1,
+#                    alpha = c(1,0.3),
+#                    rho = rho)
+# save(simulation_pm_alt1, file = "simulation_pm_alt1.RData")
+load("simulation_pm_alt1.RData")
+pc = powercheck(simulation_pm_alt1$result, n=500)
+colnames(pc) = c("alpha", paste(simulation_pm_alt1$alpha, collapse=","))
+print(pc)
+
+
+# rho = h1_fisher(X, c(-1, 0.3))
+# plot(rho ~ X[,2])
+# sim500_B = do_sim(X, n, B, rho, 1, compareBivariate = FALSE, minus = TRUE)
+# powercheck(sim500_B, n=500)
+# simulation_pm_alt2 = list(result = sim500_B,
+#                    n = n,
+#                    B = B,
+#                    X = X,
+#                    seed = 1,
+#                    alpha = c(-1,0.3),
+#                    rho = rho)
+# save(simulation_pm_alt2, file = "simulation_pm_alt2.RData")
+load("simulation_pm_alt2.RData")
+pc = powercheck(simulation_pm_alt2$result, n=500)
+colnames(pc) = c("alpha", paste(simulation_pm_alt2$alpha, collapse=","))
+print(pc)
+
+```
+
+
+## Lower Sample Size
+
+```{r, echo = FALSE}
+# n = 30
+# X = cbind(rep(1, n), rnorm(n))
+# sim30 = do_sim(X, n, B, 0.5, 1, compareBivariate = FALSE, minus = TRUE)
+# powercheck(sim30, n=500)
+# simulation_pm_null_n30 = list(result = sim30,
+#                           n = n,
+#                           B = B,
+#                           X = X,
+#                           seed = 1,
+#                           alpha = 0,
+#                           rho = 0.5)
+# save(simulation_pm_null_n30, file = "simulation_pm_null_n30.RData")
+load("simulation_pm_null_n30.RData")
+powercheck(simulation_pm_null_n30$result, n=30)
+
+# n = 100
+# X = cbind(rep(1, n), rnorm(n))
+# sim100 = do_sim(X, n, B, 0.5, 1, compareBivariate = FALSE, minus = TRUE)
+# powercheck(sim100, n=500)
+# simulation_pm_null_n100 = list(result = sim100,
+#                           n = n,
+#                           B = B,
+#                           X = X,
+#                           seed = 1,
+#                           alpha = 0,
+#                           rho = 0.5)
+# save(simulation_pm_null_n100, file = "simulation_pm_null_n100.RData")
+load("simulation_pm_null_n100.RData")
+powercheck(simulation_pm_null_n100$result, n=100)
+```
+
+
+## Under the null hypothesis
+
+### Using Y1 + Y2 for MLE and LM
+```{r, fig.width = 9, fig.height = 3}
+sim500 = simulation_pm_null$result
+sim100 = simulation_pm_null_n100$result
+sim30 = simulation_pm_null_n30$result
+
+
+ref_unif = -log(seq(0,1,length=1000))
+
+par(mfrow = c(1,3))
+plot(ref_unif, sort(-log(sim500$bp1), decreasing=TRUE), ylim = c(0,6), xlim = c(0,6), ylab = "observed", xlab = "expected", type = 'l', lwd=2, main = "n=500")
+lines(ref_unif, sort(-log(sim500$fisher1), decreasing=TRUE), lty=2, lwd=2)
+lines(ref_unif, sort(-log(sim500$la), decreasing=TRUE), lty=4, lwd=2); abline(0,1,col = 'red')
+legend("topleft", lty=c(1,2, 4), legend = c("LM", "LR", "LA"), lwd=2)
+
+plot(ref_unif, sort(-log(sim100$bp1), decreasing=TRUE), ylim = c(0,6), xlim = c(0,6), ylab = "observed", xlab = "expected", type = 'l', lwd=2, main = "n=100")
+lines(ref_unif, sort(-log(sim100$fisher1), decreasing=TRUE), lty=2, lwd=2)
+lines(ref_unif, sort(-log(sim100$la), decreasing=TRUE), lty=4, lwd=3); abline(0,1,col = 'red')
+
+plot(ref_unif, sort(-log(sim30$bp1), decreasing=TRUE), ylim = c(0,6), xlim = c(0,6), ylab = "observed", xlab = "expected", type = 'l', lwd=2, main = "n=30")
+lines(ref_unif, sort(-log(sim30$fisher1), decreasing=TRUE), lty=2, lwd=2)
+lines(ref_unif, sort(-log(sim30$la), decreasing=TRUE), lty=4, lwd=3); abline(0,1,col = 'red')
+```
+
+
+
+### Using Y1 - Y2 for MLE and LM
+
+```{r, fig.width = 9, fig.height = 3}
+sim500 = simulation_pm_null$result
+sim100 = simulation_pm_null_n100$result
+sim30 = simulation_pm_null_n30$result
+
+ref_unif = -log(seq(0,1,length=1000))
+
+par(mfrow = c(1,3))
+plot(ref_unif, sort(-log(sim500$bp2), decreasing=TRUE), ylim = c(0,6), xlim = c(0,6), ylab = "observed", xlab = "expected", type = 'l', lwd=2, main = "n=500")
+lines(ref_unif, sort(-log(sim500$fisher2), decreasing=TRUE), lty=2, lwd=2)
+lines(ref_unif, sort(-log(sim500$la), decreasing=TRUE), lty=5, lwd=2); abline(0,1,col = 'red')
+legend("topleft", lty=c(1,2, 5), legend = c("LM", "LR", "LA"), lwd=2)
+
+plot(ref_unif, sort(-log(sim100$bp2), decreasing=TRUE), ylim = c(0,6), xlim = c(0,6), ylab = "observed", xlab = "expected", type = 'l', lwd=2, main = "n=100")
+lines(ref_unif, sort(-log(sim100$fisher2), decreasing=TRUE), lty=2, lwd=2)
+lines(ref_unif, sort(-log(sim100$la), decreasing=TRUE), lty=5, lwd=3); abline(0,1,col = 'red')
+
+plot(ref_unif, sort(-log(sim30$bp2), decreasing=TRUE), ylim = c(0,6), xlim = c(0,6), ylab = "observed", xlab = "expected", type = 'l', lwd=2, main = "n=30")
+lines(ref_unif, sort(-log(sim30$fisher2), decreasing=TRUE), lty=2, lwd=2)
+lines(ref_unif, sort(-log(sim30$la), decreasing=TRUE), lty=5, lwd=3); abline(0,1,col = 'red')
+```
+
+
+
+```{r, fig.width = 9, fig.height = 3, eval=FALSE, echo=FALSE}
+sim500 = simulation_pm_null$result
+sim100 = simulation_pm_null_n100$result
+sim30 = simulation_pm_null_n30$result
+
+ref_unif = -log(seq(0,1,length=1000))
+
+par(mfrow = c(1,3))
+plot(ref_unif, sort(-log(sim500$bp2), decreasing=TRUE), ylim = c(0,6), xlim = c(0,6), ylab = "observed", xlab = "expected", pch=1, main = "n=500")
+points(ref_unif, sort(-log(sim500$fisher2), decreasing=TRUE), pch = 2)
+points(ref_unif, sort(-log(sim500$la), decreasing=TRUE), pch = 3); abline(0,1,col = 'red')
+legend("topleft", pch = c(1,2,3), legend = c("LM", "LR", "LA"))
+
+plot(ref_unif, sort(-log(sim100$bp2), decreasing=TRUE), ylim = c(0,6), xlim = c(0,6), ylab = "observed", xlab = "expected", pch = 1, main = "n=100")
+points(ref_unif, sort(-log(sim100$fisher2), decreasing=TRUE), pch=2)
+points(ref_unif, sort(-log(sim100$la), decreasing=TRUE), pch = 3); abline(0,1,col = 'red')
+
+plot(ref_unif, sort(-log(sim30$bp2), decreasing=TRUE), ylim = c(0,6), xlim = c(0,6), ylab = "observed", xlab = "expected", pch = 1, main = "n=30")
+points(ref_unif, sort(-log(sim30$fisher2), decreasing=TRUE), pch=2)
+points(ref_unif, sort(-log(sim30$la), decreasing=TRUE), pch = 3); abline(0,1,col = 'red')
+```
+
