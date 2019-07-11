@@ -12,7 +12,7 @@
 <meta name="author" content="Tae Kim" />
 
 
-<title>AA</title>
+<title>Analysis of African American Co-expression Network</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -20,9 +20,6 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
@@ -314,92 +311,6 @@ $(document).ready(function () {
 
 
 
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
-
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-
-</style>
-
-
 
 </head>
 
@@ -407,16 +318,6 @@ div.tocify {
 
 
 <div class="container-fluid main-container">
-
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -446,6 +347,9 @@ div.tocify {
   <a href="AA.html">Continuous Example</a>
 </li>
 <li>
+  <a href="W_and_V_alt.html">Simulations</a>
+</li>
+<li>
   <a href="license.html">License</a>
 </li>
       </ul>
@@ -473,9 +377,9 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">AA</h1>
+<h1 class="title toc-ignore">Analysis of African American Co-expression Network</h1>
 <h4 class="author">Tae Kim</h4>
-<h4 class="date">3/25/2019</h4>
+<h4 class="date">7/9/2019</h4>
 
 </div>
 
@@ -500,7 +404,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-04-07
+<strong>Last updated:</strong> 2019-07-11
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -579,10 +483,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree606fa41352b1d9963546017abf2429d1985c8575targetblank606fa41a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/tk382/networkAnc/tree/606fa41352b1d9963546017abf2429d1985c8575" target="_blank">606fa41</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree906e3002fbb321e226aca4d9ca1e17efc73c4fedtargetblank906e300a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/tk382/networkAnc/tree/906e3002fbb321e226aca4d9ca1e17efc73c4fed" target="_blank">906e300</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree606fa41352b1d9963546017abf2429d1985c8575targetblank606fa41a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree906e3002fbb321e226aca4d9ca1e17efc73c4fedtargetblank906e300a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -596,65 +500,43 @@ Ignored files:
     Ignored:    R/.Rhistory
     Ignored:    analysis/.DS_Store
     Ignored:    analysis/.Rhistory
+    Ignored:    analysis/AA_EA_cache/
     Ignored:    docs/.DS_Store
     Ignored:    docs/figure/.DS_Store
+    Ignored:    src/.DS_Store
 
 Untracked files:
     Untracked:  .Rprofile
     Untracked:  .gitignore
-    Untracked:  R/not_build/
-    Untracked:  analysis/AA_EA_cache/
-    Untracked:  analysis/AA_skin_not_sun_exposed.Rmd
-    Untracked:  analysis/AA_skin_not_sun_exposed.pdf
-    Untracked:  analysis/HLA-DQA1.Rmd
-    Untracked:  analysis/HLA-DQA1.pdf
-    Untracked:  analysis/HLAgenes.Rmd
-    Untracked:  analysis/HLAgenes.pdf
-    Untracked:  analysis/HMP.Rmd
-    Untracked:  analysis/HMP.pdf
-    Untracked:  analysis/KgreaterthanN.Rmd
-    Untracked:  analysis/KgreaterthanN.pdf
-    Untracked:  analysis/TFs.Rmd
-    Untracked:  analysis/TFs.pdf
-    Untracked:  analysis/activation_permutation_test_result.Rdata
-    Untracked:  analysis/autoimmune_pathway.Rmd
-    Untracked:  analysis/binding_permutation_test_result.Rdata
-    Untracked:  analysis/catalysis_permutation_test_result.Rdata
-    Untracked:  analysis/correction.R
-    Untracked:  analysis/degree_simulation.R
-    Untracked:  analysis/export_genenames.R
-    Untracked:  analysis/expression_permutation_test_result.Rdata
-    Untracked:  analysis/inhibition_permutation_test_result.Rdata
-    Untracked:  analysis/largeK.Rmd
-    Untracked:  analysis/largeK.pdf
-    Untracked:  analysis/make_reference_hgnc.R
-    Untracked:  analysis/normality_breaks.R
-    Untracked:  analysis/permutation_test.Rmd
-    Untracked:  analysis/permutation_test.pdf
-    Untracked:  analysis/ptmod_permutation_test_result.Rdata
-    Untracked:  analysis/reaction_permutation_test_result.Rdata
-    Untracked:  analysis/remove_covariates.Rmd
-    Untracked:  analysis/score_test_simulation.R
-    Untracked:  analysis/simulation1.Rmd
-    Untracked:  analysis/simulation2.Rmd
-    Untracked:  analysis/skin_AA.Rmd
-    Untracked:  analysis/skin_AA.pdf
-    Untracked:  analysis/skin_not__sun_exposed.pdf
-    Untracked:  analysis/skin_not__sun_exposed_files/
-    Untracked:  analysis/skin_not_sun_exposed.Rmd
-    Untracked:  analysis/skin_not_sun_exposed.pdf
-    Untracked:  analysis/smallk_known_sigma.Rmd
-    Untracked:  analysis/smallk_known_sigma.pdf
-    Untracked:  analysis/smallk_unknown_sigma.Rmd
-    Untracked:  analysis/smallk_unknown_sigma.pdf
-    Untracked:  analysis/type1error.Rmd
-    Untracked:  code/
+    Untracked:  analysis/figure/AA_EA.Rmd/
     Untracked:  data/
+    Untracked:  docs/figure/liquid_assoc.Rmd/
     Untracked:  docs/figure/simulation1.Rmd/
     Untracked:  docs/figure/simulation2.Rmd/
+    Untracked:  docs/figure/simulation3.Rmd/
+    Untracked:  docs/figure/simulation4.Rmd/
+    Untracked:  man/do_polyroot_arma.Rd
+    Untracked:  man/do_polyroot_cpp.Rd
+    Untracked:  man/post_score.Rd
     Untracked:  old_analysis/
-    Untracked:  output/
-    Untracked:  src/networkAnc.so
+    Untracked:  targeted_TF_AA.txt
+    Untracked:  wandv.R
+
+Unstaged changes:
+    Modified:   .Rbuildignore
+    Modified:   DESCRIPTION
+    Modified:   NAMESPACE
+    Deleted:    analysis/AA_vs_EA_skin_not_sun_exposed.Rmd
+    Deleted:    analysis/AA_vs_EA_skin_not_sun_exposed.pdf
+    Modified:   analysis/W_and_V_alt.Rmd
+    Modified:   analysis/_site.yml
+    Modified:   analysis/index.Rmd
+    Deleted:    analysis/license.Rmd
+    Deleted:    analysis/score_test.R
+    Modified:   docs/.nojekyll
+    Modified:   dynamic_coexpression_githubversion.tex
+    Deleted:    src/diffNet.so
+    Modified:   src/utilities.cpp
 
 </code></pre>
 <p>
@@ -693,6 +575,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/906e3002fbb321e226aca4d9ca1e17efc73c4fed/analysis/AA.Rmd" target="_blank">906e300</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-07-11
+</td>
+<td>
+wflow_publish(c(“analysis/AA.Rmd”, “analysis/AA_EA.Rmd”), republish = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/tk382/networkAnc/blob/acc3d145a84398e64d7e0a6fe5d3bf1c6cd376e0/analysis/AA.Rmd" target="_blank">acc3d14</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-07-04
+</td>
+<td>
+modified analysis files
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/tk382/networkAnc/68a6d1e9fb9b48920d7f61f57d34cab888cd7057/docs/AA.html" target="_blank">68a6d1e</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -860,7 +793,6 @@ X =<span class="st"> </span><span class="kw">rbind</span>(newA, EA_A)
 <span class="kw">rm</span>(newA, EA_A, AAs, EAs, ind, finalA)
 <span class="kw">rownames</span>(Y) =<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">strsplit</span>(<span class="kw">rownames</span>(Y), <span class="st">&#39;[.]&#39;</span>), <span class="cf">function</span>(x) x[<span class="dv">1</span>])
 Y =<span class="st"> </span><span class="kw">t</span>(Y)
-
 ind =<span class="st"> </span><span class="kw">which</span>(X<span class="op">$</span>A <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)
 Y =<span class="st"> </span>Y[ind,]
 X =<span class="st"> </span>X[ind, ]
@@ -868,862 +800,132 @@ orig =<span class="st"> </span>Y</code></pre></div>
 </div>
 <div id="b-scale-the-data-and-regress-out-the-mean" class="section level2">
 <h2>(b) scale the data and regress out the mean</h2>
-<p>We code African Americans as 0 and European Americans as 1 to compare group by group coexpression difference. We also consider correlation matrix, so we scale the gene expression level matrix to have variance 1. Then we regress out ancestry from the gene expression level to remove the mean effect.</p>
+<p>Wefirst scale the gene expression level matrix to have variance 1. Then we regress out ancestry from the gene expression level to remove the mean effect.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">orig_A =<span class="st"> </span>X<span class="op">$</span>A
 X<span class="op">$</span>A =<span class="st"> </span><span class="kw">scale</span>(X<span class="op">$</span>A) <span class="op">*</span><span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">length</span>(X<span class="op">$</span>A)) <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">length</span>(X<span class="op">$</span>A)<span class="op">-</span><span class="dv">1</span>)
 Y =<span class="st"> </span><span class="kw">resid</span>(<span class="kw">lm</span>(Y<span class="op">~</span>X<span class="op">$</span>A))
 Y =<span class="st"> </span><span class="kw">scale</span>(Y) <span class="op">*</span><span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">length</span>(X<span class="op">$</span>A)) <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">length</span>(X<span class="op">$</span>A)<span class="op">-</span><span class="dv">1</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ref_chisq =<span class="st"> </span><span class="kw">qchisq</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>, <span class="dt">length=</span><span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>), <span class="dv">1</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">B =<span class="st"> </span><span class="dv">5000</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#reference chi squared distribution to compare the null distribution</span>
+ref_chisq =<span class="st"> </span><span class="kw">qchisq</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>, <span class="dt">length=</span><span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>), <span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># number of permutations</span>
+B =<span class="st"> </span><span class="dv">5000</span></code></pre></div>
 </div>
 <div id="c-match-ensembl-id-and-hgnc-symbols" class="section level2">
 <h2>(c) match ENSEMBL ID and hgnc symbols</h2>
-<p><a href="https://www.genenames.org/download/custom/" class="uri">https://www.genenames.org/download/custom/</a></p>
+<p>Using data set from <a href="https://www.genenames.org/download/custom/" class="uri">https://www.genenames.org/download/custom/</a>, we match the Ensembl gene IDs to HGNC symbols for better readability.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hgnc_names =<span class="st"> </span>hgnc[<span class="kw">match</span>(<span class="kw">colnames</span>(Y), hgnc<span class="op">$</span><span class="st">`</span><span class="dt">Ensembl gene ID</span><span class="st">`</span>), <span class="st">&quot;Approved symbol&quot;</span>]
 ref =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">ensembl_gene_id =</span> <span class="kw">colnames</span>(Y), <span class="dt">hgnc_symbol =</span> hgnc_names)
 ref<span class="op">$</span>ensembl_gene_id =<span class="st"> </span><span class="kw">as.character</span>(ref<span class="op">$</span>ensembl_gene_id)
 ref<span class="op">$</span>hgnc_symbol =<span class="st"> </span><span class="kw">as.character</span>(ref<span class="op">$</span>hgnc_symbol)</code></pre></div>
 </div>
 </div>
-<div id="gene-selection" class="section level1">
-<h1>2. Gene selection</h1>
-<p>In order to avoid extensive multiple testing, we use prior information in biology.</p>
-<div id="a-kegg-pathway" class="section level2">
-<h2>(a) KEGG pathway</h2>
-<p>We believe the disease pathways may reflect the gene-gene correlation structure or gene modules, so we choose three pathways that are related to either skin tissue or immunity - melonoma, asthma, and autoimmune disease.</p>
-<p>For each pathway, we take a group of <span class="math inline">\(K\)</span> genes and for each <span class="math inline">\(k\)</span> in <span class="math inline">\(1, \cdots, K\)</span>, we compute <span class="math inline">\(d_k\)</span> and compare it to the empirical distribution by permuting the ancestry. Then we show qqplot of the p values against the uniform distribution after transformation <span class="math inline">\(-log_{10}(p)\)</span>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">get_result_kegg =<span class="st"> </span><span class="cf">function</span>(hsacode, B){
-  out =<span class="st"> </span><span class="kw">keggGet</span>(hsacode)
-  out =<span class="st"> </span>out[[<span class="dv">1</span>]]
-  genes =<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">strsplit</span>(out<span class="op">$</span>GENE, <span class="st">&quot;;&quot;</span>), <span class="cf">function</span>(x) x[<span class="dv">1</span>])
-  genes =<span class="st"> </span>genes[<span class="kw">seq</span>(<span class="dv">2</span>,<span class="kw">length</span>(genes),<span class="dt">by=</span><span class="dv">2</span>)]
-  results =<span class="st"> </span>ref[<span class="kw">match</span>(genes, ref<span class="op">$</span>hgnc_symbol), ]
-  genes =<span class="st"> </span><span class="kw">colnames</span>(Y)[<span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span>results<span class="op">$</span>ensembl_gene_id)]
-  results =<span class="st"> </span>results[<span class="kw">match</span>(genes, results<span class="op">$</span>ensembl_gene_id), ]
-  R =<span class="st"> </span>Y[,genes]
-  d =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(R))
-  p =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(R))
-  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(R)){
-    d[i] =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A, R[,i], R[,<span class="op">-</span>i])
-    storeW =<span class="st"> </span><span class="kw">store_W_c</span>(R[,i], R[,<span class="op">-</span>i])
-    out =<span class="st"> </span><span class="kw">rowSums</span>(<span class="kw">bootstrap_c</span>(X<span class="op">$</span>A, B, storeW))
-    p[i] =<span class="st"> </span><span class="kw">sum</span>(out <span class="op">&gt;</span><span class="st"> </span>d[i]) <span class="op">/</span><span class="st"> </span>B
-  }
-  <span class="kw">return</span>(<span class="kw">list</span>(<span class="dt">p =</span> p, <span class="dt">d =</span> d, <span class="dt">genes =</span> results))
-}
-
-out =<span class="st"> </span><span class="kw">get_result_kegg</span>(<span class="st">&quot;hsa05218&quot;</span>, B) <span class="co">#melanoma disease</span>
-<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
-<span class="kw">qqplot</span>(<span class="op">-</span><span class="kw">log</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length.out =</span> <span class="kw">length</span>(out<span class="op">$</span>p))), <span class="op">-</span><span class="kw">log</span>(out<span class="op">$</span>p),
-     <span class="dt">xlab =</span> <span class="st">&#39;-log uniform&#39;</span>,
-     <span class="dt">ylab =</span> <span class="st">&#39;-log p&#39;</span>,
-     <span class="dt">main =</span> <span class="st">&quot;melanoma&quot;</span>)
-<span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
-
-df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">p =</span> <span class="op">-</span><span class="kw">log</span>(out<span class="op">$</span>p), <span class="dt">genes =</span> out<span class="op">$</span>genes<span class="op">$</span>hgnc_symbol, <span class="dt">ind =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(out<span class="op">$</span>p))
-<span class="kw">plot</span>(<span class="op">-</span><span class="kw">log</span>(out<span class="op">$</span>p), 
-     <span class="dt">ylab =</span> <span class="st">&#39;-log p&#39;</span>, 
-     <span class="dt">main =</span> <span class="st">&#39;-log(p) values&#39;</span>,
-     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">length</span>(out<span class="op">$</span>p)<span class="op">+</span><span class="dv">10</span>))</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-4-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
-Past versions of unnamed-chunk-4-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-4-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-4-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ind =<span class="st"> </span><span class="kw">which</span>(df<span class="op">$</span>p <span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span>)
-<span class="cf">if</span>(<span class="kw">length</span>(ind)<span class="op">&gt;</span><span class="dv">0</span>){
-  df =<span class="st"> </span>df[ind, ]
-  <span class="kw">with</span>(df, <span class="kw">text</span>(p <span class="op">~</span><span class="st"> </span>ind, <span class="dt">labels =</span> genes, <span class="dt">pos =</span> <span class="dv">4</span>))
-}
-
-
-
-out =<span class="st"> </span><span class="kw">get_result_kegg</span>(<span class="st">&quot;hsa05310&quot;</span>, B) <span class="co">#asthma</span>
-<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
-<span class="kw">qqplot</span>(<span class="op">-</span><span class="kw">log</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length.out =</span> <span class="kw">length</span>(out<span class="op">$</span>p))), <span class="op">-</span><span class="kw">log</span>(out<span class="op">$</span>p),
-     <span class="dt">xlab =</span> <span class="st">&#39;-log uniform&#39;</span>,
-     <span class="dt">ylab =</span> <span class="st">&#39;-log p&#39;</span>,
-     <span class="dt">main =</span> <span class="st">&quot;asthma&quot;</span>)
-<span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
-
-df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">p =</span> <span class="op">-</span><span class="kw">log</span>(out<span class="op">$</span>p), <span class="dt">genes =</span> out<span class="op">$</span>genes<span class="op">$</span>hgnc_symbol, <span class="dt">ind =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(out<span class="op">$</span>p))
-<span class="kw">plot</span>(<span class="op">-</span><span class="kw">log</span>(out<span class="op">$</span>p), 
-     <span class="dt">ylab =</span> <span class="st">&#39;-log p&#39;</span>, 
-     <span class="dt">main =</span> <span class="st">&#39;-log(p) values&#39;</span>,
-     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">length</span>(out<span class="op">$</span>p)<span class="op">+</span><span class="dv">10</span>))</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-4-2.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
-Past versions of unnamed-chunk-4-2.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-4-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-4-2.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ind =<span class="st"> </span><span class="kw">which</span>(df<span class="op">$</span>p <span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span>)
-<span class="cf">if</span>(<span class="kw">length</span>(ind)<span class="op">&gt;</span><span class="dv">0</span>){
-  df =<span class="st"> </span>df[ind, ]
-  <span class="kw">with</span>(df, <span class="kw">text</span>(p <span class="op">~</span><span class="st"> </span>ind, <span class="dt">labels =</span> genes, <span class="dt">pos =</span> <span class="dv">4</span>))
-}
-
-
-out =<span class="st"> </span><span class="kw">get_result_kegg</span>(<span class="st">&quot;hsa05320&quot;</span>, B) <span class="co">#autoimmune</span>
-<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
-<span class="kw">qqplot</span>(<span class="op">-</span><span class="kw">log</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length.out =</span> <span class="kw">length</span>(out<span class="op">$</span>p))), <span class="op">-</span><span class="kw">log</span>(out<span class="op">$</span>p),
-     <span class="dt">xlab =</span> <span class="st">&#39;-log uniform&#39;</span>,
-     <span class="dt">ylab =</span> <span class="st">&#39;-log p&#39;</span>,
-     <span class="dt">main =</span> <span class="st">&quot;auto immune&quot;</span>)
-<span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
-
-df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">p =</span> <span class="op">-</span><span class="kw">log</span>(out<span class="op">$</span>p), <span class="dt">genes =</span> out<span class="op">$</span>genes<span class="op">$</span>hgnc_symbol, <span class="dt">ind =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(out<span class="op">$</span>p))
-<span class="kw">plot</span>(<span class="op">-</span><span class="kw">log</span>(out<span class="op">$</span>p), 
-     <span class="dt">ylab =</span> <span class="st">&#39;-log p&#39;</span>, 
-     <span class="dt">main =</span> <span class="st">&#39;-log(p) values&#39;</span>,
-     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">length</span>(out<span class="op">$</span>p)<span class="op">+</span><span class="dv">10</span>))</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-4-3.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-3">
-Past versions of unnamed-chunk-4-3.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-4-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-4-3.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ind =<span class="st"> </span><span class="kw">which</span>(df<span class="op">$</span>p <span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span>)
-<span class="cf">if</span>(<span class="kw">length</span>(ind)<span class="op">&gt;</span><span class="dv">0</span>){
-  df =<span class="st"> </span>df[ind, ]
-  <span class="kw">with</span>(df, <span class="kw">text</span>(p <span class="op">~</span><span class="st"> </span>ind, <span class="dt">labels =</span> genes, <span class="dt">pos =</span> <span class="dv">4</span>))
-}</code></pre></div>
-
-</div>
-<div id="b-hla-genes" class="section level2">
-<h2>(b) HLA genes</h2>
-<p>We know that HLA genes are connected to many other genes and play critical role in regulating the gene transcription. We obtain the list of HLA genes and compute <span class="math inline">\(d_1\)</span> by adding up pair-wise test statistics across the entire genome.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hla_genes =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;HLA-A&quot;</span>, <span class="st">&quot;HLA-B&quot;</span>, <span class="st">&quot;HLA-C&quot;</span>, <span class="st">&quot;HLA-E&quot;</span>, 
-              <span class="st">&quot;HLA-F&quot;</span>, <span class="st">&quot;HLA-G&quot;</span>, <span class="st">&quot;HLA-H&quot;</span>, <span class="st">&quot;HLA-J&quot;</span>, 
-              <span class="st">&quot;HLA-K&quot;</span>, <span class="st">&quot;HLA-L&quot;</span>, <span class="st">&quot;HLA-N&quot;</span>, <span class="st">&quot;HLA-P&quot;</span>, 
-              <span class="st">&quot;HLA-S&quot;</span>, <span class="st">&quot;HLA-T&quot;</span>, <span class="st">&quot;HLA-U&quot;</span>, <span class="st">&quot;HLA-V&quot;</span>, 
-              <span class="st">&quot;HLA-W&quot;</span>, <span class="st">&quot;HLA-X&quot;</span>, <span class="st">&quot;HLA-Y&quot;</span>, <span class="st">&quot;HLA-Z&quot;</span>,
-              <span class="st">&quot;HLA-DRA&quot;</span>, <span class="st">&quot;HLA-DRB2&quot;</span>, <span class="st">&quot;HLA-DRB3&quot;</span>,
-              <span class="st">&quot;HLA-DRB4&quot;</span>, <span class="st">&quot;HLA-DRB5&quot;</span>, <span class="st">&quot;HLA-DRB6&quot;</span>,
-              <span class="st">&quot;HLA-DRB7&quot;</span>, <span class="st">&quot;HLA-DRB8&quot;</span>, <span class="st">&quot;HLA-DRB9&quot;</span>,
-              <span class="st">&quot;HLA-DQA1&quot;</span>, <span class="st">&quot;HLA-DQB1&quot;</span>, <span class="st">&quot;HLA-DQA2&quot;</span>,
-              <span class="st">&quot;HLA-DQB2&quot;</span>, <span class="st">&quot;HLA-DQB3&quot;</span>, <span class="st">&quot;HLA-DOA&quot;</span>,
-              <span class="st">&quot;HLA-DMA&quot;</span>, <span class="st">&quot;HLA-DMB&quot;</span>, <span class="st">&quot;HLA-DPA1&quot;</span>, <span class="st">&quot;HLA-DPB1&quot;</span>,
-              <span class="st">&quot;HLA-DPA2&quot;</span>, <span class="st">&quot;HLA-DPB2&quot;</span>, <span class="st">&quot;HLA-DPA3&quot;</span>,
-              <span class="st">&quot;HFE&quot;</span>, <span class="st">&quot;TAP1&quot;</span>, <span class="st">&quot;TAP2&quot;</span>, <span class="st">&quot;PSMB9&quot;</span>, <span class="st">&quot;PSMB8&quot;</span>,
-              <span class="st">&quot;MICA&quot;</span>, <span class="st">&quot;MICB&quot;</span>, <span class="st">&quot;MICC&quot;</span>, <span class="st">&quot;MICD&quot;</span>, <span class="st">&quot;MICE&quot;</span>)
-
-results =<span class="st"> </span>ref[<span class="kw">match</span>(hla_genes, ref<span class="op">$</span>hgnc_symbol), ]
-
-genes =<span class="st"> </span><span class="kw">colnames</span>(Y)[<span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span>results<span class="op">$</span>ensembl_gene_id)]
-results =<span class="st"> </span>results[<span class="kw">match</span>(genes, results<span class="op">$</span>ensembl_gene_id), ]
-
-scores =<span class="st"> </span>newscores =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="kw">length</span>(genes), <span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)
-coef =<span class="st"> </span><span class="kw">cubic_coeff_c</span>(X<span class="op">$</span>A, <span class="kw">qchisq</span>(<span class="dv">1</span><span class="op">-</span><span class="fl">0.05</span><span class="op">/</span><span class="kw">ncol</span>(Y), <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>)
-<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(genes)){
-  ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">==</span><span class="st"> </span>results<span class="op">$</span>ensembl_gene_id[i])
-  W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,ind], Y[, <span class="op">-</span>ind])
-  scores[i,] =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W)
-  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(scores)){
-    roots =<span class="st"> </span><span class="kw">polyroot</span>(<span class="kw">c</span>(<span class="op">-</span>scores[i,j], coef))
-    newscores[i,j] =<span class="st"> </span><span class="kw">Re</span>(roots)[<span class="kw">abs</span>(<span class="kw">Im</span>(roots)) <span class="op">&lt;</span><span class="st"> </span><span class="fl">1e-6</span>]
-  }
-}</code></pre></div>
-<p>And the result is plotted below, where the red line is the expected mean. HLA-DQA1 stands out in its test statistic.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
-d =<span class="st"> </span><span class="kw">rowSums</span>(newscores)
-df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">d =</span> d, <span class="dt">genes =</span> results<span class="op">$</span>hgnc_symbol, <span class="dt">xaxis =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(d))
-<span class="kw">plot</span>(d, 
-     <span class="dt">ylab =</span> <span class="st">&#39;d&#39;</span>, 
-     <span class="dt">main =</span> <span class="st">&#39;HLA-genes&#39;</span>,
-     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">45</span>),
-     <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">max</span>(d) <span class="op">+</span><span class="st"> </span><span class="dv">100</span>))
-<span class="kw">abline</span>(<span class="dt">h=</span><span class="dv">25190</span>, <span class="dt">col=</span><span class="st">&#39;red&#39;</span>)
-ind =<span class="st"> </span><span class="kw">which</span>(d <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span><span class="op">*</span><span class="kw">ncol</span>(Y))
-df =<span class="st"> </span>df[ind, ]
-<span class="kw">with</span>(df, <span class="kw">text</span>(d <span class="op">~</span><span class="st"> </span>xaxis, <span class="dt">labels =</span> genes, <span class="dt">pos =</span> <span class="dv">4</span>))
-
-ref_chisq =<span class="st"> </span><span class="kw">qchisq</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length=</span><span class="kw">length</span>(newscores[<span class="dv">1</span>,])), <span class="dv">1</span>)
-ind =<span class="st"> </span><span class="kw">which</span>(results<span class="op">$</span>hgnc_symbol <span class="op">==</span><span class="st"> &quot;PSMB8&quot;</span>)
-<span class="kw">qqplot</span>(ref_chisq, newscores[ind,],  <span class="dt">main =</span> <span class="st">&#39;PSMB8 scores&#39;</span>, <span class="dt">ylab=</span><span class="st">&#39;scores&#39;</span>); <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-6-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
-Past versions of unnamed-chunk-6-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-6-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-6-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="c-transcription-factors" class="section level2">
-<h2>(c) Transcription Factors</h2>
-<div id="i-read-tf-data" class="section level3">
-<h3>(i) Read TF data</h3>
-<p>Since transcription factors usually regulate the transcription of multiple genes, we thought they were appropriate targets to study their variance in activity across different ancestry.</p>
+<div id="transcription-factors-against-all-other-genes" class="section level1">
+<h1>2. Transcription Factors against all other genes</h1>
+<p>Since transcription factors usually regulate the transcription of multiple genes, we believe they were appropriate targets to study their variance in activity across different ancestry. We use the list of transcription factors from <a href="http://www.tfcheckpoint.org/" class="uri">http://www.tfcheckpoint.org/</a>.</p>
+<div id="a-read-in-tf-data" class="section level2">
+<h2>(a) Read in TF data</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">TF =<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/not_build/TFcheckpoint.txt&quot;</span>, <span class="dt">header=</span><span class="ot">TRUE</span>)
 TF =<span class="st"> </span><span class="kw">setDF</span>(TF)
 TF =<span class="st"> </span>TF[TF<span class="op">$</span>TFClass_human <span class="op">==</span><span class="st"> &quot;TFclass&quot;</span>, ]
 TF =<span class="st"> </span>TF[,<span class="dv">1</span>]
 TF_results =<span class="st"> </span>ref[<span class="kw">match</span>(TF, ref<span class="op">$</span>hgnc), ]
 genes =<span class="st"> </span><span class="kw">colnames</span>(Y)[<span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span>TF_results<span class="op">$</span>ensembl_gene_id)]
+numTFs =<span class="st"> </span><span class="kw">length</span>(genes)
 TF_results =<span class="st"> </span>TF_results[<span class="kw">match</span>(genes, TF_results<span class="op">$</span>ensembl_gene_id), ]</code></pre></div>
 </div>
-<div id="ii-test-all-the-tfs" class="section level3">
-<h3>(ii) test all the TFs</h3>
+<div id="b-test-all-tfs-against-the-rest-of-the-genes" class="section level2">
+<h2>(b) Test all TFs against the rest of the genes</h2>
+<p>For each transcription factor, we calculate its score statistics against all other genes. Then we add up the scores for each transcription factor and see if any stands out.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scores =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="kw">length</span>(genes), <span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)
 <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(genes)){
   ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">==</span><span class="st"> </span>TF_results<span class="op">$</span>ensembl_gene_id[i])
   W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,ind], Y[, <span class="op">-</span>ind])
-  scores[i,] =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W)
-}
-
-<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
+  V =<span class="st"> </span><span class="kw">store_V_c</span>(Y[,ind], Y[, <span class="op">-</span>ind])
+  scores[i,] =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W, V)
+}</code></pre></div>
+</div>
+<div id="c-plot-the-result" class="section level2">
+<h2>(c) plot the result</h2>
+<p>The plot below shows that some transcription factors stand out from the rest with high score statistics. The red line shows the expected value based on <span class="math inline">\(\chi^2\)</span> statistics. The right plot shows the qq-plot of score statistics of the strongest signal “FOXD1” against the expected <span class="math inline">\(\chi_1^2\)</span> distribution. Note that all the score statistics are highly correlated to one another, so that the calibration is poor.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
 d =<span class="st"> </span><span class="kw">rowSums</span>(scores)
 df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">d =</span> d, <span class="dt">genes =</span> TF_results<span class="op">$</span>hgnc_symbol, <span class="dt">xaxis =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(d))
 <span class="kw">plot</span>(d, 
-     <span class="dt">ylab =</span> <span class="st">&#39;d&#39;</span>, 
      <span class="dt">main =</span> <span class="st">&#39;Transcription Factors&#39;</span>,
      <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">length</span>(d)<span class="op">+</span><span class="dv">100</span>),
-     <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">max</span>(d) <span class="op">+</span><span class="st"> </span><span class="dv">10000</span>))
+     <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">max</span>(d) <span class="op">+</span><span class="st"> </span><span class="dv">10000</span>),
+     <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>,
+     <span class="dt">ylab =</span> <span class="st">&quot;d test statistic&quot;</span>)
 <span class="kw">abline</span>(<span class="dt">h=</span><span class="dv">25190</span>, <span class="dt">col=</span><span class="st">&#39;red&#39;</span>)
-ind =<span class="st"> </span><span class="kw">which</span>(d <span class="op">&gt;</span><span class="st"> </span><span class="kw">ncol</span>(Y) <span class="op">+</span><span class="st"> </span><span class="dv">200</span> <span class="op">*</span><span class="st"> </span><span class="kw">sqrt</span>(<span class="dv">2</span><span class="op">*</span><span class="kw">ncol</span>(Y)))
+ind =<span class="st"> </span><span class="kw">which</span>(d <span class="op">&gt;</span><span class="st"> </span><span class="kw">ncol</span>(Y) <span class="op">+</span><span class="st"> </span><span class="dv">180</span> <span class="op">*</span><span class="st"> </span><span class="kw">sqrt</span>(<span class="dv">2</span><span class="op">*</span><span class="kw">ncol</span>(Y)))
 df =<span class="st"> </span>df[ind, ]
 <span class="kw">with</span>(df, <span class="kw">text</span>(d <span class="op">~</span><span class="st"> </span>xaxis, <span class="dt">labels =</span> genes, <span class="dt">pos =</span> <span class="dv">3</span>))
 
 ref_chisq =<span class="st"> </span><span class="kw">qchisq</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>, <span class="dt">length=</span><span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>), <span class="dv">1</span>)
 <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(genes)){
-    <span class="cf">if</span>(TF_results<span class="op">$</span>hgnc_symbol[i] <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;PTCH1&quot;</span>)){
+    <span class="cf">if</span>(TF_results<span class="op">$</span>hgnc_symbol[i] <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;FOXD1&quot;</span>)){
       <span class="kw">qqplot</span>(ref_chisq, scores[i, ], 
             <span class="dt">main =</span> <span class="kw">paste</span>(TF_results<span class="op">$</span>hgnc_symbol[i], <span class="st">&#39;unadjusted&#39;</span>),
-            <span class="dt">cex =</span> <span class="fl">0.5</span>)
+            <span class="dt">cex =</span> <span class="fl">0.5</span>,
+            <span class="dt">ylab =</span> <span class="st">&quot;observed distribution of score&quot;</span>,
+            <span class="dt">xlab =</span> <span class="st">&quot;expected distribution&quot;</span>)
       <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
   }
 }</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-8-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
-Past versions of unnamed-chunk-8-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-8-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-8-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-8-1.png" target="_blank">4053f50</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-8-1.png" target="_blank">b8ce5bb</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/AA.Rmd/plot_allTFs-1.png" width="700" style="display: block; margin: auto;" /></p>
 
-</div>
 </div>
 </div>
 <div id="investigating-the-top-signals" class="section level1">
 <h1>3. Investigating the top signals</h1>
-<div id="a-psmb8" class="section level2">
-<h2>(a) PSMB8</h2>
-<div id="i-score-test" class="section level3">
-<h3>(i) Score test</h3>
-<p>We re-cap what we have observed in HLA-DQA1 for the score tests.</p>
-<p><img src="figure/AA.Rmd/unnamed-chunk-9-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
-Past versions of unnamed-chunk-9-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-9-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-9-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-9-1.png" target="_blank">4053f50</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-9-1.png" target="_blank">b8ce5bb</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
+<p>We take the top 3 transcription factors and perform permutation test to make inference about their degree statistics.</p>
+<div id="a-foxd1-permutation-test-top-signals" class="section level2">
+<h2>(a) FOXD1 permutation test &amp; top signals</h2>
+<p>In order to verify if FOXD1 truly has a signal, we perform permutation test. Note that the highest test statistic does not mean the lowest p-value. Since the null distribution of high-dimensional case is not defined in closed form, we need to perform the permutation test to make inference. The p-value is indeed very small. We also look at top 2 target genes whose co-expression with FOXD1 varies strongly with respect to ancestry. We plot the product of the expression levels of the pair, which is intended to show the estimate of correlation at a given ancestry level. For these selected gene pairs, they seem to be highly co-expressed for Africans and lowly co-expressed for Europeans.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">foxd1 =<span class="st"> </span><span class="kw">make_permtest</span>(<span class="st">&quot;FOXD1&quot;</span>, <span class="dt">Y =</span> Y, <span class="dt">A =</span> X<span class="op">$</span>A)
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<span class="kw">hist</span>(foxd1<span class="op">$</span>bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(foxd1<span class="op">$</span>bootstrapped_d), d))<span class="op">+</span><span class="dv">20</span>,
+     <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;p value=&quot;</span>, foxd1<span class="op">$</span>p), <span class="dt">xlab =</span> <span class="st">&quot;Null distribution of d&quot;</span>)
+<span class="kw">abline</span>(<span class="dt">v=</span>foxd1<span class="op">$</span>d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</code></pre></div>
+<p><img src="figure/AA.Rmd/foxd_perm-1.png" width="700" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">diagnosis_plot</span>(foxd1, <span class="st">&quot;FOXD1&quot;</span>, <span class="dt">orig =</span> orig, <span class="dt">Y =</span> Y, <span class="dt">A =</span> orig_A)</code></pre></div>
+<p><img src="figure/AA.Rmd/foxd_perm-2.png" width="700" style="display: block; margin: auto;" /></p>
+</div>
+<div id="b-ncor2-permutation-test-and-top-signals" class="section level2">
+<h2>(b) NCOR2 permutation test and top signals</h2>
+<p>We repeat the same analysis for the second strongest signal NCOR2.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ncor =<span class="st"> </span><span class="kw">make_permtest</span>(<span class="st">&quot;NCOR2&quot;</span>, <span class="dt">Y =</span> Y, <span class="dt">A =</span> X<span class="op">$</span>A)
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<span class="kw">hist</span>(ncor<span class="op">$</span>bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(ncor<span class="op">$</span>bootstrapped_d), ncor<span class="op">$</span>d))<span class="op">+</span><span class="dv">20</span>,
+     <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;p value=&quot;</span>, ncor<span class="op">$</span>p), <span class="dt">xlab =</span> <span class="st">&quot;Null distribution of d&quot;</span>)
+<span class="kw">abline</span>(<span class="dt">v =</span> ncor<span class="op">$</span>d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</code></pre></div>
+<p><img src="figure/AA.Rmd/ncor_perm_first-1.png" width="700" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">diagnosis_plot</span>(ncor, <span class="st">&quot;NCOR2&quot;</span>, <span class="dt">orig =</span> orig, <span class="dt">Y =</span> Y, <span class="dt">A =</span> orig_A)</code></pre></div>
+<p><img src="figure/AA.Rmd/ncor_perm_first-2.png" width="700" style="display: block; margin: auto;" /></p>
+</div>
+<div id="c-zeb2-permutation-test-and-top-signals" class="section level2">
+<h2>(c) ZEB2 permutation test and top signals</h2>
+<p>We repeat the same analysis for the second strongest signal ZEB2.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ncor =<span class="st"> </span><span class="kw">make_permtest</span>(<span class="st">&quot;ZEB2&quot;</span>, <span class="dt">Y =</span> Y, <span class="dt">A =</span> X<span class="op">$</span>A)
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<span class="kw">hist</span>(ncor<span class="op">$</span>bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(ncor<span class="op">$</span>bootstrapped_d), ncor<span class="op">$</span>d))<span class="op">+</span><span class="dv">20</span>,
+     <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;p value=&quot;</span>, ncor<span class="op">$</span>p), <span class="dt">xlab =</span> <span class="st">&quot;Null distribution of d&quot;</span>)
+<span class="kw">abline</span>(<span class="dt">v =</span> ncor<span class="op">$</span>d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</code></pre></div>
+<p><img src="figure/AA.Rmd/ncor_perm-1.png" width="700" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">diagnosis_plot</span>(ncor, <span class="st">&quot;ZEB2&quot;</span>, <span class="dt">orig =</span> orig, <span class="dt">Y =</span> Y, <span class="dt">A =</span> orig_A)</code></pre></div>
+<p><img src="figure/AA.Rmd/ncor_perm-2.png" width="700" style="display: block; margin: auto;" /></p>
 </div>
 </div>
-</div>
-<div id="ii-permutation-test" class="section level3">
-<h3>(ii) Permutation test</h3>
-<p>In order to verify if PSMB8 truly has a signal, we perform permutation test. The p-value is indeed very small.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,psmb_ind], Y[, <span class="op">-</span>psmb_ind])
-psmb_scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W)
-psmb_d =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A, Y[,psmb_ind], Y[,<span class="op">-</span>psmb_ind])
-storeW =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,psmb_ind], Y[,<span class="op">-</span>psmb_ind])
-out =<span class="st"> </span><span class="kw">bootstrap_c</span>(X<span class="op">$</span>A, B, storeW)
-bootstrapped_d =<span class="st"> </span><span class="kw">rowSums</span>(out)
-psmb_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <span class="op">&gt;</span><span class="st"> </span>psmb_d) <span class="op">/</span><span class="st"> </span>B
-<span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), psmb_d))<span class="op">+</span><span class="dv">20</span>)
-<span class="kw">abline</span>(<span class="dt">v=</span>psmb_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-10-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
-Past versions of unnamed-chunk-10-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-10-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-10-1.png" target="_blank">4053f50</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-10-1.png" target="_blank">b8ce5bb</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(psmb_p)</code></pre></div>
-<pre><code>[1] 0.0722</code></pre>
-</div>
-</div>
-<div id="bptch1" class="section level2">
-<h2>(b)PTCH1</h2>
-<div id="i-score-test-1" class="section level3">
-<h3>(i) Score test</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ptch_gene =<span class="st"> &quot;PTCH1&quot;</span>
-results =<span class="st"> </span>ref[<span class="kw">match</span>(ptch_gene, ref<span class="op">$</span>hgnc), ]
-
-ptch_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span>results<span class="op">$</span>ensembl_gene_id)
-smallY =<span class="st"> </span>Y[,<span class="op">-</span>ptch_ind]
-s =<span class="st"> </span>news =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)
-<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>(<span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)){
-  s[i] =<span class="st"> </span><span class="kw">get_score_c</span>(X<span class="op">$</span>A, Y[,ptch_ind], smallY[,i])
-}
-<span class="kw">plot</span>(<span class="kw">sort</span>(s) <span class="op">~</span><span class="st"> </span><span class="kw">qchisq</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length=</span><span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>), <span class="dv">1</span>), <span class="dt">type =</span> <span class="st">&#39;l&#39;</span>); <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">main =</span> <span class="st">&#39;adjusted&#39;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-11-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
-Past versions of unnamed-chunk-11-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-11-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-11-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-11-1.png" target="_blank">4053f50</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-11-1.png" target="_blank">b8ce5bb</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="ii-permutation-test-1" class="section level3">
-<h3>(ii) Permutation test</h3>
-<p>We conduct the permutation test to see if the signal is real.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ptch_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">%in%</span><span class="st"> </span>ref[ref<span class="op">$</span>hgnc_symbol<span class="op">==</span><span class="st">&quot;PTCH1&quot;</span>, <span class="dv">1</span>])
-W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,ptch_ind], Y[, <span class="op">-</span>ptch_ind])
-ptch_scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W)
-ptch_d =<span class="st"> </span><span class="kw">get_degree_c</span>(X<span class="op">$</span>A, Y[,ptch_ind], Y[,<span class="op">-</span>ptch_ind])
-storeW =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,ptch_ind], Y[,<span class="op">-</span>ptch_ind])
-out =<span class="st"> </span><span class="kw">bootstrap_c</span>(X<span class="op">$</span>A, B, storeW)
-bootstrapped_d =<span class="st"> </span><span class="kw">rowSums</span>(out)
-ptch_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <span class="op">&gt;</span><span class="st"> </span>ptch_d) <span class="op">/</span><span class="st"> </span>B
-<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))
-<span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), ptch_d))<span class="op">+</span><span class="dv">100</span>)
-<span class="kw">abline</span>(<span class="dt">v=</span>ptch_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-12-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
-Past versions of unnamed-chunk-12-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-12-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-12-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(ptch_p)</code></pre></div>
-<pre><code>[1] 0.0014</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># par(mfrow = c(2,3))</span>
-<span class="co"># for (i in 1:12){</span>
-<span class="co">#   qqplot(ref_chisq, out[i, ], cex = 0.5, type = &#39;l&#39;, ylab = &#39;permuted score&#39;)</span>
-<span class="co">#   abline(0,1,col = &#39;red&#39;)</span>
-<span class="co"># }</span></code></pre></div>
-</div>
-<div id="iii-original-expression" class="section level3">
-<h3>(iii) Original expression</h3>
-<p>We inspect the raw data to see any patterns between Afircan Americans and European Americans.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ptch_exp =<span class="st"> </span><span class="kw">as.matrix</span>(orig[,ptch_ind])</code></pre></div>
-</div>
-<div id="iv-genes-with-the-highest-scores-for-ptch1" class="section level3">
-<h3>(iv) Genes with the highest scores for PTCH1</h3>
-<p>We make some diagnosis plot to observe what is driving the signal.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">max_scores =<span class="st"> </span><span class="kw">sort</span>(s, <span class="dt">decreasing=</span><span class="ot">TRUE</span>, <span class="dt">index.return=</span><span class="ot">TRUE</span>)
-results =<span class="st"> </span>ref[<span class="kw">match</span>(<span class="kw">colnames</span>(Y[,<span class="op">-</span>ptch_ind])[max_scores<span class="op">$</span>ix[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]], ref<span class="op">$</span>ensembl_gene_id), ]
-results =<span class="st"> </span>results[<span class="kw">match</span>(results<span class="op">$</span>ensembl_gene_id, <span class="kw">colnames</span>(Y[,<span class="op">-</span>ptch_ind])[max_scores<span class="op">$</span>ix[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]]), ]
-top_genes =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">gene_name =</span> results<span class="op">$</span>hgnc_symbol, <span class="dt">score =</span> max_scores<span class="op">$</span>x[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>],
-                <span class="dt">ensembl =</span> results<span class="op">$</span>ensembl_gene_id)
-
-<span class="kw">print</span>(top_genes)</code></pre></div>
-<pre><code>  gene_name    score         ensembl
-1     PRDM5 49.04952 ENSG00000138738
-2      &lt;NA&gt; 41.75227 ENSG00000254406
-3   RHOBTB1 41.55506 ENSG00000072422
-4      ASPA 40.82563 ENSG00000108381
-5  C1QTNF9B 39.34597 ENSG00000205863</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
-<span class="kw">plot</span>(orig[, ptch_ind] <span class="op">+</span><span class="st"> </span>orig[,<span class="op">-</span>ptch_ind][, max_scores<span class="op">$</span>ix[<span class="dv">1</span>]] <span class="op">~</span>
-<span class="st">       </span>X<span class="op">$</span>A,
-     <span class="dt">main =</span> <span class="st">&#39;African Americans&#39;</span>,
-     <span class="dt">xlab =</span> <span class="st">&#39;Ancestry&#39;</span>,
-     <span class="dt">ylab =</span> <span class="st">&#39;PTCH1 + PRDM5&#39;</span>)
-<span class="kw">plot</span>(orig[, ptch_ind] <span class="op">+</span><span class="st"> </span>orig[,<span class="op">-</span>ptch_ind][, max_scores<span class="op">$</span>ix[<span class="dv">2</span>]] <span class="op">~</span>
-<span class="st">       </span>X<span class="op">$</span>A,
-     <span class="dt">main =</span> <span class="st">&#39;African Americans&#39;</span>,
-     <span class="dt">xlab =</span> <span class="st">&#39;Ancestry&#39;</span>,
-     <span class="dt">ylab =</span> <span class="st">&#39;PTCH1 + C1QTNF9B&#39;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-15-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
-Past versions of unnamed-chunk-15-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-15-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-15-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-15-1.png" target="_blank">4053f50</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-15-1.png" target="_blank">b8ce5bb</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div id="remove-samples-with-ancestry-less-than-0.5" class="section level1">
-<h1>3. Remove samples with ancestry less than 0.5</h1>
+<div id="remove-outliers-samples-with-ancestry-less-than-0.6" class="section level1">
+<h1>4. Remove outliers (samples with ancestry less than 0.6)</h1>
+<p>We suspect that the outliers with low global ancestry could be driving most of the signals. So we repeat the same analysis after we remove the samples with global ancestry less than 0.6.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(orig_A, <span class="dt">ylab =</span> <span class="st">&#39;global ancestry&#39;</span>, <span class="dt">xlab=</span><span class="st">&quot;&quot;</span>, <span class="dt">xaxt=</span><span class="st">&#39;n&#39;</span>)
 ind =<span class="st"> </span><span class="kw">which</span>(orig_A <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.6</span>)
 <span class="kw">points</span>(ind, orig_A[ind], <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-16-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
-Past versions of unnamed-chunk-16-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-16-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-16-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-16-1.png" target="_blank">4053f50</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-16-1.png" target="_blank">b8ce5bb</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/AA.Rmd/remove_outliers-1.png" width="700" style="display: block; margin: auto;" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">remove =<span class="st"> </span><span class="kw">which</span>(orig_A <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.6</span>)
 newY =<span class="st"> </span>orig[<span class="op">-</span>remove,]
 newX =<span class="st"> </span>X[<span class="op">-</span>remove,]
@@ -1736,7 +938,8 @@ newY =<span class="st"> </span><span class="kw">scale</span>(newY) <span class="
 <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(genes)){
   ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(newY) <span class="op">==</span><span class="st"> </span>TF_results<span class="op">$</span>ensembl_gene_id[i])
   W =<span class="st"> </span><span class="kw">store_W_c</span>(newY[,ind], newY[, <span class="op">-</span>ind])
-  scores[i,] =<span class="st"> </span><span class="kw">get_score_W_c</span>(newX<span class="op">$</span>A, W)
+  V =<span class="st"> </span><span class="kw">store_V_c</span>(newY[,ind], newY[, <span class="op">-</span>ind])
+  scores[i,] =<span class="st"> </span><span class="kw">get_score_W_c</span>(newX<span class="op">$</span>A, W, V)
 }
 
 <span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
@@ -1761,413 +964,96 @@ ind =<span class="st"> </span><span class="kw">which.max</span>(d)
        <span class="dt">main =</span> TF_results<span class="op">$</span>hgnc_symbol[ind],
        <span class="dt">cex =</span> <span class="fl">0.5</span>)
 <span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-17-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
-Past versions of unnamed-chunk-17-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-17-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-17-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-17-1.png" target="_blank">4053f50</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-17-1.png" target="_blank">b8ce5bb</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
+<p><img src="figure/AA.Rmd/tf_no_outliers-1.png" width="700" style="display: block; margin: auto;" /></p>
+</div>
+<div id="b-top-signal-twist1" class="section level2">
+<h2>(b) Top signal: TWIST1</h2>
+<div id="i-permutation-test" class="section level3">
+<h3>(i) Permutation Test</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">twist =<span class="st"> </span><span class="kw">make_permtest</span>(<span class="st">&quot;TWIST1&quot;</span>, <span class="dt">Y =</span> newY, <span class="dt">A =</span> newX<span class="op">$</span>A)
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<span class="kw">hist</span>(twist<span class="op">$</span>bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="kw">min</span>(twist<span class="op">$</span>bootstrapped_d)<span class="op">-</span><span class="dv">100</span>, <span class="kw">max</span>(<span class="kw">max</span>(twist<span class="op">$</span>bootstrapped_d), twist<span class="op">$</span>d)),
+     <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;p-value = &quot;</span>, twist<span class="op">$</span>p))
+<span class="kw">abline</span>(<span class="dt">v =</span> twist<span class="op">$</span>d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</code></pre></div>
+<p><img src="figure/AA.Rmd/twist_perm-1.png" width="700" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">diagnosis_plot</span>(twist, <span class="st">&quot;TWIST1&quot;</span>, <span class="dt">orig =</span> orig[<span class="op">-</span>remove, ], <span class="dt">Y =</span> newY, <span class="dt">A =</span> newX<span class="op">$</span>A)</code></pre></div>
+<p><img src="figure/AA.Rmd/twist_perm-2.png" width="700" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 </div>
-<div id="b-tead3" class="section level2">
-<h2>(b) TEAD3</h2>
-<div id="i-score-test-2" class="section level3">
-<h3>(i) Score test</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gene =<span class="st"> &quot;TEAD3&quot;</span>
-results =<span class="st"> </span>ref[<span class="kw">match</span>(gene, ref<span class="op">$</span>hgnc_symbol), ]
-
-tead_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(newY) <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(results<span class="op">$</span>ensembl_gene_id))
-newsmallY =<span class="st"> </span>newY[,<span class="op">-</span>tead_ind]
-s =<span class="st"> </span>news =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)
-<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>(<span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>)){
-  s[i] =<span class="st"> </span><span class="kw">get_score_c</span>(newX<span class="op">$</span>A, newY[,tead_ind], newsmallY[,i])
-}
-<span class="kw">plot</span>(<span class="kw">sort</span>(s) <span class="op">~</span><span class="st"> </span><span class="kw">qchisq</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length=</span><span class="kw">ncol</span>(Y)<span class="op">-</span><span class="dv">1</span>), <span class="dv">1</span>), <span class="dt">type =</span> <span class="st">&#39;l&#39;</span>, <span class="dt">main =</span> <span class="st">&#39;TEAD3&#39;</span>)
-<span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-18-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
-Past versions of unnamed-chunk-18-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-18-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-18-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-18-1.png" target="_blank">4053f50</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-18-1.png" target="_blank">b8ce5bb</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
+<div id="targeted-analysis-of-transcription-factors" class="section level1">
+<h1>5. Targeted analysis of transcription factors</h1>
+<div id="a-test-all-tfs-against-target-genes" class="section level2">
+<h2>(a) Test all TFs against target genes</h2>
+<p>The database of TF2DNA that shows the target genes for each transcription factor. We study the 1306 transcription factors introduced in this data set. Instead of measuring the co-expression against all the other genes, we only look at teh score statistics against the target genes with top binding scores.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(data.table)
+TFs =<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&quot;/Volumes/tae/Work/network/diffNet/data/pscan_files/Homo-sapiens_theoretical_TF2DNA/&quot;</span>)
+TFs =<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">strsplit</span>(TFs, <span class="st">&quot;.pscan&quot;</span>), <span class="cf">function</span>(x) x[[<span class="dv">1</span>]])
+results =<span class="st"> </span>ref[<span class="kw">match</span>(TFs, ref<span class="op">$</span>hgnc_symbol), ]
+results =<span class="st"> </span>results[<span class="op">!</span><span class="kw">is.na</span>(results<span class="op">$</span>hgnc_symbol), ]
+out =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">TF =</span> results<span class="op">$</span>hgnc_symbol, 
+                 <span class="dt">numTargets =</span> <span class="kw">rep</span>(<span class="ot">NA</span>, <span class="kw">nrow</span>(results)),
+                 <span class="dt">degree =</span> <span class="kw">rep</span>(<span class="ot">NA</span>, <span class="kw">nrow</span>(results)))</code></pre></div>
+<p>For each transcription factor, we need to read in the target data, which can take very long due to a high number of file IO.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(results<span class="op">$</span>hgnc_symbol)){
+  targets =<span class="st"> </span><span class="kw">fread</span>(<span class="kw">paste0</span>(<span class="st">&quot;/Volumes/tae/Work/network/diffNet/data/pscan_files/Homo-sapiens_theoretical_TF2DNA/&quot;</span>, results<span class="op">$</span>hgnc_symbol[i], <span class="st">&quot;.pscan&quot;</span>))
+  targets =<span class="st"> </span>targets[<span class="kw">which</span>(targets<span class="op">$</span>p_value <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(targets<span class="op">$</span>p_value)), <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">6</span>,<span class="dv">7</span>)]
+  target_genenames =<span class="st"> </span>ref[<span class="kw">match</span>(targets<span class="op">$</span>target_name, ref<span class="op">$</span>hgnc_symbol), ]
+  main_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(Y) <span class="op">==</span><span class="st"> </span>results<span class="op">$</span>ensembl_gene_id[i])
+  target_ind =<span class="st"> </span><span class="kw">match</span>(target_genenames<span class="op">$</span>ensembl_gene_id, <span class="kw">colnames</span>(Y))
+  target_ind =<span class="st"> </span>target_ind[<span class="op">!</span><span class="kw">is.na</span>(target_ind)]
+  target_ind =<span class="st"> </span>target_ind[target_ind <span class="op">!=</span><span class="st"> </span>main_ind]
+  W =<span class="st"> </span><span class="kw">store_W_c</span>(Y[,main_ind], Y[, target_ind])
+  V =<span class="st"> </span><span class="kw">store_V_c</span>(Y[,main_ind], Y[, target_ind])
+  scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(X<span class="op">$</span>A, W, V)
+  out<span class="op">$</span>numTargets[i] =<span class="st"> </span><span class="kw">ncol</span>(W)
+  out<span class="op">$</span>degree[i] =<span class="st"> </span><span class="kw">sum</span>(scores)
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d =<span class="st"> </span>out<span class="op">$</span>degree <span class="op">/</span><span class="st"> </span>out<span class="op">$</span>numTargets
+df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">d =</span> d, 
+                <span class="dt">genes =</span> results<span class="op">$</span>hgnc_symbol, 
+                <span class="dt">xaxis =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(d))
+<span class="kw">plot</span>(d,
+     <span class="dt">main =</span> <span class="st">&#39;Targeted TF&#39;</span>,
+     <span class="dt">ylab =</span> <span class="st">&#39;averaged scores&#39;</span>,
+     <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">max</span>(d) <span class="op">+</span><span class="st"> </span><span class="fl">0.7</span>),
+     <span class="dt">xlab =</span> <span class="kw">length</span>(d) <span class="op">+</span><span class="st"> </span><span class="dv">25</span>)
+<span class="kw">abline</span>(<span class="dt">h=</span><span class="dv">1</span>, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
+ind =<span class="st"> </span><span class="kw">which</span>(d <span class="op">&gt;</span><span class="st"> </span><span class="fl">2.8</span>)
+df =<span class="st"> </span>df[ind,]
+<span class="kw">with</span>(df, <span class="kw">text</span>(d<span class="op">~</span>xaxis, <span class="dt">labels=</span>genes, <span class="dt">pos=</span><span class="dv">3</span>))</code></pre></div>
+<p><img src="figure/AA.Rmd/plot_targeted_Tf-1.png" width="700" style="display: block; margin: auto;" /></p>
 </div>
+<div id="b-top-signals" class="section level2">
+<h2>(b) Top Signals</h2>
+<div id="i-batf-analysis-with-permutation-test" class="section level3">
+<h3>(i) BATF analysis with permutation test</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">batf =<span class="st"> </span><span class="kw">make_target_permtest</span>(<span class="st">&quot;BATF&quot;</span>)
+<span class="kw">hist</span>(batf<span class="op">$</span>out, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">max</span>(batf<span class="op">$</span>d<span class="op">+</span><span class="dv">10</span>, <span class="kw">max</span>(batf<span class="op">$</span>out))),
+     <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;p value = &quot;</span>, batf<span class="op">$</span>p),
+     <span class="dt">xlab =</span> <span class="st">&quot;null distribution of d of BATF&quot;</span>)
+<span class="kw">abline</span>(<span class="dt">v=</span>batf<span class="op">$</span>d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+<p><img src="figure/AA.Rmd/batf-1.png" width="400" style="display: block; margin: auto;" /></p>
 </div>
+<div id="ii-znf785-analysis-with-permutation-test" class="section level3">
+<h3>(ii) ZNF785 analysis with permutation test</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">znf =<span class="st"> </span><span class="kw">make_target_permtest</span>(<span class="st">&quot;ZNF785&quot;</span>)
+<span class="kw">hist</span>(znf<span class="op">$</span>out, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">max</span>(znf<span class="op">$</span>d<span class="op">+</span><span class="dv">10</span>, <span class="kw">max</span>(znf<span class="op">$</span>out))),
+     <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;p value = &quot;</span>, znf<span class="op">$</span>p),
+     <span class="dt">xlab =</span> <span class="st">&quot;null distribution of d of ZNF785&quot;</span>)
+<span class="kw">abline</span>(<span class="dt">v=</span>znf<span class="op">$</span>d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+<p><img src="figure/AA.Rmd/znf785-1.png" width="500" style="display: block; margin: auto;" /></p>
 </div>
-<div id="ii-permutation-test-2" class="section level3">
-<h3>(ii) Permutation test</h3>
-<p>We conduct the permutation test to see if the signal is real.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tead_ind =<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(newY) <span class="op">%in%</span><span class="st"> </span>TF_results[TF_results<span class="op">$</span>hgnc_symbol<span class="op">==</span><span class="st">&quot;TEAD3&quot;</span>, <span class="dv">1</span>])
-W =<span class="st"> </span><span class="kw">store_W_c</span>(newY[,tead_ind], newY[, <span class="op">-</span>tead_ind])
-tead_scores =<span class="st"> </span><span class="kw">get_score_W_c</span>(newX<span class="op">$</span>A, W)
-tead_d =<span class="st"> </span><span class="kw">get_degree_c</span>(newX<span class="op">$</span>A, newY[,tead_ind], newY[,<span class="op">-</span>tead_ind])
-storeW =<span class="st"> </span><span class="kw">store_W_c</span>(newY[,tead_ind], newY[,<span class="op">-</span>tead_ind])
-out =<span class="st"> </span><span class="kw">bootstrap_c</span>(newX<span class="op">$</span>A, B, storeW)
-bootstrapped_d =<span class="st"> </span><span class="kw">rowSums</span>(out)
-tead_p =<span class="st"> </span><span class="kw">sum</span>(bootstrapped_d <span class="op">&gt;</span><span class="st"> </span>tead_d) <span class="op">/</span><span class="st"> </span>B
-<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))
-<span class="kw">hist</span>(bootstrapped_d, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">10000</span>, <span class="kw">max</span>(<span class="kw">max</span>(bootstrapped_d), tead_d))<span class="op">+</span><span class="dv">100</span>)
-<span class="kw">abline</span>(<span class="dt">v=</span>tead_d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-19-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
-Past versions of unnamed-chunk-19-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-19-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-19-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(tead_p)</code></pre></div>
-<pre><code>[1] 0.0102</code></pre>
-</div>
-<div id="iii-genes-with-the-highest-scores-for-tead3" class="section level3">
-<h3>(iii) Genes with the highest scores for TEAD3</h3>
-<p>We make some diagnosis plot to observe what is driving the signal.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">max_scores =<span class="st"> </span><span class="kw">sort</span>(s, <span class="dt">decreasing=</span><span class="ot">TRUE</span>, <span class="dt">index.return=</span><span class="ot">TRUE</span>)
-results =<span class="st"> </span>ref[<span class="kw">match</span>(<span class="kw">colnames</span>(Y[,<span class="op">-</span>tead_ind])[max_scores<span class="op">$</span>ix[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]], ref<span class="op">$</span>ensembl_gene_id), ]
-results =<span class="st"> </span>results[<span class="kw">match</span>(results<span class="op">$</span>ensembl_gene_id, <span class="kw">colnames</span>(Y[,<span class="op">-</span>tead_ind])[max_scores<span class="op">$</span>ix[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]]), ]
-top_genes =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">gene_name =</span> results<span class="op">$</span>hgnc_symbol, <span class="dt">score =</span> max_scores<span class="op">$</span>x[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>],
-                <span class="dt">ensembl =</span> results<span class="op">$</span>ensembl_gene_id)
-<span class="kw">print</span>(top_genes)</code></pre></div>
-<pre><code>   gene_name    score         ensembl
-1  LINC01412 37.89728 ENSG00000232606
-2  LINC02031 28.10896 ENSG00000238837
-3   GAPDHP49 27.71234 ENSG00000234285
-4 STK32A-AS1 27.04721 ENSG00000250343
-5    DNAJC12 26.73128 ENSG00000108176</code></pre>
-</div>
-<div id="iv-top-genes" class="section level3">
-<h3>(iv) Top genes</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
-max_scores =<span class="st"> </span><span class="kw">sort</span>(s, <span class="dt">decreasing=</span><span class="ot">TRUE</span>, <span class="dt">index.return=</span><span class="ot">TRUE</span>)
-<span class="kw">plot</span>(orig[<span class="op">-</span>remove, tead_ind] <span class="op">+</span><span class="st"> </span>orig[<span class="op">-</span>remove,<span class="op">-</span>tead_ind][, max_scores<span class="op">$</span>ix[<span class="dv">1</span>]] <span class="op">~</span>
-<span class="st">       </span>orig_A[<span class="op">-</span>remove],
-     <span class="dt">xlab =</span> <span class="st">&#39;Ancestry&#39;</span>,
-     <span class="dt">ylab =</span> <span class="st">&#39;TEAD3 + STK32A-AS1&#39;</span>)
-<span class="kw">plot</span>(orig[<span class="op">-</span>remove, tead_ind] <span class="op">+</span><span class="st"> </span>orig[<span class="op">-</span>remove,<span class="op">-</span>tead_ind][, max_scores<span class="op">$</span>ix[<span class="dv">2</span>]] <span class="op">~</span>
-<span class="st">       </span>orig_A[<span class="op">-</span>remove],
-     <span class="dt">xlab =</span> <span class="st">&#39;Ancestry&#39;</span>,
-     <span class="dt">ylab =</span> <span class="st">&quot;TEAD3 + DNAJC12&quot;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-21-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
-Past versions of unnamed-chunk-21-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-21-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-21-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/4053f506a8258d01fa5c3025658cb85e0e6651d2/docs/figure/AA.Rmd/unnamed-chunk-21-1.png" target="_blank">4053f50</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/b8ce5bb09c800b6f1973eda359fbae59b7fc4e52/docs/figure/AA.Rmd/unnamed-chunk-21-1.png" target="_blank">b8ce5bb</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
-max_scores =<span class="st"> </span><span class="kw">sort</span>(s, <span class="dt">decreasing=</span><span class="ot">TRUE</span>, <span class="dt">index.return=</span><span class="ot">TRUE</span>)
-<span class="kw">plot</span>(orig[<span class="op">-</span>remove, tead_ind] <span class="op">~</span><span class="st"> </span>orig_A[<span class="op">-</span>remove], <span class="dt">ylab =</span> <span class="st">&quot;TEAD3&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;ancestry&quot;</span>)
-<span class="kw">plot</span>(orig[<span class="op">-</span>remove, <span class="op">-</span>tead_ind][, max_scores<span class="op">$</span>ix[<span class="dv">1</span>]] <span class="op">~</span><span class="st"> </span>orig_A[<span class="op">-</span>remove],
-     <span class="dt">ylab =</span> <span class="st">&quot;STK32A-AS1&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;ancestry&quot;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-22-1.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
-Past versions of unnamed-chunk-22-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-22-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-22-1.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(orig[<span class="op">-</span>remove, tead_ind] <span class="op">~</span><span class="st"> </span>orig_A[<span class="op">-</span>remove], <span class="dt">ylab =</span> <span class="st">&quot;TEAD3&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;ancestry&quot;</span>)
-<span class="kw">plot</span>(orig[<span class="op">-</span>remove, <span class="op">-</span>tead_ind][, max_scores<span class="op">$</span>ix[<span class="dv">2</span>]] <span class="op">~</span><span class="st"> </span>orig_A[<span class="op">-</span>remove],
-     <span class="dt">ylab =</span> <span class="st">&quot;DNAJC12&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;ancestry&quot;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-22-2.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-2">
-Past versions of unnamed-chunk-22-2.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-22-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-22-2.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(orig[<span class="op">-</span>remove, tead_ind] <span class="op">*</span><span class="st"> </span>orig[<span class="op">-</span>remove, <span class="op">-</span>tead_ind][, max_scores<span class="op">$</span>ix[<span class="dv">1</span>]] <span class="op">~</span><span class="st"> </span>orig_A[<span class="op">-</span>remove],
-     <span class="dt">ylab =</span> <span class="st">&quot;TEAD3 * STK32A-AS1&quot;</span>, <span class="dt">xlab=</span><span class="st">&#39;ancestry&#39;</span>)
-<span class="kw">plot</span>(orig[<span class="op">-</span>remove, tead_ind] <span class="op">*</span><span class="st"> </span>orig[<span class="op">-</span>remove, <span class="op">-</span>tead_ind][, max_scores<span class="op">$</span>ix[<span class="dv">2</span>]] <span class="op">~</span><span class="st"> </span>orig_A[<span class="op">-</span>remove],
-     <span class="dt">ylab =</span> <span class="st">&quot;TEAD3 * DNAJC12&quot;</span>, <span class="dt">xlab=</span><span class="st">&#39;ancestry&#39;</span>)</code></pre></div>
-<p><img src="figure/AA.Rmd/unnamed-chunk-22-3.png" width="700" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-3">
-Past versions of unnamed-chunk-22-3.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-22-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/tk382/networkAnc/blob/432088c570ebbca5ba2f586d1a018ddf2123049c/docs/figure/AA.Rmd/unnamed-chunk-22-3.png" target="_blank">432088c</a>
-</td>
-<td>
-tk382
-</td>
-<td>
-2019-04-07
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<br> <br>
+<div id="iii-ncor2-with-targeted-genes-only" class="section level3">
+<h3>(iii) NCOR2 with targeted genes only</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ncor =<span class="st"> </span><span class="kw">make_target_permtest</span>(<span class="st">&quot;NCOR2&quot;</span>)
+<span class="kw">hist</span>(ncor<span class="op">$</span>out, <span class="dv">50</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">max</span>(ncor<span class="op">$</span>d<span class="op">+</span><span class="dv">10</span>, <span class="kw">max</span>(ncor<span class="op">$</span>out))),
+     <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;p value = &quot;</span>, ncor<span class="op">$</span>p),
+     <span class="dt">xlab =</span> <span class="st">&quot;null distribution of d of NCOR2&quot;</span>)
+<span class="kw">abline</span>(<span class="dt">v=</span>ncor<span class="op">$</span>d, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+<p><img src="figure/AA.Rmd/ncor_targets-1.png" width="400" style="display: block; margin: auto;" /></p>
+We conducted different analyses with the same data sets, and found some overlapping signals that appeared across the different analyses such as NCOR2 and ZEB2. <br> <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
@@ -2194,40 +1080,38 @@ other attached packages:
 [5] data.table_1.12.0 mvtnorm_1.0-10    MASS_7.3-51.3    
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.1                prettyunits_1.0.2        
- [3] png_0.1-7                 Biostrings_2.50.2        
- [5] assertthat_0.2.1          rprojroot_1.3-2          
- [7] digest_0.6.18             R6_2.4.0                 
- [9] plyr_1.8.4                backports_1.1.3          
-[11] stats4_3.5.3              RSQLite_2.1.1            
-[13] evaluate_0.13             httr_1.4.0               
-[15] pillar_1.3.1              zlibbioc_1.26.0          
-[17] rlang_0.3.3               progress_1.2.0           
-[19] curl_3.3                  lazyeval_0.2.2           
-[21] whisker_0.3-2             blob_1.1.1               
-[23] R.oo_1.22.0               S4Vectors_0.20.1         
-[25] R.utils_2.8.0             rmarkdown_1.12           
-[27] stringr_1.4.0             RCurl_1.95-4.12          
-[29] bit_1.1-14                munsell_0.5.0            
-[31] compiler_3.5.3            xfun_0.5                 
-[33] pkgconfig_2.0.2           BiocGenerics_0.26.0      
-[35] htmltools_0.3.6           tidyselect_0.2.5         
-[37] tibble_2.1.1              workflowr_1.2.0          
-[39] IRanges_2.16.0            XML_3.98-1.19            
-[41] crayon_1.3.4              dplyr_0.8.0.1            
-[43] withr_2.1.2               bitops_1.0-6             
-[45] R.methodsS3_1.7.1         grid_3.5.3               
-[47] gtable_0.3.0              DBI_1.0.0                
-[49] git2r_0.25.2              magrittr_1.5             
-[51] scales_1.0.0              stringi_1.4.3            
-[53] XVector_0.20.0            RcppArmadillo_0.8.600.0.0
-[55] fs_1.2.7                  tools_3.5.3              
-[57] bit64_0.9-7               Biobase_2.40.0           
-[59] glue_1.3.1                purrr_0.3.2              
-[61] hms_0.4.2                 parallel_3.5.3           
-[63] yaml_2.2.0                AnnotationDbi_1.42.1     
-[65] colorspace_1.4-1          memoise_1.1.0            
-[67] knitr_1.22               </code></pre>
+ [1] progress_1.2.0            tidyselect_0.2.5         
+ [3] xfun_0.5                  purrr_0.3.2              
+ [5] colorspace_1.4-1          htmltools_0.3.6          
+ [7] stats4_3.5.3              yaml_2.2.0               
+ [9] blob_1.1.1                XML_3.98-1.19            
+[11] rlang_0.3.3               pillar_1.3.1             
+[13] glue_1.3.1                withr_2.1.2              
+[15] DBI_1.0.0                 bit64_0.9-7              
+[17] BiocGenerics_0.26.0       plyr_1.8.4               
+[19] stringr_1.4.0             zlibbioc_1.26.0          
+[21] Biostrings_2.50.2         munsell_0.5.0            
+[23] gtable_0.3.0              workflowr_1.2.0          
+[25] memoise_1.1.0             evaluate_0.13            
+[27] RcppArmadillo_0.8.600.0.0 Biobase_2.40.0           
+[29] knitr_1.22                IRanges_2.16.0           
+[31] parallel_3.5.3            AnnotationDbi_1.42.1     
+[33] Rcpp_1.0.1                scales_1.0.0             
+[35] backports_1.1.3           S4Vectors_0.20.1         
+[37] XVector_0.20.0            bit_1.1-14               
+[39] fs_1.2.7                  hms_0.4.2                
+[41] png_0.1-7                 digest_0.6.18            
+[43] stringi_1.4.3             dplyr_0.8.0.1            
+[45] grid_3.5.3                rprojroot_1.3-2          
+[47] tools_3.5.3               bitops_1.0-6             
+[49] magrittr_1.5              RSQLite_2.1.1            
+[51] lazyeval_0.2.2            RCurl_1.95-4.12          
+[53] tibble_2.1.1              crayon_1.3.4             
+[55] whisker_0.3-2             pkgconfig_2.0.2          
+[57] prettyunits_1.0.2         assertthat_0.2.1         
+[59] rmarkdown_1.12            httr_1.4.0               
+[61] R6_2.4.0                  git2r_0.25.2             
+[63] compiler_3.5.3           </code></pre>
 </div>
 </div>
 </div>
@@ -2247,8 +1131,6 @@ footer is added to webpages before the MathJax javascript. -->
 </script>
 
 
-</div>
-</div>
 
 </div>
 

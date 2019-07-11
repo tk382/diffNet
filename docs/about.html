@@ -281,6 +281,9 @@ $(document).ready(function () {
   <a href="AA.html">Continuous Example</a>
 </li>
 <li>
+  <a href="W_and_V_alt.html">Simulations</a>
+</li>
+<li>
   <a href="license.html">License</a>
 </li>
       </ul>
@@ -333,7 +336,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-04-07
+<strong>Last updated:</strong> 2019-07-11
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -364,10 +367,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree606fa41352b1d9963546017abf2429d1985c8575targetblank606fa41a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/tk382/networkAnc/tree/606fa41352b1d9963546017abf2429d1985c8575" target="_blank">606fa41</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree906e3002fbb321e226aca4d9ca1e17efc73c4fedtargetblank906e300a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/tk382/networkAnc/tree/906e3002fbb321e226aca4d9ca1e17efc73c4fed" target="_blank">906e300</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree606fa41352b1d9963546017abf2429d1985c8575targetblank606fa41a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomtk382networkAnctree906e3002fbb321e226aca4d9ca1e17efc73c4fedtargetblank906e300a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -381,65 +384,42 @@ Ignored files:
     Ignored:    R/.Rhistory
     Ignored:    analysis/.DS_Store
     Ignored:    analysis/.Rhistory
+    Ignored:    analysis/AA_EA_cache/
     Ignored:    docs/.DS_Store
     Ignored:    docs/figure/.DS_Store
+    Ignored:    src/.DS_Store
 
 Untracked files:
     Untracked:  .Rprofile
     Untracked:  .gitignore
-    Untracked:  R/not_build/
-    Untracked:  analysis/AA_EA_cache/
-    Untracked:  analysis/AA_skin_not_sun_exposed.Rmd
-    Untracked:  analysis/AA_skin_not_sun_exposed.pdf
-    Untracked:  analysis/HLA-DQA1.Rmd
-    Untracked:  analysis/HLA-DQA1.pdf
-    Untracked:  analysis/HLAgenes.Rmd
-    Untracked:  analysis/HLAgenes.pdf
-    Untracked:  analysis/HMP.Rmd
-    Untracked:  analysis/HMP.pdf
-    Untracked:  analysis/KgreaterthanN.Rmd
-    Untracked:  analysis/KgreaterthanN.pdf
-    Untracked:  analysis/TFs.Rmd
-    Untracked:  analysis/TFs.pdf
-    Untracked:  analysis/activation_permutation_test_result.Rdata
-    Untracked:  analysis/autoimmune_pathway.Rmd
-    Untracked:  analysis/binding_permutation_test_result.Rdata
-    Untracked:  analysis/catalysis_permutation_test_result.Rdata
-    Untracked:  analysis/correction.R
-    Untracked:  analysis/degree_simulation.R
-    Untracked:  analysis/export_genenames.R
-    Untracked:  analysis/expression_permutation_test_result.Rdata
-    Untracked:  analysis/inhibition_permutation_test_result.Rdata
-    Untracked:  analysis/largeK.Rmd
-    Untracked:  analysis/largeK.pdf
-    Untracked:  analysis/make_reference_hgnc.R
-    Untracked:  analysis/normality_breaks.R
-    Untracked:  analysis/permutation_test.Rmd
-    Untracked:  analysis/permutation_test.pdf
-    Untracked:  analysis/ptmod_permutation_test_result.Rdata
-    Untracked:  analysis/reaction_permutation_test_result.Rdata
-    Untracked:  analysis/remove_covariates.Rmd
-    Untracked:  analysis/score_test_simulation.R
-    Untracked:  analysis/simulation1.Rmd
-    Untracked:  analysis/simulation2.Rmd
-    Untracked:  analysis/skin_AA.Rmd
-    Untracked:  analysis/skin_AA.pdf
-    Untracked:  analysis/skin_not__sun_exposed.pdf
-    Untracked:  analysis/skin_not__sun_exposed_files/
-    Untracked:  analysis/skin_not_sun_exposed.Rmd
-    Untracked:  analysis/skin_not_sun_exposed.pdf
-    Untracked:  analysis/smallk_known_sigma.Rmd
-    Untracked:  analysis/smallk_known_sigma.pdf
-    Untracked:  analysis/smallk_unknown_sigma.Rmd
-    Untracked:  analysis/smallk_unknown_sigma.pdf
-    Untracked:  analysis/type1error.Rmd
-    Untracked:  code/
     Untracked:  data/
+    Untracked:  docs/figure/liquid_assoc.Rmd/
     Untracked:  docs/figure/simulation1.Rmd/
     Untracked:  docs/figure/simulation2.Rmd/
+    Untracked:  docs/figure/simulation3.Rmd/
+    Untracked:  docs/figure/simulation4.Rmd/
+    Untracked:  man/do_polyroot_arma.Rd
+    Untracked:  man/do_polyroot_cpp.Rd
+    Untracked:  man/post_score.Rd
     Untracked:  old_analysis/
-    Untracked:  output/
-    Untracked:  src/networkAnc.so
+    Untracked:  targeted_TF_AA.txt
+    Untracked:  wandv.R
+
+Unstaged changes:
+    Modified:   .Rbuildignore
+    Modified:   DESCRIPTION
+    Modified:   NAMESPACE
+    Deleted:    analysis/AA_vs_EA_skin_not_sun_exposed.Rmd
+    Deleted:    analysis/AA_vs_EA_skin_not_sun_exposed.pdf
+    Modified:   analysis/W_and_V_alt.Rmd
+    Modified:   analysis/_site.yml
+    Modified:   analysis/index.Rmd
+    Deleted:    analysis/license.Rmd
+    Deleted:    analysis/score_test.R
+    Modified:   docs/.nojekyll
+    Modified:   dynamic_coexpression_githubversion.tex
+    Deleted:    src/diffNet.so
+    Modified:   src/utilities.cpp
 
 </code></pre>
 <p>
@@ -478,6 +458,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/tk382/networkAnc/68a6d1e9fb9b48920d7f61f57d34cab888cd7057/docs/about.html" target="_blank">68a6d1e</a>
+</td>
+<td>
+tk382
+</td>
+<td>
+2019-04-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
