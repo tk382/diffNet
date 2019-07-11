@@ -1,12 +1,14 @@
 ---
-title: "AA"
+title: "Analysis of African American Co-expression Network"
 author: "Tae Kim"
-date: "3/25/2019"
-output: pdf_document
+date: "7/9/2019"
+output:
+  workflowr::wflow_html:
+    toc: false
 ---
 
 ```{r setup, include=FALSE}
-set.seed(20190309)
+set.seed(20190707)
 knitr::opts_chunk$set(echo = TRUE,
                       dpi = 100)
 library(MASS)
@@ -16,7 +18,8 @@ library(nleqslv)
 library(ggplot2)
 library(KEGGREST)
 library(biomaRt)
-library(diffNet)
+source("R/utilities_wv.R")
+Rcpp::sourceCpp("src/utilities.cpp")
 hgnc = setDF(fread("data/not_build/hgnc_ensembl.txt"))
 hgnc = hgnc[hgnc$`Ensembl gene ID` != "", ]
 ```
@@ -48,7 +51,6 @@ X = rbind(newA, EA_A)
 rm(newA, EA_A, AAs, EAs, ind, finalA)
 rownames(Y) = sapply(strsplit(rownames(Y), '[.]'), function(x) x[1])
 Y = t(Y)
-
 ind = which(X$A > 0)
 Y = Y[ind,]
 X = X[ind, ]
@@ -57,7 +59,7 @@ orig = Y
 
 ## (b) scale the data and regress out the mean
 
-We code African Americans as 0 and European Americans as 1 to compare group by group coexpression difference. We also consider correlation matrix, so we scale the gene expression level matrix to have variance 1. Then we regress out ancestry from the gene expression level to remove the mean effect. 
+Wefirst scale the gene expression level matrix to have variance 1. Then we regress out ancestry from the gene expression level to remove the mean effect. 
 
 ```{r scale}
 orig_A = X$A
@@ -66,227 +68,85 @@ Y = resid(lm(Y~X$A))
 Y = scale(Y) * sqrt(length(X$A)) / sqrt(length(X$A)-1)
 ```
 
-```{r}
+```{r refchisq}
+#reference chi squared distribution to compare the null distribution
 ref_chisq = qchisq(seq(0,1, length=ncol(Y)-1), 1)
 ```
 
-```{r}
+```{r B}
+# number of permutations
 B = 5000
 ```
 
 ## (c) match ENSEMBL ID and hgnc symbols
 
-https://www.genenames.org/download/custom/
+Using data set from https://www.genenames.org/download/custom/, we match the Ensembl gene IDs to HGNC symbols for better readability.
 
-```{r}
+```{r hgnctoensembl}
 hgnc_names = hgnc[match(colnames(Y), hgnc$`Ensembl gene ID`), "Approved symbol"]
 ref = data.frame(ensembl_gene_id = colnames(Y), hgnc_symbol = hgnc_names)
 ref$ensembl_gene_id = as.character(ref$ensembl_gene_id)
 ref$hgnc_symbol = as.character(ref$hgnc_symbol)
 ```
 
-# 2. Gene selection
+# 2. Transcription Factors against all other genes
 
-In order to avoid extensive multiple testing, we use prior information in biology. 
+Since transcription factors usually regulate the transcription of multiple genes, we believe they were appropriate targets to study their variance in activity across different ancestry. We use the list of transcription factors from http://www.tfcheckpoint.org/.
 
-## (a) KEGG pathway
+## (a) Read in TF data
 
-We believe the disease pathways may reflect the gene-gene correlation structure or gene modules, so we choose three pathways that are related to either skin tissue or immunity - melonoma, asthma, and autoimmune disease. 
-
-For each pathway, we take a group of $K$ genes and for each $k$ in $1, \cdots, K$, we compute $d_k$ and compare it to the empirical distribution by permuting the ancestry. Then we show qqplot of the p values against the uniform distribution after transformation $-log_{10}(p)$.
-
-```{r}
-get_result_kegg = function(hsacode, B){
-  out = keggGet(hsacode)
-  out = out[[1]]
-  genes = sapply(strsplit(out$GENE, ";"), function(x) x[1])
-  genes = genes[seq(2,length(genes),by=2)]
-  results = ref[match(genes, ref$hgnc_symbol), ]
-  genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
-  results = results[match(genes, results$ensembl_gene_id), ]
-  R = Y[,genes]
-  d = rep(0, ncol(R))
-  p = rep(0, ncol(R))
-  for (i in 1:ncol(R)){
-    d[i] = get_degree_c(X$A, R[,i], R[,-i])
-    storeW = store_W_c(R[,i], R[,-i])
-    out = rowSums(bootstrap_c(X$A, B, storeW))
-    p[i] = sum(out > d[i]) / B
-  }
-  return(list(p = p, d = d, genes = results))
-}
-
-out = get_result_kegg("hsa05218", B) #melanoma disease
-par(mfrow = c(1,2))
-qqplot(-log(seq(0,1,length.out = length(out$p))), -log(out$p),
-     xlab = '-log uniform',
-     ylab = '-log p',
-     main = "melanoma")
-abline(0,1,col = 'red')
-
-df = data.frame(p = -log(out$p), genes = out$genes$hgnc_symbol, ind = 1:length(out$p))
-plot(-log(out$p), 
-     ylab = '-log p', 
-     main = '-log(p) values',
-     xlim = c(0, length(out$p)+10))
-ind = which(df$p > 3)
-if(length(ind)>0){
-  df = df[ind, ]
-  with(df, text(p ~ ind, labels = genes, pos = 4))
-}
-
-
-
-out = get_result_kegg("hsa05310", B) #asthma
-par(mfrow = c(1,2))
-qqplot(-log(seq(0,1,length.out = length(out$p))), -log(out$p),
-     xlab = '-log uniform',
-     ylab = '-log p',
-     main = "asthma")
-abline(0,1,col = 'red')
-
-df = data.frame(p = -log(out$p), genes = out$genes$hgnc_symbol, ind = 1:length(out$p))
-plot(-log(out$p), 
-     ylab = '-log p', 
-     main = '-log(p) values',
-     xlim = c(0, length(out$p)+10))
-ind = which(df$p > 3)
-if(length(ind)>0){
-  df = df[ind, ]
-  with(df, text(p ~ ind, labels = genes, pos = 4))
-}
-
-
-out = get_result_kegg("hsa05320", B) #autoimmune
-par(mfrow = c(1,2))
-qqplot(-log(seq(0,1,length.out = length(out$p))), -log(out$p),
-     xlab = '-log uniform',
-     ylab = '-log p',
-     main = "auto immune")
-abline(0,1,col = 'red')
-
-df = data.frame(p = -log(out$p), genes = out$genes$hgnc_symbol, ind = 1:length(out$p))
-plot(-log(out$p), 
-     ylab = '-log p', 
-     main = '-log(p) values',
-     xlim = c(0, length(out$p)+10))
-ind = which(df$p > 3)
-if(length(ind)>0){
-  df = df[ind, ]
-  with(df, text(p ~ ind, labels = genes, pos = 4))
-}
-
-```
-
-\pagebreak
-
-## (b) HLA genes
-
-We know that HLA genes are connected to many other genes and play critical role in regulating the gene transcription. We obtain the list of HLA genes and compute $d_1$ by adding up pair-wise test statistics across the entire genome. 
-
-```{r}
-hla_genes = c("HLA-A", "HLA-B", "HLA-C", "HLA-E", 
-              "HLA-F", "HLA-G", "HLA-H", "HLA-J", 
-              "HLA-K", "HLA-L", "HLA-N", "HLA-P", 
-              "HLA-S", "HLA-T", "HLA-U", "HLA-V", 
-              "HLA-W", "HLA-X", "HLA-Y", "HLA-Z",
-              "HLA-DRA", "HLA-DRB2", "HLA-DRB3",
-              "HLA-DRB4", "HLA-DRB5", "HLA-DRB6",
-              "HLA-DRB7", "HLA-DRB8", "HLA-DRB9",
-              "HLA-DQA1", "HLA-DQB1", "HLA-DQA2",
-              "HLA-DQB2", "HLA-DQB3", "HLA-DOA",
-              "HLA-DMA", "HLA-DMB", "HLA-DPA1", "HLA-DPB1",
-              "HLA-DPA2", "HLA-DPB2", "HLA-DPA3",
-              "HFE", "TAP1", "TAP2", "PSMB9", "PSMB8",
-              "MICA", "MICB", "MICC", "MICD", "MICE")
-
-results = ref[match(hla_genes, ref$hgnc_symbol), ]
-
-genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
-results = results[match(genes, results$ensembl_gene_id), ]
-
-scores = newscores = matrix(0, length(genes), ncol(Y)-1)
-coef = cubic_coeff_c(X$A, qchisq(1-0.05/ncol(Y), 1), 2, 2)
-for (i in 1:length(genes)){
-  ind = which(colnames(Y) == results$ensembl_gene_id[i])
-  W = store_W_c(Y[,ind], Y[, -ind])
-  scores[i,] = get_score_W_c(X$A, W)
-  for (j in 1:ncol(scores)){
-    roots = polyroot(c(-scores[i,j], coef))
-    newscores[i,j] = Re(roots)[abs(Im(roots)) < 1e-6]
-  }
-}
-```
-
-And the result is plotted below, where the red line is the expected mean. HLA-DQA1 stands out in its test statistic.
-
-```{r}
-par(mfrow = c(1,2))
-d = rowSums(newscores)
-df = data.frame(d = d, genes = results$hgnc_symbol, xaxis = 1:length(d))
-plot(d, 
-     ylab = 'd', 
-     main = 'HLA-genes',
-     xlim = c(0,45),
-     ylim = c(0, max(d) + 100))
-abline(h=25190, col='red')
-ind = which(d > 2*ncol(Y))
-df = df[ind, ]
-with(df, text(d ~ xaxis, labels = genes, pos = 4))
-
-ref_chisq = qchisq(seq(0,1,length=length(newscores[1,])), 1)
-ind = which(results$hgnc_symbol == "PSMB8")
-qqplot(ref_chisq, newscores[ind,],  main = 'PSMB8 scores', ylab='scores'); abline(0,1,col = 'red')
-```
-
-
-
-## (c) Transcription Factors
-
-### (i) Read TF data
-
-Since transcription factors usually regulate the transcription of multiple genes, we thought they were appropriate targets to study their variance in activity across different ancestry. 
-
-```{r}
+```{r readTF, echo = TRUE}
 TF = fread("data/not_build/TFcheckpoint.txt", header=TRUE)
 TF = setDF(TF)
 TF = TF[TF$TFClass_human == "TFclass", ]
 TF = TF[,1]
 TF_results = ref[match(TF, ref$hgnc), ]
 genes = colnames(Y)[which(colnames(Y) %in% TF_results$ensembl_gene_id)]
+numTFs = length(genes)
 TF_results = TF_results[match(genes, TF_results$ensembl_gene_id), ]
 ```
 
+## (b) Test all TFs against the rest of the genes
 
-### (ii) test all the TFs
+For each transcription factor, we calculate its score statistics against all other genes. Then we add up the scores for each transcription factor and see if any stands out.
 
-```{r}
+```{r get_scores_allTFs}
 scores = matrix(0, length(genes), ncol(Y)-1)
 for (i in 1:length(genes)){
   ind = which(colnames(Y) == TF_results$ensembl_gene_id[i])
   W = store_W_c(Y[,ind], Y[, -ind])
-  scores[i,] = get_score_W_c(X$A, W)
+  V = store_V_c(Y[,ind], Y[, -ind])
+  scores[i,] = get_score_W_c(X$A, W, V)
 }
+```
 
+## (c) plot the result
+
+The plot below shows that some transcription factors stand out from the rest with high score statistics. The red line shows the expected value based on $\chi^2$ statistics. The right plot shows the qq-plot of score statistics of the strongest signal "FOXD1" against the expected $\chi_1^2$ distribution. Note that all the score statistics are highly correlated to one another, so that the calibration is poor. 
+
+```{r plot_allTFs}
 par(mfrow = c(1,2))
 d = rowSums(scores)
 df = data.frame(d = d, genes = TF_results$hgnc_symbol, xaxis = 1:length(d))
 plot(d, 
-     ylab = 'd', 
      main = 'Transcription Factors',
      xlim = c(0, length(d)+100),
-     ylim = c(0, max(d) + 10000))
+     ylim = c(0, max(d) + 10000),
+     xlab = "",
+     ylab = "d test statistic")
 abline(h=25190, col='red')
-ind = which(d > ncol(Y) + 200 * sqrt(2*ncol(Y)))
+ind = which(d > ncol(Y) + 180 * sqrt(2*ncol(Y)))
 df = df[ind, ]
 with(df, text(d ~ xaxis, labels = genes, pos = 3))
 
 ref_chisq = qchisq(seq(0,1, length=ncol(Y)-1), 1)
 for (i in 1:length(genes)){
-    if(TF_results$hgnc_symbol[i] %in% c("PTCH1")){
+    if(TF_results$hgnc_symbol[i] %in% c("FOXD1")){
       qqplot(ref_chisq, scores[i, ], 
             main = paste(TF_results$hgnc_symbol[i], 'unadjusted'),
-            cex = 0.5)
+            cex = 0.5,
+            ylab = "observed distribution of score",
+            xlab = "expected distribution")
       abline(0,1,col = 'red')
   }
 }
@@ -296,130 +156,85 @@ for (i in 1:length(genes)){
 
 # 3. Investigating the top signals
 
-## (a) PSMB8
-
-### (i) Score test
-
-We re-cap what we have observed in HLA-DQA1 for the score tests.
-
-```{r, echo = FALSE}
-psmb_genes = "PSMB8"
-results = ref[match(psmb_genes, ref$hgnc), ]
-
-psmb_ind = which(colnames(Y) %in% results$ensembl_gene_id)
-smallY = Y[,-psmb_ind]
-s = news = rep(0, ncol(Y)-1)
-for (i in 1:(ncol(Y)-1)){
-  s[i] = get_score_c(X$A, Y[,psmb_ind], smallY[,i])
+```{r permtest_func, echo = FALSE}
+make_permtest = function(gene_name, Y, A){
+  results = ref[match(gene_name, ref$hgnc), ]
+  ind = which(colnames(Y) %in% results$ensembl_gene_id)
+  W = store_W_c(Y[,ind], Y[, -ind])
+  V = store_V_c(Y[,ind], Y[, -ind])
+  scores = get_score_W_c(A, W, V)
+  d = get_degree_c(A, Y[,ind], Y[,-ind])
+  out = bootstrap_c(A, B, W, V)
+  bootstrapped_d = rowSums(out)
+  p = sum(bootstrapped_d > d) / B
+  return(list(ind = ind, scores = scores, d = d, bootstrap = out, bootstrapped_d = bootstrapped_d, p = p))
 }
-plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1),
-     type = 'l',
-     main = 'pairwise scores',
-     xlab = 'reference chi1',
-     ylab = 'sorted scores'); 
-abline(0,1,col = 'red')
-```
 
-### (ii) Permutation test
-
-In order to verify if PSMB8 truly has a signal, we perform permutation test. The p-value is indeed very small.
-
-```{r}
-W = store_W_c(Y[,psmb_ind], Y[, -psmb_ind])
-psmb_scores = get_score_W_c(X$A, W)
-psmb_d = get_degree_c(X$A, Y[,psmb_ind], Y[,-psmb_ind])
-storeW = store_W_c(Y[,psmb_ind], Y[,-psmb_ind])
-out = bootstrap_c(X$A, B, storeW)
-bootstrapped_d = rowSums(out)
-psmb_p = sum(bootstrapped_d > psmb_d) / B
-hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), psmb_d))+20)
-abline(v=psmb_d, col = 'red')
-print(psmb_p)
-```
-
-
-## (b)PTCH1
-
-### (i) Score test
-
-```{r}
-ptch_gene = "PTCH1"
-results = ref[match(ptch_gene, ref$hgnc), ]
-
-ptch_ind = which(colnames(Y) %in% results$ensembl_gene_id)
-smallY = Y[,-ptch_ind]
-s = news = rep(0, ncol(Y)-1)
-for (i in 1:(ncol(Y)-1)){
-  s[i] = get_score_c(X$A, Y[,ptch_ind], smallY[,i])
-}
-plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1), type = 'l'); abline(0,1,col = 'red', main = 'adjusted')
-```
-
-### (ii) Permutation test
-
-We conduct the permutation test to see if the signal is real.
-
-```{r}
-ptch_ind = which(colnames(Y) %in% ref[ref$hgnc_symbol=="PTCH1", 1])
-W = store_W_c(Y[,ptch_ind], Y[, -ptch_ind])
-ptch_scores = get_score_W_c(X$A, W)
-ptch_d = get_degree_c(X$A, Y[,ptch_ind], Y[,-ptch_ind])
-storeW = store_W_c(Y[,ptch_ind], Y[,-ptch_ind])
-out = bootstrap_c(X$A, B, storeW)
-bootstrapped_d = rowSums(out)
-ptch_p = sum(bootstrapped_d > ptch_d) / B
-par(mfrow = c(1,1))
-hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), ptch_d))+100)
-abline(v=ptch_d, col = 'red')
-print(ptch_p)
-# par(mfrow = c(2,3))
-# for (i in 1:12){
-#   qqplot(ref_chisq, out[i, ], cex = 0.5, type = 'l', ylab = 'permuted score')
-#   abline(0,1,col = 'red')
-# }
-```
-
-### (iii) Original expression
-
-We inspect the raw data to see any patterns between Afircan Americans and European Americans.
-
-```{r}
-ptch_exp = as.matrix(orig[,ptch_ind])
-```
-
-
-### (iv) Genes with the highest scores for PTCH1
-
-We make some diagnosis plot to observe what is driving the signal. 
-
-```{r}
-max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
-results = ref[match(colnames(Y[,-ptch_ind])[max_scores$ix[1:5]], ref$ensembl_gene_id), ]
-results = results[match(results$ensembl_gene_id, colnames(Y[,-ptch_ind])[max_scores$ix[1:5]]), ]
-top_genes = data.frame(gene_name = results$hgnc_symbol, score = max_scores$x[1:5],
+diagnosis_plot = function(permtest, genename, orig, Y, A){
+  max_scores = sort(permtest$scores, decreasing=TRUE, index.return=TRUE)
+  results = ref[match(colnames(Y[,-permtest$ind])[max_scores$ix[1:5]], ref$ensembl_gene_id), ]
+  top_genes = data.frame(gene_name = results$hgnc_symbol, score = max_scores$x[1:5],
                 ensembl = results$ensembl_gene_id)
-
-print(top_genes)
+  gene1 = top_genes$gene_name[1]
+  gene2 = top_genes$gene_name[2]
+  par(mfrow = c(1,2))
+  plot(orig[, permtest$ind] * orig[, -permtest$ind][, max_scores$ix[1]] ~ A,
+     ylab = paste0(genename," * ",gene1), xlab='Ancestry',
+     main = paste0("top signals of ", genename))
+  plot(orig[, permtest$ind] * orig[, -permtest$ind][, max_scores$ix[2]] ~ A,
+     ylab = paste0(genename," * ",gene2), xlab='Ancestry')
+}
 ```
 
-```{r}
+We take the top 3 transcription factors and perform permutation test to make inference about their degree statistics. 
+
+## (a) FOXD1 permutation test & top signals
+
+In order to verify if FOXD1 truly has a signal, we perform permutation test. Note that the highest test statistic does not mean the lowest p-value. Since the null distribution of high-dimensional case is not defined in closed form, we need to perform the permutation test to make inference. The p-value is indeed very small. We also look at top 2 target genes whose co-expression with FOXD1 varies strongly with respect to ancestry. We plot the product of the expression levels of the pair, which is intended to show the estimate of correlation at a given ancestry level. For these selected gene pairs, they seem to be highly co-expressed for Africans and lowly co-expressed for Europeans.
+
+```{r foxd_perm}
+foxd1 = make_permtest("FOXD1", Y = Y, A = X$A)
 par(mfrow = c(1,2))
-plot(orig[, ptch_ind] + orig[,-ptch_ind][, max_scores$ix[1]] ~
-       X$A,
-     main = 'African Americans',
-     xlab = 'Ancestry',
-     ylab = 'PTCH1 + PRDM5')
-plot(orig[, ptch_ind] + orig[,-ptch_ind][, max_scores$ix[2]] ~
-       X$A,
-     main = 'African Americans',
-     xlab = 'Ancestry',
-     ylab = 'PTCH1 + C1QTNF9B')
+hist(foxd1$bootstrapped_d, 50, xlim = c(10000, max(max(foxd1$bootstrapped_d), d))+20,
+     main = paste0("p value=", foxd1$p), xlab = "Null distribution of d")
+abline(v=foxd1$d, col = 'red')
+par(mfrow = c(1,2))
+diagnosis_plot(foxd1, "FOXD1", orig = orig, Y = Y, A = orig_A)
 ```
 
+## (b) NCOR2 permutation test and top signals
 
-# 3. Remove samples with ancestry less than 0.5
+We repeat the same analysis for the second strongest signal NCOR2.
 
-```{r}
+```{r ncor_perm_first}
+ncor = make_permtest("NCOR2", Y = Y, A = X$A)
+par(mfrow = c(1,2))
+hist(ncor$bootstrapped_d, 50, xlim = c(10000, max(max(ncor$bootstrapped_d), ncor$d))+20,
+     main = paste0("p value=", ncor$p), xlab = "Null distribution of d")
+abline(v = ncor$d, col = 'red')
+par(mfrow = c(1,2))
+diagnosis_plot(ncor, "NCOR2", orig = orig, Y = Y, A = orig_A)
+```
+
+## (c) ZEB2 permutation test and top signals
+
+We repeat the same analysis for the second strongest signal ZEB2. 
+
+```{r ncor_perm}
+ncor = make_permtest("ZEB2", Y = Y, A = X$A)
+par(mfrow = c(1,2))
+hist(ncor$bootstrapped_d, 50, xlim = c(10000, max(max(ncor$bootstrapped_d), ncor$d))+20,
+     main = paste0("p value=", ncor$p), xlab = "Null distribution of d")
+abline(v = ncor$d, col = 'red')
+par(mfrow = c(1,2))
+diagnosis_plot(ncor, "ZEB2", orig = orig, Y = Y, A = orig_A)
+```
+
+# 4. Remove outliers (samples with ancestry less than 0.6)
+
+We suspect that the outliers with low global ancestry could be driving most of the signals. So we repeat the same analysis after we remove the samples with global ancestry less than 0.6.
+
+```{r remove_outliers}
 plot(orig_A, ylab = 'global ancestry', xlab="", xaxt='n')
 ind = which(orig_A <= 0.6)
 points(ind, orig_A[ind], col = 'red')
@@ -434,12 +249,13 @@ newY = scale(newY) * sqrt(length(newX$A)) / sqrt(length(newX$A)-1)
 
 ## (a) Re-run the transcription factors
 
-```{r}
+```{r tf_no_outliers}
 scores = matrix(0, length(genes), ncol(newY)-1)
 for (i in 1:length(genes)){
   ind = which(colnames(newY) == TF_results$ensembl_gene_id[i])
   W = store_W_c(newY[,ind], newY[, -ind])
-  scores[i,] = get_score_W_c(newX$A, W)
+  V = store_V_c(newY[,ind], newY[, -ind])
+  scores[i,] = get_score_W_c(newX$A, W, V)
 }
 
 par(mfrow = c(1,2))
@@ -466,84 +282,125 @@ qqplot(ref_chisq, scores[ind,],
 abline(0,1,col = 'red')
 ```
 
-## (b) TEAD3
+## (b) Top signal: TWIST1
 
-### (i) Score test
+### (i) Permutation Test
 
-```{r}
-gene = "TEAD3"
-results = ref[match(gene, ref$hgnc_symbol), ]
+```{r twist_perm}
+twist = make_permtest("TWIST1", Y = newY, A = newX$A)
+par(mfrow = c(1,2))
+hist(twist$bootstrapped_d, 50, xlim = c(min(twist$bootstrapped_d)-100, max(max(twist$bootstrapped_d), twist$d)),
+     main = paste0("p-value = ", twist$p))
+abline(v = twist$d, col = 'red')
+par(mfrow = c(1,2))
+diagnosis_plot(twist, "TWIST1", orig = orig[-remove, ], Y = newY, A = newX$A)
+```
 
-tead_ind = which(colnames(newY) %in% c(results$ensembl_gene_id))
-newsmallY = newY[,-tead_ind]
-s = news = rep(0, ncol(Y)-1)
-for (i in 1:(ncol(Y)-1)){
-  s[i] = get_score_c(newX$A, newY[,tead_ind], newsmallY[,i])
+# 5. Targeted analysis of transcription factors
+
+## (a) Test all TFs against target genes
+
+The database of TF2DNA that shows the target genes for each transcription factor. We study the 1306 transcription factors introduced in this data set. Instead of measuring the co-expression against all the other genes, we only look at teh score statistics against the target genes with top binding scores. 
+
+```{r targeted_Tf}
+library(data.table)
+TFs = list.files("/Volumes/tae/Work/network/diffNet/data/pscan_files/Homo-sapiens_theoretical_TF2DNA/")
+TFs = sapply(strsplit(TFs, ".pscan"), function(x) x[[1]])
+results = ref[match(TFs, ref$hgnc_symbol), ]
+results = results[!is.na(results$hgnc_symbol), ]
+out = data.frame(TF = results$hgnc_symbol, 
+                 numTargets = rep(NA, nrow(results)),
+                 degree = rep(NA, nrow(results)))
+```
+
+For each transcription factor, we need to read in the target data, which can take very long due to a high number of file IO. 
+
+```{r targeted_TF_long}
+for (i in 1:length(results$hgnc_symbol)){
+  targets = fread(paste0("/Volumes/tae/Work/network/diffNet/data/pscan_files/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
+  targets = targets[which(targets$p_value == min(targets$p_value)), c(1,2,6,7)]
+  target_genenames = ref[match(targets$target_name, ref$hgnc_symbol), ]
+  main_ind = which(colnames(Y) == results$ensembl_gene_id[i])
+  target_ind = match(target_genenames$ensembl_gene_id, colnames(Y))
+  target_ind = target_ind[!is.na(target_ind)]
+  target_ind = target_ind[target_ind != main_ind]
+  W = store_W_c(Y[,main_ind], Y[, target_ind])
+  V = store_V_c(Y[,main_ind], Y[, target_ind])
+  scores = get_score_W_c(X$A, W, V)
+  out$numTargets[i] = ncol(W)
+  out$degree[i] = sum(scores)
 }
-plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1), type = 'l', main = 'TEAD3')
-abline(0,1,col = 'red')
 ```
 
-### (ii) Permutation test
-
-We conduct the permutation test to see if the signal is real.
-
-```{r}
-tead_ind = which(colnames(newY) %in% TF_results[TF_results$hgnc_symbol=="TEAD3", 1])
-W = store_W_c(newY[,tead_ind], newY[, -tead_ind])
-tead_scores = get_score_W_c(newX$A, W)
-tead_d = get_degree_c(newX$A, newY[,tead_ind], newY[,-tead_ind])
-storeW = store_W_c(newY[,tead_ind], newY[,-tead_ind])
-out = bootstrap_c(newX$A, B, storeW)
-bootstrapped_d = rowSums(out)
-tead_p = sum(bootstrapped_d > tead_d) / B
-par(mfrow = c(1,1))
-hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), tead_d))+100)
-abline(v=tead_d, col = 'red')
-print(tead_p)
+```{r plot_targeted_Tf}
+d = out$degree / out$numTargets
+df = data.frame(d = d, 
+                genes = results$hgnc_symbol, 
+                xaxis = 1:length(d))
+plot(d,
+     main = 'Targeted TF',
+     ylab = 'averaged scores',
+     ylim = c(0, max(d) + 0.7),
+     xlab = length(d) + 25)
+abline(h=1, col = 'red')
+ind = which(d > 2.8)
+df = df[ind,]
+with(df, text(d~xaxis, labels=genes, pos=3))
 ```
 
-### (iii) Genes with the highest scores for TEAD3
 
-We make some diagnosis plot to observe what is driving the signal. 
+## (b) Top Signals
 
-```{r}
-max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
-results = ref[match(colnames(Y[,-tead_ind])[max_scores$ix[1:5]], ref$ensembl_gene_id), ]
-results = results[match(results$ensembl_gene_id, colnames(Y[,-tead_ind])[max_scores$ix[1:5]]), ]
-top_genes = data.frame(gene_name = results$hgnc_symbol, score = max_scores$x[1:5],
-                ensembl = results$ensembl_gene_id)
-print(top_genes)
+### (i) BATF analysis with permutation test
+
+```{r targetperm_function, echo = FALSE}
+make_target_permtest = function(genename){
+  i = which(results$hgnc_symbol==genename)
+  targets = fread(paste0("/Volumes/tae/Work/network/diffNet/data/pscan_files/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
+  targets = targets[which(targets$p_value == min(targets$p_value)), c(1,2,6,7)]
+  target_genenames = ref[match(targets$target_name, ref$hgnc_symbol), ]
+  main_ind = which(colnames(Y) == results$ensembl_gene_id[i])
+  target_ind = match(target_genenames$ensembl_gene_id, colnames(Y))
+  target_ind = target_ind[!is.na(target_ind)]
+  W = store_W_c(Y[,main_ind], Y[, target_ind])
+  V = store_V_c(Y[,main_ind], Y[, target_ind])
+  scores = get_score_W_c(X$A, W, V)
+
+  d = get_degree_c(X$A, Y[,main_ind], Y[,target_ind])
+  out = rowSums(bootstrap_c(X$A, B, W, V))
+  p = sum(out>d)/B
+  return(list(d = d, p = p, out = out))
+}
 ```
 
-### (iv) Top genes
 
-```{r}
-par(mfrow = c(1,2))
-max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
-plot(orig[-remove, tead_ind] + orig[-remove,-tead_ind][, max_scores$ix[1]] ~
-       orig_A[-remove],
-     xlab = 'Ancestry',
-     ylab = 'TEAD3 + STK32A-AS1')
-plot(orig[-remove, tead_ind] + orig[-remove,-tead_ind][, max_scores$ix[2]] ~
-       orig_A[-remove],
-     xlab = 'Ancestry',
-     ylab = "TEAD3 + DNAJC12")
+```{r batf, fig.width = 4, fig.height = 4}
+batf = make_target_permtest("BATF")
+hist(batf$out, 50, xlim = c(0, max(batf$d+10, max(batf$out))),
+     main = paste0("p value = ", batf$p),
+     xlab = "null distribution of d of BATF")
+abline(v=batf$d, col = 'red')
 ```
 
-```{r}
-par(mfrow = c(1,2))
-max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
-plot(orig[-remove, tead_ind] ~ orig_A[-remove], ylab = "TEAD3", xlab = "ancestry")
-plot(orig[-remove, -tead_ind][, max_scores$ix[1]] ~ orig_A[-remove],
-     ylab = "STK32A-AS1", xlab = "ancestry")
+### (ii) ZNF785 analysis with permutation test
 
-plot(orig[-remove, tead_ind] ~ orig_A[-remove], ylab = "TEAD3", xlab = "ancestry")
-plot(orig[-remove, -tead_ind][, max_scores$ix[2]] ~ orig_A[-remove],
-     ylab = "DNAJC12", xlab = "ancestry")
-
-plot(orig[-remove, tead_ind] * orig[-remove, -tead_ind][, max_scores$ix[1]] ~ orig_A[-remove],
-     ylab = "TEAD3 * STK32A-AS1", xlab='ancestry')
-plot(orig[-remove, tead_ind] * orig[-remove, -tead_ind][, max_scores$ix[2]] ~ orig_A[-remove],
-     ylab = "TEAD3 * DNAJC12", xlab='ancestry')
+```{r znf785, fig.width = 5, fig.height = 5}
+znf = make_target_permtest("ZNF785")
+hist(znf$out, 50, xlim = c(0, max(znf$d+10, max(znf$out))),
+     main = paste0("p value = ", znf$p),
+     xlab = "null distribution of d of ZNF785")
+abline(v=znf$d, col = 'red')
 ```
+
+### (iii) NCOR2 with targeted genes only
+
+```{r ncor_targets, fig.width = 4, fig.height = 4}
+ncor = make_target_permtest("NCOR2")
+hist(ncor$out, 50, xlim = c(0, max(ncor$d+10, max(ncor$out))),
+     main = paste0("p value = ", ncor$p),
+     xlab = "null distribution of d of NCOR2")
+abline(v=ncor$d, col = 'red')
+```
+
+
+We conducted different analyses with the same data sets, and found some overlapping signals that appeared across the different analyses such as NCOR2 and ZEB2. 

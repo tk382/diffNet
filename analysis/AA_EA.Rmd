@@ -1,8 +1,10 @@
 ---
-title: "AA vs EA"
+title: "Comparison of Co-expression Network between African Americans and European Americans"
 author: "Tae Kim"
-date: "3/23/2019"
-output: html_document
+date: "7/9/2019"
+output:
+  workflowr::wflow_html:
+    toc: false
 ---
 
 ```{r setup, include=FALSE, fig.width = 5, fig.width = 5, fig.aligh="center"}
@@ -16,7 +18,8 @@ library(nleqslv)
 library(ggplot2)
 library(KEGGREST)
 library(biomaRt)
-library(diffNet)
+source("R/utilities_wv.R")
+Rcpp::sourceCpp("src/utilities.cpp")
 hgnc = setDF(fread("data/not_build/hgnc_ensembl.txt"))
 hgnc = hgnc[hgnc$`Ensembl gene ID` != "", ]
 ```
@@ -67,11 +70,11 @@ Y = scale(Y) * sqrt(length(X$A)) / sqrt(length(X$A)-1)
 ```
 
 
-```{r}
+```{r refchi}
 ref_chisq = qchisq(seq(0,1, length=ncol(Y)-1), 1)
 ```
 
-```{r}
+```{r B}
 B = 5000
 ```
 
@@ -79,7 +82,7 @@ B = 5000
 
 https://www.genenames.org/download/custom/
 
-```{r}
+```{r hgnc}
 hgnc_names = hgnc[match(colnames(Y), hgnc$`Ensembl gene ID`), "Approved symbol"]
 ref = data.frame(ensembl_gene_id = colnames(Y), hgnc_symbol = hgnc_names)
 ref$ensembl_gene_id = as.character(ref$ensembl_gene_id)
@@ -87,193 +90,49 @@ ref$hgnc_symbol = as.character(ref$hgnc_symbol)
 ```
 
 
-# 2. Gene selection
+# 2. Transcription Factors against all other genes
 
-In order to avoid extensive multiple testing, we use prior information in biology. 
+Since transcription factors usually regulate the transcription of multiple genes, we believe they are appropriate targets to study their variance in activity across different ancestry. 
 
-## (a) KEGG pathway
+## (a) read TF data
 
-We believe the disease pathways may reflect the gene-gene correlation structure or gene modules, so we choose three pathways that are related to either skin tissue or immunity - melonoma, asthma, and autoimmune disease. 
-
-For each pathway, we take a group of $K$ genes and for each $k$ in $1, \cdots, K$, we compute $d_k$ and compare it to the empirical distribution by permuting the ancestry. Then we show qqplot of the p values against the uniform distribution after transformation $-log_{10}(p)$.
-
-```{r, fig.width=8, fig.height = 4}
-get_result_kegg = function(hsacode, B){
-  out = keggGet(hsacode)
-  out = out[[1]]
-  genes = sapply(strsplit(out$GENE, ";"), function(x) x[1])
-  genes = genes[seq(2,144,by=2)]
-  results = ref[match(genes, ref$hgnc_symbol), ]
-  genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
-  results = results[match(genes, results$ensembl_gene_id), ]
-  R = Y[,genes]
-  d = rep(0, ncol(R))
-  p = rep(0, ncol(R))
-  for (i in 1:ncol(R)){
-    d[i] = get_degree_c(X$A, R[,i], R[,-i])
-    storeW = store_W_c(R[,i], R[,-i])
-    out = rowSums(bootstrap_c(X$A, B, storeW))
-    p[i] = sum(out > d[i]) / B
-  }
-  return(list(p = p, d = d, genes = results))
-}
-
-out = get_result_kegg("hsa05218", B) #melanoma disease
-par(mfrow = c(1,2))
-qqplot(-log(seq(0,1,length.out = length(out$p))), -log(out$p),
-     xlab = '-log uniform',
-     ylab = '-log p',
-     main = "melanoma")
-abline(0,1,col = 'red')
-
-df = data.frame(p = -log(out$p), genes = out$genes$hgnc_symbol, ind = 1:length(out$p))
-plot(-log(out$p), 
-     ylab = '-log p', 
-     main = '-log(p) values',
-     xlim = c(0, length(out$p)+10))
-ind = which(df$p > 3)
-df = df[ind, ]
-with(df, text(p ~ ind, labels = genes, pos = 4))
-
-out = get_result_kegg("hsa05310", B) #asthma
-par(mfrow = c(1,2))
-qqplot(-log(seq(0,1,length.out = length(out$p))), -log(out$p),
-     xlab = '-log uniform',
-     ylab = '-log p',
-     main = "asthma")
-abline(0,1,col = 'red')
-
-df = data.frame(p = -log(out$p), genes = out$genes$hgnc_symbol, ind = 1:length(out$p))
-plot(-log(out$p), 
-     ylab = '-log p', 
-     main = '-log(p) values',
-     xlim = c(0, length(out$p)+10))
-ind = which(df$p > 3)
-df = df[ind, ]
-with(df, text(p ~ ind, labels = genes, pos = 4))
-
-
-out = get_result_kegg("hsa05320", B) #autoimmune
-par(mfrow = c(1,2))
-qqplot(-log(seq(0,1,length.out = length(out$p))), -log(out$p),
-     xlab = '-log uniform',
-     ylab = '-log p',
-     main = "auto immune")
-abline(0,1,col = 'red')
-
-df = data.frame(p = -log(out$p), genes = out$genes$hgnc_symbol, ind = 1:length(out$p))
-plot(-log(out$p), 
-     ylab = '-log p', 
-     main = '-log(p) values',
-     xlim = c(0, length(out$p)+10))
-ind = which(df$p > 3)
-df = df[ind, ]
-with(df, text(p ~ ind, labels = genes, pos = 4))
-```
-
-\pagebreak
-
-## (b) HLA genes
-
-We know that HLA genes are connected to many other genes and play critical role in regulating the gene transcription. We obtain the list of HLA genes and compute $d_1$ by adding up pair-wise test statistics across the entire genome. 
-
-```{r}
-hla_genes = c("HLA-A", "HLA-B", "HLA-C", "HLA-E", 
-              "HLA-F", "HLA-G", "HLA-H", "HLA-J", 
-              "HLA-K", "HLA-L", "HLA-N", "HLA-P", 
-              "HLA-S", "HLA-T", "HLA-U", "HLA-V", 
-              "HLA-W", "HLA-X", "HLA-Y", "HLA-Z",
-              "HLA-DRA", "HLA-DRB2", "HLA-DRB3",
-              "HLA-DRB4", "HLA-DRB5", "HLA-DRB6",
-              "HLA-DRB7", "HLA-DRB8", "HLA-DRB9",
-              "HLA-DQA1", "HLA-DQB1", "HLA-DQA2",
-              "HLA-DQB2", "HLA-DQB3", "HLA-DOA",
-              "HLA-DMA", "HLA-DMB", "HLA-DPA1", "HLA-DPB1",
-              "HLA-DPA2", "HLA-DPB2", "HLA-DPA3",
-              "HFE", "TAP1", "TAP2", "PSMB9", "PSMB8",
-              "MICA", "MICB", "MICC", "MICD", "MICE")
-
-results = ref[match(hla_genes, ref$hgnc_symbol), ]
-
-genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
-results = results[match(genes, results$ensembl_gene_id), ]
-
-scores = newscores = matrix(0, length(genes), ncol(Y)-1)
-coef = cubic_coeff_c(X$A, qchisq(1-0.05/ncol(Y), 1), 2, 2)
-for (i in 1:length(genes)){
-  ind = which(colnames(Y) == results$ensembl_gene_id[i])
-  W = store_W_c(Y[,ind], Y[, -ind])
-  scores[i,] = get_score_W_c(X$A, W)
-  for (j in 1:ncol(scores)){
-    roots = polyroot(c(-scores[i,j], coef))
-    newscores[i,j] = Re(roots)[abs(Im(roots)) < 1e-6]
-  }
-}
-```
-
-And the result is plotted below, where the red line is the expected mean. HLA-DQA1 stands out in its test statistic.
-
-```{r, fig.width=8, fig.height=4}
-par(mfrow = c(1,2))
-d = rowSums(newscores)
-df = data.frame(d = d, genes = results$hgnc_symbol, xaxis = 1:length(d))
-plot(d, 
-     ylab = 'd', 
-     main = 'HLA-genes',
-     xlim = c(0,45),
-     ylim = c(0, max(d) + 100))
-abline(h=25190, col='red')
-ind = which(d > 2*ncol(Y))
-df = df[ind, ]
-with(df, text(d ~ xaxis, labels = genes, pos = 4))
-
-ref_chisq = qchisq(seq(0,1,length=length(newscores[1,])), 1)
-ind = which(results$hgnc_symbol == "HLA-DQA1")
-qqplot(ref_chisq, newscores[ind,],  main = 'HLA-DQA1 scores', ylab='scores'); abline(0,1,col = 'red')
-```
-
-## (c) Transcription Factors
-
-### (i) read TF data
-
-Since transcription factors usually regulate the transcription of multiple genes, we thought they were appropriate targets to study their variance in activity across different ancestry. 
-
-```{r}
+```{r tf}
 TF = fread("data/not_build/TFcheckpoint.txt", header=TRUE)
 TF = setDF(TF)
 TF = TF[TF$TFClass_human == "TFclass", ] #newly added!
 TF = TF[,1]
 results = ref[match(TF, ref$hgnc_symbol), ]
-
 genes = colnames(Y)[which(colnames(Y) %in% results$ensembl_gene_id)]
 results = results[match(genes, results$ensembl_gene_id), ]
 ```
 
+## (b) test all the TFs
 
-### (ii) test all the TFs
-
-```{r, fig.width=8, fig.height=4}
-par(mfrow = c(1,2))
+```{r tf2, fig.width=8, fig.height=4}
 scores = matrix(0, length(genes), ncol(Y)-1)
 for (i in 1:length(genes)){
   ind = which(colnames(Y) == results$ensembl_gene_id[i])
   W = store_W_c(Y[,ind], Y[, -ind])
-  scores[i,] = get_score_W_c(X$A, W)
+  V = store_V_c(Y[,ind], Y[, -ind])
+  scores[i,] = get_score_W_c(X$A, W, V)
 }
+```
 
+```{r tf3}
+par(mfrow = c(1,2))
 d = rowSums(scores)
 df = data.frame(d = d, genes = results$hgnc_symbol, xaxis = 1:length(d))
 plot(d, 
      ylab = 'd', 
      main = 'Transcription Factors')
 abline(h=25190, col='red')
-ind = which(d > ncol(Y) + 200 * sqrt(2*ncol(Y)))
+ind = which(d > ncol(Y) + 150 * sqrt(2*ncol(Y)))
 df = df[ind, ]
 with(df, text(d ~ xaxis, labels = genes, pos = 4))
 
 ref_chisq = qchisq(seq(0,1, length=ncol(Y)-1), 1)
 for (i in 1:length(genes)){
-    if(results$hgnc_symbol[i] %in% c("FOXM1")){
+    if(results$hgnc_symbol[i] %in% c("ZNF528")){
       qqplot(ref_chisq, scores[i, ], 
             main = paste(results$hgnc_symbol[i], 'unadjusted'),
             cex = 0.5)
@@ -282,162 +141,27 @@ for (i in 1:length(genes)){
 }
 ```
 
-\pagebreak
 
+# 3. Investigating the top signals: ZNF528
 
-
-# 3. Investigating the top signals
-
-## (a) HLA-DQA1
-
-### (i) Score test
-
-We re-cap what we have observed in HLA-DQA1 for the score tests.
-
+## (a) Permutation Test 
 ```{r}
-hla_genes = "HLA-DQA1"
-results = ref[match(hla_genes, ref$hgnc_symbol), ]
-
-dqa_ind = which(colnames(Y) %in% c(results$ensembl_gene_id))
-smallY = Y[,-dqa_ind]
-s = news = rep(0, ncol(Y)-1)
-for (i in 1:(ncol(Y)-1)){
-  s[i] = get_score_c(X$A, Y[,dqa_ind], smallY[,i])
-}
-plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1),
-     type = 'l',
-     main = 'pairwise scores',
-     xlab = 'reference chi1',
-     ylab = 'sorted scores'); 
-abline(0,1,col = 'red')
-```
-
-### (ii) Permutation test
-
-In order to verify if HLA-DQA truly has a signal, we perform permutation test. The p-value is indeed very small.
-
-```{r}
-W = store_W_c(Y[,dqa_ind], Y[, -dqa_ind])
-dqa_scores = get_score_W_c(X$A, W)
-dqa_d = get_degree_c(X$A, Y[,dqa_ind], Y[,-dqa_ind])
-# shuffled_A = shuffle_x_c(X$A, B)
-storeW = store_W_c(Y[,dqa_ind], Y[,-dqa_ind])
-out = bootstrap_c(X$A, B, storeW)
-bootstrapped_d = rowSums(out)
-dqa_p = sum(bootstrapped_d > dqa_d) / B
-hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), dqa_d))+20)
-abline(v=dqa_d, col = 'red')
-print(dqa_p)
-# par(mfrow = c(2,3))
-# for (i in 1:12){
-#   qqplot(ref_chisq, out[i, ], cex = 0.5, type = 'l', ylab = 'permuted score')
-#   abline(0,1,col = 'red')
-# }
-```
-
-
-### (iii) Genes with the highest scores
-
-We make some diagnosis plot to observe what is driving the signal. 
-
-```{r}
-max_scores = sort(s, decreasing=TRUE, index.return=TRUE)
-results = ref[match(colnames(Y[,-dqa_ind])[max_scores$ix[1:10]], ref$ensembl_gene_id), ]
-results = results[match(results$ensembl_gene_id, colnames(Y[,-dqa_ind])[max_scores$ix[1:10]]), ]
-top_genes = data.frame(gene_name = results$hgnc_symbol, score = max_scores$x[1:10],
-                ensembl = results$ensembl_gene_id)
-# print(top_genes)
-AA_ind = which(orig_A > 0)
-EA_ind = which(orig_A == 0)
-diff_cor = data.frame(genes = top_genes$gene_name,
-                      AA = as.numeric(cor(orig[AA_ind,dqa_ind], 
-                                          (orig[AA_ind,-dqa_ind])[, max_scores$ix[1:10]])),
-                      EA = as.numeric(cor(orig[EA_ind,dqa_ind], 
-                                          (orig[EA_ind,-dqa_ind])[, max_scores$ix[1:10]])))
-print(cbind(top_genes, diff_cor[,2:3]))
-```
-
-### (iv) The expression level of HLA-DQA1's top signal LRBA
-
-```{r, fig.width=8, fig.height=4}
-AA_ind = which(orig_A > 0)
-EA_ind = which(orig_A == 0)
-diff_cor = data.frame(genes = top_genes$gene_name,
-                      AA = as.numeric(cor(orig[AA_ind,dqa_ind], 
-                                          (orig[AA_ind,-dqa_ind])[, max_scores$ix[1:10]])),
-                      EA = as.numeric(cor(orig[EA_ind,dqa_ind], 
-                                          (orig[EA_ind,-dqa_ind])[, max_scores$ix[1:10]])))
-print(diff_cor)
-
-par(mfrow = c(1,2))
-plot(orig[AA_ind, dqa_ind] ~ orig[AA_ind,-dqa_ind][, max_scores$ix[1]],
-     main = 'African Americans',
-     xlab = 'LRBA',
-     ylab = 'HLA-DQA1')
-plot(orig[EA_ind, dqa_ind] ~ orig[EA_ind,-dqa_ind][, max_scores$ix[1]],
-     main = 'European Americans',
-     xlab = 'LRBA',
-     ylab = 'HLA-DQA1')
-```
-
-### (v) Box Plot
-
-```{r}
-AA_ind = which(orig_A > 0)
-EA_ind = which(orig_A == 0)
-dqa_exp = as.matrix(orig[,dqa_ind])
-dqa_exp_aa = dqa_exp[AA_ind]
-dqa_exp_ea = dqa_exp[EA_ind]
-
-df = data.frame(exp = dqa_exp, label = c(rep("African_Amsericans", length(AA_ind)),rep("European_Americans", length(EA_ind))))
-
-boxplot(exp ~ label, data = df, lwd = 2, main = "distribution of expression of HLA-DQA1")
-stripchart(exp ~ label, vertical = TRUE, data = df, 
-    method = "jitter", add = TRUE, pch = 4, col = 'blue', cex=0.5)
-```
-
-
-\pagebreak 
-
-## (b) FOXM1
-
-### (i) Score test
-
-```{r}
-gene = "FOXM1"
+gene = "ZNF528"
 results = ref[match(gene, ref$hgnc_symbol), ]
-
-fox_ind = which(colnames(Y) %in% c(results$ensembl_gene_id))
-smallY = Y[,-fox_ind]
-s = news = rep(0, ncol(Y)-1)
-for (i in 1:(ncol(Y)-1)){
-  s[i] = get_score_c(X$A, Y[,fox_ind], smallY[,i])
-}
-plot(sort(s) ~ qchisq(seq(0,1,length=ncol(Y)-1), 1), type = 'l'); abline(0,1,col = 'red', main = 'adjusted')
-```
-
-### (ii) Permutation test
-
-We conduct the permutation test to see if the signal is real.
-
-```{r}
-fox_ind = which(colnames(Y) %in% results[results$hgnc_symbol=="FOXM1", 1])
-W = store_W_c(Y[,fox_ind], Y[, -fox_ind])
-fox_scores = get_score_W_c(X$A, W)
-fox_d = get_degree_c(X$A, Y[,fox_ind], Y[,-fox_ind])
+znf_ind = which(colnames(Y) %in% results[results$hgnc_symbol=="ZNF528", 1])
+W = store_W_c(Y[,znf_ind], Y[, -znf_ind])
+V = store_V_c(Y[,znf_ind], Y[, -znf_ind])
+znf_scores = get_score_W_c(X$A, W, V)
+znf_d = get_degree_c(X$A, Y[,znf_ind], Y[,-znf_ind])
 shuffled_A = shuffle_x_c(X$A, B)
-storeW = store_W_c(Y[,fox_ind], Y[,-fox_ind])
-out = bootstrap_c(X$A, B, storeW)
+out = bootstrap_c(X$A, B, W, V)
 bootstrapped_d = rowSums(out)
-fox_p = sum(bootstrapped_d > fox_d) / B
-hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), fox_d))+100)
-abline(v=fox_d, col = 'red')
-print(fox_p)
-# par(mfrow = c(2,3))
-# for (i in 1:12){
-#   qqplot(ref_chisq, out[i, ], cex = 0.5, type = 'l', ylab = 'permuted score')
-#   abline(0,1,col = 'red')
-# }
+znf_p = sum(bootstrapped_d > znf_d) / B
+par(mfrow = c(1,2))
+hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), znf_d))+100,
+     main = paste0("p-value = ", znf_p))
+abline(v=znf_d, col = 'red')
+
 ```
 
 ### (iii) Box plot
@@ -447,37 +171,29 @@ We inspect the raw data to see any patterns between Afircan Americans and Europe
 ```{r}
 AA_ind = which(orig_A > 0)
 EA_ind = which(orig_A <= 0)
-fox_exp = as.matrix(orig[,fox_ind])
-fox_exp_aa = fox_exp[AA_ind]
-fox_exp_ea = fox_exp[EA_ind]
+znf_exp = as.matrix(orig[,znf_ind])
+znf_exp_aa = znf_exp[AA_ind]
+znf_exp_ea = znf_exp[EA_ind]
 
-df = data.frame(exp = fox_exp, label = c(rep("African Americans", length(AA_ind)),rep("European Americans", length(EA_ind))))
+df = data.frame(exp = znf_exp, label = c(rep("African Americans", length(AA_ind)),rep("European Americans", length(EA_ind))))
 
-boxplot(exp ~ label, data = df, lwd = 2, main = "distribution of expression of FOXM1")
+boxplot(exp ~ label, data = df, lwd = 2, main = "distribution of expression of ZNF528")
 stripchart(exp ~ label, vertical = TRUE, data = df, 
     method = "jitter", add = TRUE, pch = 4, col = 'blue', cex=0.5)
-
 ```
 
-## (c) Correlation of HLA-DQA1 and FOXM1 against all other genes
+## (c) Correlation of ZNF528 against all other genes
 
 ```{r, fig.width=8, fig.height=4}
-diff_cor_fox = data.frame(genes = colnames(orig)[-fox_ind],
-                      AA = as.numeric(cor(orig[AA_ind,fox_ind], 
-                                          (orig[AA_ind,-fox_ind]))),
-                      EA = as.numeric(cor(orig[EA_ind,fox_ind], 
-                                          (orig[EA_ind,-fox_ind]))))
-diff_cor_dqa = data.frame(genes = colnames(orig)[-dqa_ind],
-                      AA = as.numeric(cor(orig[AA_ind,dqa_ind], 
-                                          (orig[AA_ind,-dqa_ind]))),
-                      EA = as.numeric(cor(orig[EA_ind,dqa_ind], 
-                                          (orig[EA_ind,-dqa_ind]))))
-par(mfrow = c(1,2))
-plot(diff_cor_dqa$AA ~ diff_cor_dqa$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='HLA-DQA1',
-     ylab = 'African Americans',
-     xlab = 'European Americans'); abline(0,1,col = 'red')
+diff_cor_znf = data.frame(genes = colnames(orig)[-znf_ind],
+                      AA = as.numeric(cor(orig[AA_ind,znf_ind], 
+                                          (orig[AA_ind,-znf_ind]))),
+                      EA = as.numeric(cor(orig[EA_ind,znf_ind], 
+                                          (orig[EA_ind,-znf_ind]))))
 
-plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='FOXM1',
+par(mfrow = c(1,2))
+
+plot(diff_cor_znf$AA ~ diff_cor_znf$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='ZNF528',
      ylab = 'African Americans',
      xlab = 'European Americans'); abline(0,1,col = 'red')
 ```
@@ -488,61 +204,35 @@ plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1),
 ```{r, fig.width=8, fig.height=4}
 EA_subset = sample(EA_ind, size=31)
 
-diff_cor_fox = data.frame(genes = colnames(orig)[-fox_ind],
-                      AA = as.numeric(cor(orig[AA_ind,fox_ind], 
-                                          (orig[AA_ind,-fox_ind]))),
-                      EA = as.numeric(cor(orig[EA_subset,fox_ind], 
-                                          (orig[EA_subset,-fox_ind]))))
-diff_cor_dqa = data.frame(genes = colnames(orig)[-dqa_ind],
-                      AA = as.numeric(cor(orig[AA_ind,dqa_ind], 
-                                          (orig[AA_ind,-dqa_ind]))),
-                      EA = as.numeric(cor(orig[EA_subset,dqa_ind], 
-                                          (orig[EA_subset,-dqa_ind]))))
+diff_cor_znf = data.frame(genes = colnames(orig)[-znf_ind],
+                      AA = as.numeric(cor(orig[AA_ind,znf_ind], 
+                                          (orig[AA_ind,-znf_ind]))),
+                      EA = as.numeric(cor(orig[EA_subset,znf_ind], 
+                                          (orig[EA_subset,-znf_ind]))))
 par(mfrow = c(1,2))
-plot(diff_cor_dqa$AA ~ diff_cor_dqa$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='HLA-DQA1',
-     ylab = 'African Americans',
-     xlab = 'European Americans'); abline(0,1,col = 'red')
-
-plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='FOXM1',
+plot(diff_cor_znf$AA ~ diff_cor_znf$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='ZNF528',
      ylab = 'African Americans',
      xlab = 'European Americans'); abline(0,1,col = 'red')
 ```
 
 
-## (e) Repeat HLA-DQA1 with sampled Euopreans
+## (e) Repeat the permutation test with sampled Euopreans
 
 ```{r}
-W = store_W_c(Y[c(AA_ind, EA_subset),dqa_ind], Y[c(AA_ind, EA_subset), -dqa_ind])
-dqa_scores = get_score_W_c(X$A[c(AA_ind, EA_subset)], W)
-dqa_d = get_degree_c(X$A[c(AA_ind, EA_subset)], Y[c(AA_ind, EA_subset),dqa_ind], Y[c(AA_ind, EA_subset),-dqa_ind])
-storeW = store_W_c(Y[c(AA_ind, EA_subset),dqa_ind], Y[c(AA_ind, EA_subset),-dqa_ind])
-out = bootstrap_c(X$A[c(AA_ind, EA_subset)], B, storeW)
+W = store_W_c(Y[c(AA_ind, EA_subset),znf_ind], Y[c(AA_ind, EA_subset), -znf_ind])
+V = store_V_c(Y[c(AA_ind, EA_subset),znf_ind], Y[c(AA_ind, EA_subset), -znf_ind])
+znf_scores = get_score_W_c(X$A[c(AA_ind, EA_subset)], W, V)
+znf_d = get_degree_c(X$A[c(AA_ind, EA_subset)], Y[c(AA_ind, EA_subset),znf_ind], Y[c(AA_ind, EA_subset),-znf_ind])
+out = bootstrap_c(X$A[c(AA_ind, EA_subset)], B, W, V)
 bootstrapped_d = rowSums(out)
-dqa_p = sum(bootstrapped_d > dqa_d) / B
-hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), dqa_d))+20)
-abline(v=dqa_d, col = 'red')
-print(dqa_p)
+znf_p = sum(bootstrapped_d > znf_d) / B
+hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), znf_d))+20,
+     main = paste0("p-value = ", znf_p))
+abline(v=znf_d, col = 'red')
 ```
-
-## (f) Repeat FOX-M1 with sampled Euopreans
-
-```{r}
-W = store_W_c(Y[c(AA_ind, EA_subset),fox_ind], Y[c(AA_ind, EA_subset), -fox_ind])
-fox_scores = get_score_W_c(X$A[c(AA_ind, EA_subset)], W)
-fox_d = get_degree_c(X$A[c(AA_ind, EA_subset)], Y[c(AA_ind, EA_subset),fox_ind], Y[c(AA_ind, EA_subset),-fox_ind])
-storeW = store_W_c(Y[c(AA_ind, EA_subset),fox_ind], Y[c(AA_ind, EA_subset),-fox_ind])
-out = bootstrap_c(X$A[c(AA_ind, EA_subset)], B, storeW)
-bootstrapped_d = rowSums(out)
-fox_p = sum(bootstrapped_d > fox_d) / B
-hist(bootstrapped_d, 50, xlim = c(10000, max(max(bootstrapped_d), fox_d))+20)
-abline(v=fox_d, col = 'red')
-print(fox_p)
-```
-
 
 
 # 4. Targeted analysis of transcription factors
-
 
 ## (a) all TFs
 
@@ -550,7 +240,7 @@ We found the external data base of TF2DNA that shows the target genes for each t
 
 ```{r}
 library(data.table)
-TFs = list.files("/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/")
+TFs = list.files("/Volumes/tae/Work/network/diffNet/data/pscan_files/Homo-sapiens_theoretical_TF2DNA/")
 TFs = sapply(strsplit(TFs, ".pscan"), function(x) x[[1]])
 ```
 
@@ -564,20 +254,21 @@ out = data.frame(TF = results$hgnc_symbol,
 
 For each transcription factor, we need to read in the target data, which can take very long due to a high number of file IO. 
 
-```{r cache=TRUE}
+```{r}
 for (i in 1:length(results$hgnc_symbol)){
-  targets = fread(paste0("/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
+  targets = fread(paste0("/Volumes/tae/Work/network/diffNet/data/pscan_files/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
   targets = targets[which(targets$p_value == min(targets$p_value)), c(1,2,6,7)]
   target_genenames = ref[match(targets$target_name, ref$hgnc_symbol), ]
   main_ind = which(colnames(Y) == results$ensembl_gene_id[i])
   target_ind = match(target_genenames$ensembl_gene_id, colnames(Y))
   target_ind = target_ind[!is.na(target_ind)]
+  target_ind = target_ind[target_ind != main_ind]
   W = store_W_c(Y[,main_ind], Y[, target_ind])
-  scores = get_score_W_c(X$A, W)
+  V = store_V_c(Y[,main_ind], Y[, target_ind])
+  scores = get_score_W_c(X$A, W, V)
   out$numTargets[i] = ncol(W)
   out$degree[i] = sum(scores)
 }
-head(out)
 ```
 
 ```{r}
@@ -590,78 +281,109 @@ plot(d,
      ylab = 'averaged scores',
      ylim = c(0, max(d) + 1),
      xlab = length(d) + 25)
-abline(h=3, col = 'red')
-ind = which(d > 3)
+abline(h=1, col = 'red')
+ind = which(d > 2.5)
 df = df[ind,]
 with(df, text(d~xaxis, labels=genes, pos=3))
 ```
 
-## (b) FOXM1 analysis with target genes
+## (b) ZNF528 analysis with target genes
 
 ```{r, fig.width = 5, fig.height = 5}
-i = which(results$hgnc_symbol=="FOXM1")
-targets = fread(paste0("/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
+i = which(results$hgnc_symbol=="ZNF528")
+targets = fread(paste0("/Volumes/tae/Work/network/diffNet/data/pscan_files/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
 targets = targets[which(targets$p_value == min(targets$p_value)), c(1,2,6,7)]
 target_genenames = ref[match(targets$target_name, ref$hgnc_symbol), ]
 main_ind = which(colnames(Y) == results$ensembl_gene_id[i])
 target_ind = match(target_genenames$ensembl_gene_id, colnames(Y))
 target_ind = target_ind[!is.na(target_ind)]
 W = store_W_c(Y[,main_ind], Y[, target_ind])
-scores = get_score_W_c(X$A, W)
+V = store_V_c(Y[,main_ind], Y[, target_ind])
+scores = get_score_W_c(X$A, W, V)
 diff_cor_fox = data.frame(genes = colnames(orig)[target_ind],
-                      AA = as.numeric(cor(orig[AA_ind,fox_ind], 
+                      AA = as.numeric(cor(orig[AA_ind,main_ind], 
                                           (orig[AA_ind,target_ind]))),
-                      EA = as.numeric(cor(orig[-AA_ind,fox_ind], 
+                      EA = as.numeric(cor(orig[-AA_ind,main_ind], 
                                           (orig[-AA_ind,target_ind]))))
 
-plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='FOXM1',
+plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='ZNF528',
      ylab = 'African Americans',
      xlab = 'European Americans'); abline(0,1,col = 'red')
 ```
 
-## new permutation test for FOXM1
+## new permutation test for ZNF528
 
 ```{r}
-d = get_degree_c(X$A, Y[,fox_ind], Y[,target_ind])
-out = rowSums(bootstrap_c(X$A, B, W))
+d = get_degree_c(X$A, Y[,main_ind], Y[,target_ind])
+out = rowSums(bootstrap_c(X$A, B, W, V))
 p = sum(out>d)/B
 print(p)
-hist(out, 50, xlim = c(0, max(d+10, max(out))), main = "FOXM1 permutation test")
+hist(out, 50, xlim = c(0, max(d+10, max(out))), main = paste0("p-value = ", p))
 abline(v=d, col = 'red')
 ```
 
-## new gene ZSCAN3
+```{r}
+max_scores = sort(scores, decreasing=TRUE, index.return=TRUE)
+tmpresults = ref[match(colnames(Y[,target_ind])[max_scores$ix[1:5]], ref$ensembl_gene_id), ]
+top_genes = data.frame(gene_name = tmpresults$hgnc_symbol, score = max_scores$x[1:5],
+              ensembl = tmpresults$ensembl_gene_id)
+gene1 = top_genes$gene_name[1]
+gene2 = top_genes$gene_name[2]
+par(mfrow = c(1,2))
+plot(orig[, main_ind] * orig[, target_ind][, max_scores$ix[1]] ~ orig_A,
+   ylab = paste0("ZNF528"," * ",gene1), xlab='Ancestry',
+   main = paste0("top signals of ", "ZNF528"))
+plot(orig[, main_ind] * orig[, target_ind][, max_scores$ix[2]] ~ orig_A,
+ylab = paste0("ZNF528"," * ",gene2), xlab='Ancestry')
+```
+
+## new gene RREB1
 
 ```{r, fig.width = 5, fig.height = 5}
-i = which(results$hgnc_symbol=="ZSCAN30")
-targets = fread(paste0("/Volumes/nicolae-lab/users/tae/TF_targets/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
+i = which(results$hgnc_symbol=="RREB1")
+targets = fread(paste0("/Volumes/tae/Work/network/diffNet/data/pscan_files/Homo-sapiens_theoretical_TF2DNA/", results$hgnc_symbol[i], ".pscan"))
 targets = targets[which(targets$p_value == min(targets$p_value)), c(1,2,6,7)]
 target_genenames = ref[match(targets$target_name, ref$hgnc_symbol), ]
 main_ind = which(colnames(Y) == results$ensembl_gene_id[i])
 target_ind = match(target_genenames$ensembl_gene_id, colnames(Y))
 target_ind = target_ind[!is.na(target_ind)]
 W = store_W_c(Y[,main_ind], Y[, target_ind])
-scores = get_score_W_c(X$A, W)
+V = store_V_c(Y[,main_ind], Y[, target_ind])
+scores = get_score_W_c(X$A, W, V)
 diff_cor_fox = data.frame(genes = colnames(orig)[target_ind],
-                      AA = as.numeric(cor(orig[AA_ind,fox_ind], 
+                      AA = as.numeric(cor(orig[AA_ind,main_ind], 
                                           (orig[AA_ind,target_ind]))),
-                      EA = as.numeric(cor(orig[-AA_ind,fox_ind], 
+                      EA = as.numeric(cor(orig[-AA_ind,main_ind], 
                                           (orig[-AA_ind,target_ind]))))
 
-plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='ZSCAN30',
+plot(diff_cor_fox$AA ~ diff_cor_fox$EA, cex=0.3, ylim = c(-1,1), xlim = c(-1,1), main='RREB1',
      ylab = 'African Americans',
      xlab = 'European Americans'); abline(0,1,col = 'red')
 ```
 
 
 ```{r}
-zscan_ind = which(colnames(Y) %in% results[results$hgnc_symbol=="ZSCAN30", 1])
-d = get_degree_c(X$A, Y[,fox_ind], Y[,target_ind])
-out = rowSums(bootstrap_c(X$A, B, W))
+d = get_degree_c(X$A, Y[,main_ind], Y[,target_ind])
+out = rowSums(bootstrap_c(X$A, B, W, V))
 p = sum(out>d) / B
 print(p)
-hist(out, 50, xlim = c(0, max(d+10, max(out))), main = "ZSCAN30 permutation test")
+hist(out, 50, xlim = c(0, max(d+10, max(out))), main = paste0("p-value = ", p))
 abline(v=d, col = 'red')
+```
+
+```{r}
+max_scores = sort(scores, decreasing=TRUE, index.return=TRUE)
+results = ref[match(colnames(Y[,target_ind])[max_scores$ix[1:5]], ref$ensembl_gene_id), ]
+top_genes = data.frame(gene_name = results$hgnc_symbol, score = max_scores$x[1:5],
+              ensembl = results$ensembl_gene_id)
+gene1 = top_genes$gene_name[1]
+gene2 = top_genes$gene_name[2]
+par(mfrow = c(1,2))
+plot(orig[, main_ind] * orig[, target_ind][, max_scores$ix[1]] ~ orig_A,
+   ylab = paste0("RREB1"," * ",gene1), xlab='Ancestry',
+   main = paste0("top signals of ", "RREB1"))
+plot(orig[, main_ind] * orig[, target_ind][, max_scores$ix[2]] ~ orig_A,
+ylab = paste0("RREB1"," * ",gene2), xlab='Ancestry')
 ```
 
 
