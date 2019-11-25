@@ -1,4 +1,6 @@
-Modeling gene coexpression with respect to ancestry.
+# diffNet
+
+A modified score test for heterogeneous bivariate normal variables, applied to gene co-expression changing with genetic ancestry.
 
 Details are in the [vignettes](https://tk382.github.io/diffNet).
 
