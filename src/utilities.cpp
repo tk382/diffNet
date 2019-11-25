@@ -6,6 +6,51 @@ using namespace std;
 //const double log2pi = std::log(2.0 * M_PI);
 
 // [[Rcpp::depends("RcppArmadillo")]]
+// [[Rcpp::export]]
+double get_grad_c(const double sigw,
+                      const double sigv,
+                      const arma::vec uw,
+                      const arma::vec uv,
+                      const arma::vec x){
+  arma::vec tmp1 = uw%uw / (sigw*  sigw);
+  arma::vec tmp2 = uv%uv / (sigv * sigv);
+  arma::vec tmp3 = arma::zeros<arma::vec>(uw.size());
+  tmp3.fill(1/sigw);
+  arma::vec tmp4 = arma::zeros<arma::vec>(uw.size());
+  tmp4.fill(1/sigv);
+  return sum(x % (tmp3 - tmp1 - tmp4 + tmp2));
+}
+
+// [[Rcpp::export]]
+double const_c(const double sigw,
+        const double sigv){
+  double tmp = 2 * (1/(sigw*sigw) + 1/(sigv*sigv));
+  return 1/tmp;
+}
+
+//' get_score_c
+//' The order of y1 and y2 does not matter.
+//'
+//' @param y1 observation of the first variable
+//' @param y2 observation of the second variable
+//' @param x covariate vector
+//' @param coef coefficients for the cubic function. see cubic_coeff_c
+//'
+//' @export
+// [[Rcpp::export]]
+double get_score_c(const arma::vec x,
+            const arma::vec y1,
+            const arma::vec y2){
+  arma::vec w = y1 + y2;
+  arma::vec v = y1 - y2;
+  int n = w.size();
+  double sigw = sum(w%w)/n;
+  double sigv = sum(v%v)/n;
+  double grad = get_grad_c(sigw, sigv, w, v, x);
+  double fisherinf = const_c(sigw, sigv);
+  double q = grad * grad / n * fisherinf;
+  return q;
+}
 
 
 //' mvrnormArma
@@ -40,42 +85,9 @@ arma::mat solve_tmp_c(const arma::vec x){
   return inv(xx);
 }
 
-//' get_score_c
-//'
-//' This function returns the score statistic between y1 and y2 against one-dimensional covariate x
-//' The returned score statistic is not adjusted for sample size
-//'
-//' @param x Covariate vector
-//' @param y1 variable 1
-//' @param y2 variable 2
-//' @export
-// [[Rcpp::export]]
-double get_score_c(const arma::vec x,
-                  const arma::vec y1,
-                  const arma::vec y2) {
-  //returns score statistics between vectors y1 and y2 wrt x
-  int n = x.size();
-  if(n != y1.size() | n != y2.size()){
-    stop("x, y1, y2 should have the same length");
-  }
-  arma::vec w = y1+y2;
-  arma::mat xx = solve_tmp_c(x);
-  arma::vec intercepts = arma::ones<arma::vec>(n);
-  arma::mat xt = join_cols(intercepts, x);
-  double hatsigma = sum(w%w)/(n-1);
-  arma::mat lhs = arma::zeros<arma::mat>(1,2);
-  lhs(0,0) = sum(w%w/hatsigma - 1);
-  lhs(0,1) = sum((w%w/hatsigma - 1) % x);
-  arma::mat S = lhs * xx * lhs.t()/2;
-  return S(0,0);
-}
-
-
-
-
 //' get_score_w_c
 //'
-//' This function takes the sum of two variables, w, and one dimensional covariate x
+//' This function takes the sum of two variables, w, the difference of them, v, and one dimensional covariate x
 //' and returns the score test statistic
 //'
 //' @param x Covariate vector
@@ -83,18 +95,15 @@ double get_score_c(const arma::vec x,
 //' @export
 // [[Rcpp::export]]
 double get_score_w_c(const arma::vec x,
-                   const arma::vec w) {
-  //returns score statistics between vectors y1 and y2 wrt x
-  int n = x.size();
-  arma::mat xx = solve_tmp_c(x);
-  arma::vec intercepts = arma::ones<arma::vec>(n);
-  arma::mat xt = join_cols(intercepts, x);
-  double hatsigma = sum(w%w)/(n-1);
-  arma::mat lhs = arma::zeros<arma::mat>(1,2);
-  lhs(0,0) = sum(w%w/hatsigma - 1);
-  lhs(0,1) = sum((w%w/hatsigma - 1) % x);
-  arma::mat S = lhs * xx * lhs.t()/2;
-  return S(0,0);
+                   const arma::vec w,
+                   const arma::vec v) {
+  int n = w.size();
+  double sigw = sum(w%w)/n;
+  double sigv = sum(v%v)/n;
+  double grad = get_grad_c(sigw, sigv, w, v, x);
+  double fisherinf = const_c(sigw, sigv);
+  double q = grad * grad / n * fisherinf;
+  return q;
 }
 
 //' get_score_W_c
@@ -105,25 +114,17 @@ double get_score_w_c(const arma::vec x,
 //'
 //' @param x Covariate vector
 //' @param W Sums for each pairs of variables
+//' @param V Differences for each pairs of variables
 //' @export
 // [[Rcpp::export]]
 arma::vec get_score_W_c(const arma::vec x,
-                     const arma::mat W) {
-  //returns score statistics between vectors y1 and y2 wrt x
+                     const arma::mat W,
+                     const arma::mat V) {
   int n = x.size();
   int K = W.n_cols;
-  arma::mat xx = solve_tmp_c(x);
-  arma::vec intercepts = arma::ones<arma::vec>(n);
-  arma::mat xt = join_cols(intercepts, x);
   arma::vec out = arma::zeros<arma::vec>(K);
   for (int i=0; i < K; ++i){
-    arma::vec w = W.col(i);
-    double hatsigma = sum(w%w)/(n-1);
-    arma::mat lhs = arma::zeros<arma::mat>(1,2);
-    lhs(0,0) = sum(w%w/hatsigma - 1);
-    lhs(0,1) = sum((w%w/hatsigma - 1) % x);
-    arma::mat S = lhs * xx * lhs.t()/2;
-    out(i) = S(0,0);
+    out(i) = get_score_w_c(x, W.col(i), V.col(i));
   }
   return out;
 }
@@ -156,16 +157,18 @@ double get_degree_c(const arma::vec x,
 //' This function returns a sum statistic d for vector y tested with all other variables in matrix Y against covariate x
 //'
 //' @param x Covariate vector
-//' @param W Matrix of [y1+y2, y1+y3, .., y1+yK] to get degree of y1
+//' @param W Matrix of [y1+y2, y1+y3, .., y1+yK]
+//' @param V Matrix of [y1-y2, y1-y3, ..., y1-yK]
 //' @export
 // [[Rcpp::export]]
 double get_degree_w_c(const arma::vec x,
-                      const arma::mat W){
+                      const arma::mat W,
+                      const arma::mat V){
   //degree statistic for i'th gene based on matrix Y
   int K = W.n_cols;
   double d = 0;
   for (int i=0; i < K; ++i){
-    d = d + get_score_w_c(x, W.col(i));
+    d = d + get_score_w_c(x, W.col(i), V.col(i));
   }
   return d;
 }
@@ -175,13 +178,12 @@ double get_degree_w_c(const arma::vec x,
 double get_eta_c(const double rho12,
                  const double rho23,
                  const double rho13){
-  double eta = 6;
-  eta += 8*rho12 + 8*rho13 + 4*rho23;
-  eta += 2*rho12*rho12 + 2*rho13*rho13 + 2*rho23*rho23;;
-  eta += 8*rho12*rho13 + 4*rho12*rho23 + 4*rho13*rho23;
-  double denom = (2 * (2*rho12+2) * (2*rho13+2));
-  eta = eta/denom - .5;
-  return eta;
+  double num = (rho23 + 2 * rho12 * rho23)* (rho12*rho12+1) * (rho13*rho13 + 1);
+  num = num + rho12 * rho13* (6 + 2 * rho12 + 2 * rho13 + 2 * rho23);
+  num = num - rho12 * (rho13*rho13 + 1) * (3*rho13 + rho13 + 2 * rho12*rho23);
+  num = num - rho13 * (rho12*rho12 + 1) * (3*rho12 + rho12 + 2 * rho13 * rho23);
+  double denom = (1-rho12*rho12)*(1-rho13*rho13) * sqrt(1+rho12*rho12)*sqrt(1+rho13*rho13);
+  return num/denom;
 }
 
 //' @export
@@ -456,6 +458,19 @@ arma::mat store_W_c(const arma::vec y,
   return W;
 }
 
+//' @export
+// [[Rcpp::export]]
+arma::mat store_V_c(const arma::vec y,
+                    const arma::mat smallY){
+  int n = smallY.n_rows;
+  int K = smallY.n_cols;
+  arma::mat V(n, K);
+  for (int k = 0; k < K; ++k){
+    V.col(k) = y - smallY.col(k);
+  }
+  return V;
+}
+
 
 //' bootstrap_c
 //'
@@ -469,13 +484,14 @@ arma::mat store_W_c(const arma::vec y,
 // [[Rcpp::export]]
 arma::mat bootstrap_c(const arma::vec x,
                       const int B,
-                      const arma::mat W){
+                      const arma::mat W,
+                      const arma::mat V){
   arma::mat Xb = shuffle_x_c(x, B);
   const int K = W.n_cols+1;
   arma::mat out(B, K-1);
   for (int b = 0; b < B; ++b){
     for (int k = 0; k < (K-1); ++k){
-      out(b, k) = get_score_w_c(Xb.col(b), W.col(k));
+      out(b, k) = get_score_w_c(Xb.col(b), W.col(k), V.col(k));
     }
   }
   return out;
